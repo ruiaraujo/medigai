@@ -5,5 +5,10 @@
 class Consulta {
   Medico med;
   Utente pac;
-  Tempo temp;
+  Tempo duracao;
+  float preco;
+  public:
+    Consulta(Consulta &);
+    Consulta(Medico &, Utente &, Tempo &);
+    
 };

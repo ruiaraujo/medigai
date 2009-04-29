@@ -20,6 +20,7 @@ class Data {
     unsigned int getAno();
     unsigned int operator-(Data &); // diferença em dias entre duas datas;
     bool operator==(Data &);
+    Data & operator=(Data &);
 };
 
 
