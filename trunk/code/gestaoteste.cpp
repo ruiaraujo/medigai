@@ -1,4 +1,4 @@
-#include "headers/consulta.h"
+#include "classes/headers/consulta.h"
 
 using namespace std;
 int main()
