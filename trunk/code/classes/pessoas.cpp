@@ -9,13 +9,16 @@ string Pessoa::getNome(){return nome;}
 string Pessoa::getTel(){return tel;}
 Pessoa & Pessoa::operator=(Pessoa &p)
 {
-nome = p.nome;
-tel= p.tel;
-return *this; 
+  if (this != &p)
+  {
+    nome = p.nome;
+    tel= p.tel;
+  }
+  return *this; 
 }
 
 vector<string> Medico:: lista_med;
-Medico::Medico (string n, string t="", string e="", int c=0): Pessoa(n,t), especialidade(e),custo(c) {}
+Medico::Medico (string n, string t="", string e="", unsigned int c=0): Pessoa(n,t), especialidade(e), duracao(c) {}
 Medico::~Medico ()
 {
   vector<string>::iterator it=lista_med.begin();
@@ -25,16 +28,16 @@ Medico::~Medico ()
 }
 Medico & Medico::operator=(Medico &m)
 {
-  nome = m.nome;
-  tel= m.tel;
-  especialidade = m.especialidade;
-  custo = m.custo;
+  if (this != &m)
+  {
+    nome = m.nome;
+    tel= m.tel;
+    especialidade = m.especialidade;
+  }
   return *this;
 }
 void Medico::setEspe(string e){especialidade = e;}
-void Medico::setCos(float c){custo = c;}
 string Medico::getEspe() {return especialidade;}
-float Medico::getCos() {return custo;}
 
 
 Utente::Utente(string n, string t, string m, Convencao p): Pessoa(n,t), morada(m), seguro(p.getSeg(),p.getDes()) {}
@@ -47,16 +50,19 @@ string Utente::getMor(){return morada;}
 Convencao Utente::getSeg(){return seguro;}
 Utente & Utente::operator=(Utente &u)
 {
-  nome = u.nome;
-  tel = u.tel;
-  morada = u.morada;
-  seguro = u.seguro;
+  if (this != &u)
+  {
+    nome = u.nome;
+    tel = u.tel;
+    morada = u.morada;
+    seguro = u.seguro;
+  }
   return *this;
 }
 
 ostream & operator<<(ostream & os, Medico &m)
 {
-  os << m.getNome() << "|" << m.getTel() << "|" << m.getEspe() << "|" << m.getCos() << endl; 
+  os << m.getNome() << "|" << m.getTel() << "|" << m.getEspe() << "|"  << endl; 
  return os;
 }
 
