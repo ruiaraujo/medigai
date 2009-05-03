@@ -5,6 +5,7 @@
 #include <cstring>
 #include <vector>
 #include <iostream>
+#include <exception>
 
 using namespace std;
 
@@ -27,16 +28,16 @@ ostream & operator<<(ostream &, Pessoa &);
 
 class Medico : public Pessoa {
   string especialidade;
-  float custo;
+  unsigned int duracao;
   static vector<string> lista_med;
   public:
-    Medico (string, string, string ,int);
+    Medico (string, string, string ,unsigned int);
     Medico (Medico &);
    ~Medico();
     string getEspe();
-    float getCos();
+    unsigned int getDur();
     void setEspe(string);
-    void setCos(float);
+    void setDur(unsigned int);
     Medico & operator=(Medico &);
 };
 
