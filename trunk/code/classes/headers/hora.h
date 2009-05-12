@@ -8,7 +8,7 @@ class Hora {
   unsigned int min;
   public:
     Hora(unsigned int,unsigned  int);
-    Hora(Hora &);
+    Hora(const Hora &);
     Hora();
     void setHor(unsigned int);
     void setMin(unsigned int);

@@ -8,6 +8,7 @@ class Convencao{
    string seguro;
    float desconto;
    public:
+      Convencao(); 
      Convencao(string, float);
      Convencao (Convencao &);
      void setSeg(string);

@@ -9,7 +9,7 @@ class Data {
   unsigned int ano;
   public:
     Data();
-    Data(Data &);
+    Data(const Data &);
     Data(unsigned int,unsigned int,unsigned int);
     void setDia(unsigned int);
     void setMes(unsigned int);
