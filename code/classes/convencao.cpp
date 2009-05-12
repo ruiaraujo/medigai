@@ -1,6 +1,7 @@
 #include "headers/convencao.h"
 
 Convencao::Convencao(string s, float d): seguro(s),desconto(d) {}
+Convencao::Convencao() : seguro(""), desconto(0) {}
 Convencao::Convencao (Convencao & s ) : seguro(s.seguro), desconto(s.desconto) {}
 void Convencao::setSeg(string s){seguro = s;}
 void Convencao::setDes(float d){desconto = d;}

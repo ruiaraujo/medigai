@@ -14,7 +14,7 @@ Data::Data (unsigned int d = 1,unsigned  int m = 1,unsigned int a = 1970)
      cout << "Ocorreu um erro: Data Impossível. Data alterada para omissão: 1/1/1970" << endl;
   }
  }
-Data::Data (Data &d) : dia(d.dia), mes(d.mes), ano(d.ano) {} 
+Data::Data (const Data &d) : dia(d.dia), mes(d.mes), ano(d.ano) {} 
 void Data::setDia(unsigned int d)
 {
   if (mes < 8)

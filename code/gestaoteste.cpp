@@ -3,7 +3,7 @@
 using namespace std;
 int main()
 {
- /*Medico a("ruca", "91542", "Women",0);
+ Medico a("ruca", "91542", "Women",0,0);
   Convencao adse("adse", 10),medis("medis",20);
   Data d(29,2,2001);
   try
@@ -16,11 +16,11 @@ int main()
   {
      cout << "Ocorreu um erro: "  << dImpossivel.what() << endl;
   }
-  cout << d << endl;*/
+  cout << d << endl;
   Hora h(23,45);
   Hora s(12,27);
   cout <<"dif entre:" << h << " e " << s <<"= " <<h-s << endl;
-  int a;
+/*  int a;
   cin >> a;
   try{
   h.setMin(a);}

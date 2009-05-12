@@ -5,7 +5,6 @@
 #include <cstring>
 #include <vector>
 #include <iostream>
-#include <exception>
 
 using namespace std;
 
@@ -19,8 +18,8 @@ class Pessoa {
     virtual ~Pessoa();
     void setNome(string);
     void setTel(string);
-    string getNome();
-    string getTel();
+    string getNome() const;
+    string getTel() const;
     Pessoa & operator=(Pessoa &);
 };
 
@@ -29,14 +28,17 @@ ostream & operator<<(ostream &, Pessoa &);
 class Medico : public Pessoa {
   string especialidade;
   unsigned int duracao;
+  unsigned int cedula;
   static vector<string> lista_med;
   public:
-    Medico (string, string, string ,unsigned int);
+    Medico (string, string, string ,unsigned int, unsigned int);
     Medico (Medico &);
    ~Medico();
-    string getEspe();
-    unsigned int getDur();
+    string getEspe()const;
+    unsigned int getDur()const;
+    unsigned int getCed()const;
     void setEspe(string);
+    void setCed(unsigned int);
     void setDur(unsigned int);
     Medico & operator=(Medico &);
 };
@@ -45,16 +47,17 @@ ostream & operator<<(ostream &, Medico &);
 
 class Utente : public Pessoa {
   string morada;
-  Convencao seguro;
+  Convencao * seguro;
   public:
-    Utente(string, string, string , Convencao );
+    Utente(string, string, string , Convencao *);
     Utente(string, string , string, string, float);
+    Utente(Utente &);
     void setMor(string);
     void setSeg(string, float);
     void setSeg(float);
     void setSeg(string);
-    string getMor();
-    Convencao getSeg();
+    string getMor()const;
+    Convencao * getSeg()const;
     Utente & operator=(Utente &u);
 };
 ostream & operator<<(ostream &, Utente &);
