@@ -7,17 +7,17 @@ class Consulta {
   Medico * med;
   Utente * pac;
   Data data;
-  Hora inicio;
+  Hora hora;
   float preco;
   public:
     Consulta(const Consulta &);
-    Consulta(Medico *, Utente *, Data *, Hora *, float);
+    Consulta(Medico *, Utente *, Data , Hora , float);
     Medico * getMed() const;
     Utente * getUte() const;
     Data getDat() const;
     Hora getHor() const;
     void setHor(unsigned int, unsigned int);
-    void setHor(Hora &);
+    void setHor(const Hora &);
     void setDat(unsigned int, unsigned int, unsigned int);
     void setDat(Data &);
 };

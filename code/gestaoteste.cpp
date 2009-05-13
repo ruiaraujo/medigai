@@ -30,7 +30,7 @@ int main()
   }
  //if (h==s)
   cout << h <<endl<< endl;
-/*  int ano;
+  int ano;
   cin >> ano;
   if (bissexto(ano))
   cout << "bissexto\n";

@@ -21,6 +21,7 @@ Hora::Hora(const Hora &h) : hora(h.hora), min(h.min) {}
 Hora::Hora(): hora(0), min(0) {}
 void Hora::setHor(unsigned int h){if (h<24) hora = h;else throw HoraImpossivel();}
 void Hora::setMin(unsigned int m){if (m<60) min = m;else throw MinImpossivel();}
+void Hora::setHora(const Hora &h){setHora(h.hora,h.min);}
 void Hora::setHora(unsigned int h, unsigned int m)
 {
   try
@@ -37,8 +38,8 @@ void Hora::setHora(unsigned int h, unsigned int m)
     throw HoraImpossivel();  
   }
 }
-unsigned int Hora::getHor(){return hora;}
-unsigned int Hora::getMin(){return min;}
+unsigned int Hora::getHor()const {return hora;}
+unsigned int Hora::getMin()const {return min;}
 Hora & Hora::getHora(){return *this;}
 Hora & Hora::operator+(int extra)
 {
