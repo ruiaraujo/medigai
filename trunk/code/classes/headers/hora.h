@@ -13,8 +13,9 @@ class Hora {
     void setHor(unsigned int);
     void setMin(unsigned int);
     void setHora(unsigned int, unsigned int);
-    unsigned int getHor();
-    unsigned int getMin();
+    void setHora(const Hora&);
+    unsigned int getHor() const ;
+    unsigned int getMin() const;
     Hora & getHora();
     Hora & operator+(int); 
     int operator-(Hora &);// diferença em minutos entre duas datas;

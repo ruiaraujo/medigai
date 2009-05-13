@@ -1,17 +1,16 @@
-#include "consulta.h"
+#include "classes/headers/FileHandling.h"
 
 using namespace std;
 int main()
 {
-  string s = "ola\n";
-  cout << s;
-  Medico a("ruca", "91542", "Women",0);
-  Convencao adse("adse", 10),medis("medis",20);
-  cout << a;
-  if (adse>medis)
-    cout << adse << "tem mais desconto que " << medis << endl;
-  else
-    cout << adse << "tem menos desconto que " << medis << endl;
-  return 0;
 
+  cout << "Medigai\nMedical Management for Linux Lovers.\n";
+  string line;
+  fstream file("medico.txt");
+  Medico ruca("Ruca", "Women" , "9154244117", 20, 33400);
+  cout << "Addcionado: " << delMed(file, ruca) << endl;
+  file.close();
+
+  return 0;
 }
+

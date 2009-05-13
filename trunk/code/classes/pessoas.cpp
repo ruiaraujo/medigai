@@ -1,12 +1,12 @@
 #include "headers/pessoas.h"
 
-Pessoa::Pessoa (string n, string t) : nome(n), tel(t) {}
-Pessoa::Pessoa (Pessoa & p) : nome(p.nome), tel(p.tel) {}
-Pessoa::~Pessoa(){}
+Pessoa::Pessoa (string n, string t, unsigned long i) : nome(n), tel(t), id(i) {}
+Pessoa::Pessoa (const Pessoa & p) : nome(p.nome), tel(p.tel), id(p.id) {}
 void Pessoa::setNome(string n){nome=n;}
 void Pessoa::setTel(string t){tel=t;}
 string Pessoa::getNome() const {return nome;}
 string Pessoa::getTel() const{return tel;}
+unsigned long Pessoa::getId() const {return id;}
 Pessoa & Pessoa::operator=(Pessoa &p)
 {
   if (this != &p)
@@ -17,16 +17,9 @@ Pessoa & Pessoa::operator=(Pessoa &p)
   return *this; 
 }
 
-vector<string> Medico:: lista_med;
-Medico::Medico (string n, string t="", string e="", unsigned int d=0, unsigned int c=0): Pessoa(n,t), especialidade(e), duracao(d), cedula(c) {}
-Medico::Medico (Medico &m): Pessoa(m.nome,m.tel), especialidade(m.especialidade), duracao(m.duracao), cedula(m.cedula) {}
-Medico::~Medico ()
-{
-  vector<string>::iterator it=lista_med.begin();
-  for (int i=0;i<(int)lista_med.size();it++,i++)
-    if (getNome() == lista_med.at(i))
-      lista_med.erase(it);
-}
+
+Medico::Medico (string n, string t="", string e="", unsigned int d=0, unsigned long c=0): Pessoa(n,t,c), especialidade(e), duracao(d) {}
+Medico::Medico (const Medico &m): Pessoa(m.nome,m.tel, 0), especialidade(m.especialidade), duracao(m.duracao) {}
 Medico & Medico::operator=(Medico &m)
 {
   if (this != &m)
@@ -34,20 +27,21 @@ Medico & Medico::operator=(Medico &m)
     nome = m.nome;
     tel= m.tel;
     especialidade = m.especialidade;
-    cedula = m.cedula;
   }
   return *this;
 }
-void Medico::setCed(unsigned int c){cedula = c;}
+
 void Medico::setDur(unsigned int d){duracao = d;}
 void Medico::setEspe(string e){especialidade = e;}
 string Medico::getEspe() const{return especialidade;}
-unsigned int Medico::getCed() const {return cedula;}
+unsigned long Medico::getCed() const {return id;}
 unsigned int Medico::getDur() const {return duracao;}
 
-Utente::Utente (Utente &u): Pessoa (u.nome,u.tel), morada(u.morada), seguro(u.seguro) {}
-Utente::Utente(string n, string t, string m, Convencao * p): Pessoa(n,t), morada(m), seguro(p) {}
-Utente::Utente(string n, string t, string m , string seg = "", float d= 0.0): Pessoa(n,t), morada(m)
+
+long Utente::UltimoNumero = 0;
+Utente::Utente (const Utente &u): Pessoa (u.nome,u.tel, UltimoNumero++), morada(u.morada), seguro(u.seguro) {}
+Utente::Utente(string n, string t, string m, Convencao * p): Pessoa(n,t, UltimoNumero++), morada(m), seguro(p) {}
+Utente::Utente(string n, string t, string m , string seg = "", float d= 0.0): Pessoa(n,t, UltimoNumero++), morada(m)
 {
   Convencao *a = new Convencao;
   a->setSeg(seg);
@@ -74,7 +68,7 @@ Utente & Utente::operator=(Utente &u)
 
 ostream & operator<<(ostream & os, Medico &m)
 {
-  os << m.getNome() << "|" << m.getTel() << "|" << m.getEspe() << "|"  << endl; 
+  os << m.getCed()<<"|"<< m.getNome() << "|" << m.getTel() << "|" << m.getEspe() << "|"   << endl; 
  return os;
 }
 
