@@ -1,6 +1,25 @@
 #include "headers/FileHandling.h"
 
-
+bool criaFile(string f)
+{
+  ifstream fi(f.c_str());
+  if (fi.fail())
+  {
+    ofstream fo(f.c_str());
+    if (fo.fail())
+    {
+      fo.close();
+      return false;  
+    }
+    fo.close();
+    return true;
+  }
+  else
+  {
+    fi.close();
+    return true;
+  }
+}
 bool addMed(fstream &f,const Medico &m)
 {
   string line;
@@ -16,7 +35,8 @@ bool addMed(fstream &f,const Medico &m)
   }
   f.clear();
   f.seekp(0,ios_base::end);
-  f <<m.getCed()<<"|"<< m.getNome() << "|" << m.getTel() << "|" <<m.getEspe()->getNom() << "|"  << endl;
+  f << m.getCed() << "|" << m.getNome() << "|" << m.getTel() << "|" <<m.getEspe()->getNom() << "|";
+  f << m.getIni().getHor() << ":" << m.getIni().getMin() << "|" << m.getFim().getHor() << ":" << m.getFim().getMin() << "|" << m.getDur() << endl;
   f.flush();
   return true;
 }

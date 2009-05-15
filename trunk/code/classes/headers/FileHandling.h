@@ -3,7 +3,7 @@
 #include <iostream>
 #include <sstream>
 
-
+bool criaFile(string);
 bool addMed(fstream &,const Medico &);
 bool delMed(fstream &, const Medico &);
 bool delMed(fstream &, unsigned long);
