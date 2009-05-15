@@ -1,3 +1,7 @@
+#ifndef HORAEXCEP_H
+#define HORAEXCEP_H
+
+
 #include <stdexcept>
 #include <exception>
 using std::runtime_error;
@@ -11,3 +15,6 @@ class MinImpossivel : public runtime_error{
   public:
     MinImpossivel(): runtime_error( "Minuto impossível" ) {}
 };
+
+#endif
+

@@ -16,7 +16,7 @@ bool addMed(fstream &f,const Medico &m)
   }
   f.clear();
   f.seekp(0,ios_base::end);
-  f <<m.getCed()<<"|"<< m.getNome() << "|" << m.getTel() << "|" << m.getEspe() << "|"   << endl;
+  f <<m.getCed()<<"|"<< m.getNome() << "|" << m.getTel() << "|" <<m.getEspe()->getNom() << "|"  << endl;
   f.flush();
   return true;
 }
@@ -75,7 +75,7 @@ bool addPac(fstream &f, const Utente &u)
   }
   f.clear();
   f.seekp(0,ios_base::end);
-  f <<u.getId()<<"|"<< u.getNome() << "|" << u.getTel() << "|" <<u.getMor() << "|" << u.getSeg()->getSeg() << "|" << u.getSeg()->getDes() << endl;
+  f <<u.getId()<<"|"<< u.getNome() << "|" << u.getTel() << "|" <<u.getMor() << "|" << u.getSeg().getSeg() << "|" << u.getSeg().getDes() << "|" << u.getSeg().getApo()<< endl;
   f.flush();
   return true;
 }

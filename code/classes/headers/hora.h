@@ -1,3 +1,6 @@
+#ifndef HORA_H
+#define HORA_H
+
 #include <iostream>
 #include "HoraExceptions.h"
 
@@ -24,4 +27,4 @@ class Hora {
     friend ostream & operator<<(ostream & os, Hora &);
 };
 
-
+#endif
