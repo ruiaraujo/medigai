@@ -1,5 +1,6 @@
 #include "headers/pessoas.h"
 
+
 Pessoa::Pessoa (string n, string t, unsigned long i) : nome(n), tel(t), id(i) {}
 Pessoa::Pessoa (const Pessoa & p) : nome(p.nome), tel(p.tel), id(p.id) {}
 void Pessoa::setNome(string n){nome=n;}
@@ -17,43 +18,40 @@ Pessoa & Pessoa::operator=(Pessoa &p)
   return *this; 
 }
 
-
-Medico::Medico (string n, string t="", string e="", unsigned int d=0, unsigned long c=0): Pessoa(n,t,c), especialidade(e), duracao(d) {}
-Medico::Medico (const Medico &m): Pessoa(m.nome,m.tel, 0), especialidade(m.especialidade), duracao(m.duracao) {}
+Medico::Medico (Pessoa &p, Especialidade *e, Hora i, Hora f, unsigned int d=0) : Pessoa(p), espe(e), duracao(d), fim (f), inicio(i) {}
+Medico::Medico (Pessoa &p, Especialidade *e, unsigned int d=0): Pessoa(p), espe(e), duracao(d) {}
+Medico::Medico (string n, string t="", unsigned int d=0, unsigned long c=0): Pessoa(n,t,c), espe(), duracao(d) {}
+Medico::Medico (const Medico &m): Pessoa(m.nome,m.tel, 0), espe(m.espe), duracao(m.duracao) {}
 Medico & Medico::operator=(Medico &m)
 {
   if (this != &m)
   {
     nome = m.nome;
     tel= m.tel;
-    especialidade = m.especialidade;
+    espe = m.espe;
   }
   return *this;
 }
-
+Hora Medico::getIni() const {return inicio;}
+Hora Medico::getFim() const {return fim;}
 void Medico::setDur(unsigned int d){duracao = d;}
-void Medico::setEspe(string e){especialidade = e;}
-string Medico::getEspe() const{return especialidade;}
+void Medico::setEspe(Especialidade *e){espe = e;}
+Especialidade * Medico::getEspe() const{return espe;}
 unsigned long Medico::getCed() const {return id;}
 unsigned int Medico::getDur() const {return duracao;}
-
+void Medico::setIni(Hora &i){inicio = i;}
+void Medico::setFim(Hora &f){fim = f;}
 
 long Utente::UltimoNumero = 0;
 Utente::Utente (const Utente &u): Pessoa (u.nome,u.tel, UltimoNumero++), morada(u.morada), seguro(u.seguro) {}
-Utente::Utente(string n, string t, string m, Convencao * p): Pessoa(n,t, UltimoNumero++), morada(m), seguro(p) {}
-Utente::Utente(string n, string t, string m , string seg = "", float d= 0.0): Pessoa(n,t, UltimoNumero++), morada(m)
-{
-  Convencao *a = new Convencao;
-  a->setSeg(seg);
-  a->setDes(d);
-  seguro = a;
-}
+Utente::Utente(string n, string t, string m, Convencao p): Pessoa(n,t, UltimoNumero++), morada(m), seguro(p) {}
+Utente::Utente(string n, string t, string m , string seg = "", float d= 0.0, unsigned long a=0): Pessoa(n,t, UltimoNumero++),morada(m),seguro(seg,d,a){}
 void Utente::setMor(string m ){morada = m;}
-void Utente::setSeg(string s, float d){seguro->setSeg(s);seguro->setDes(d);}
-void Utente::setSeg(float d){seguro->setDes(d);}
-void Utente::setSeg(string s){seguro->setSeg(s);}
+void Utente::setSeg(string s, float d){seguro.setSeg(s);seguro.setDes(d);}
+void Utente::setSeg(float d){seguro.setDes(d);}
+void Utente::setSeg(string s){seguro.setSeg(s);}
 string Utente::getMor() const {return morada;}
-Convencao * Utente::getSeg() const {return seguro;}
+Convencao Utente::getSeg() const {return seguro;}
 Utente & Utente::operator=(Utente &u)
 {
   if (this != &u)
@@ -68,18 +66,18 @@ Utente & Utente::operator=(Utente &u)
 
 ostream & operator<<(ostream & os, Medico &m)
 {
-  os << m.getCed()<<"|"<< m.getNome() << "|" << m.getTel() << "|" << m.getEspe() << "|"   << endl; 
+  os << m.id <<"|"<< m.nome << "|" << m.tel << "|" << m.espe->getNom()<< "|"   << endl; 
  return os;
 }
 
 ostream & operator<<(ostream & os, Utente &u)
 {
-  os << u.getNome() << "|" << u.getTel() << "|" << u.getMor() << "|" << u.getSeg()->getSeg() << "|" << u.getSeg()->getDes() << endl; 
+  os << u.id << "|" << u.nome << "|" << u.tel << "|" << u.morada << "|" << u.seguro.getSeg() << "|" << u.seguro.getDes() << "|" << u.seguro.getApo() <<endl; 
  return os;
 }
 
 ostream & operator<<(ostream & os, Pessoa & p)
 {
-  os << p.getNome() << "|" << p.getTel() << endl; 
+  os << p.id << "|" << p.nome << "|" << p.tel << endl; 
  return os;
 }

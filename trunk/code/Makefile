@@ -1,11 +1,11 @@
 CXX = g++
 CXXFLAGS = -Wall  -Wextra -c #-Weffc++ # -O2 
 
-all: gestaoteste.o pessoas.o consulta.o convencao.o hora.o data.o file.o
-	$(CXX) hora.o data.o pessoas.o consulta.o convencao.o gestao.o file.o -o gestao
+all: gestaoteste.o pessoas.o consulta.o convencao.o hora.o data.o file.o especialidade.o 
+	$(CXX) hora.o data.o pessoas.o consulta.o convencao.o gestao.o file.o especialidade.o -o gestao
 
-gestao: gestao.o pessoas.o consulta.o convencao.o hora.o data.o file.o
-	$(CXX) hora.o data.o pessoas.o consulta.o convencao.o gestao.o file.o -o gestao
+gestao: gestao.o pessoas.o consulta.o convencao.o hora.o data.o file.o especialidade.o 
+	$(CXX) hora.o data.o pessoas.o consulta.o convencao.o gestao.o file.o especialidade.o -o gestao
 	
 gestao.o: gestao.cpp
 	$(CXX) $(CXXFLAGS) gestao.cpp -o gestao.o
@@ -25,17 +25,21 @@ hora.o: classes/headers/hora.h classes/hora.cpp
 #tempo.o: classes/headers/tempo.h classes/tempo.cpp
 #	$(CXX) $(CXXFLAGS) classes/tempo.cpp -o tempo.o
 
+especialidade.o: classes/headers/especialidade.h classes/especialidade.cpp
+	$(CXX) $(CXXFLAGS) classes/especialidade.cpp -o especialidade.o
+
+
 convencao.o: classes/headers/convencao.h classes/convencao.cpp
 	$(CXX) $(CXXFLAGS) classes/convencao.cpp -o convencao.o
 
 pessoas.o: classes/headers/pessoas.h classes/pessoas.cpp
 	$(CXX) $(CXXFLAGS) classes/pessoas.cpp -o pessoas.o
   
-#utente.o:  convencao.o utente.h utente.cpp
-	#$(CXX) $(CXXFLAGS) utente.cpp -o utente.o
+utente.o:  convencao.o utente.h utente.cpp
+	$(CXX) $(CXXFLAGS) utente.cpp -o utente.o
   
-#medico.o: medico.h medico.cpp
-	#$(CXX) $(CXXFLAGS) medico.cpp -o medico.o
+medico.o: medico.h medico.cpp
+	$(CXX) $(CXXFLAGS) medico.cpp -o medico.o
 
 consulta.o: classes/headers/consulta.h classes/consulta.cpp
 	$(CXX) $(CXXFLAGS) classes/consulta.cpp -o consulta.o

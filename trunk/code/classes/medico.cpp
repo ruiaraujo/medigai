@@ -1,29 +1,32 @@
 #include "headers/medico.h"
 
-vector<string> Medico:: lista_med;
-Medico::Medico (string n, string t="", string e="", int c=0): Pessoa(n,t), especialidade(e),custo(c) {}
-Medico::~Medico ()
-{
-  vector<string>::iterator it=lista_med.begin();
-  for (int i=0;i<(int)lista_med.size();it++,i++)
-    if (getNome() == lista_med.at(i))
-      lista_med.erase(it);
-}
+Medico::Medico (Pessoa &p, Especialidade *e, Hora i, Hora f, unsigned int d=0) : Pessoa(p), espe(e), duracao(d), fim (f), inicio(i) {}
+Medico::Medico (Pessoa &p, Especialidade *e, unsigned int d=0): Pessoa(p), espe(e), duracao(d) {}
+Medico::Medico (string n, string t="", unsigned int d=0, unsigned long c=0): Pessoa(n,t,c), espe(), duracao(d) {}
+Medico::Medico (const Medico &m): Pessoa(m.nome,m.tel, 0), espe(m.espe), duracao(m.duracao) {}
 Medico & Medico::operator=(Medico &m)
 {
-  nome = m.nome;
-  tel= m.tel;
-  especialidade = m.especialidade;
-  custo = m.custo;
+  if (this != &m)
+  {
+    nome = m.nome;
+    tel= m.tel;
+    espe = m.espe;
+  }
   return *this;
 }
-void Medico::setEspe(string e){especialidade = e;}
-void Medico::setCos(float c){custo = c;}
-string Medico::getEspe() {return especialidade;}
-float Medico::getCos() {return custo;}
+Hora Medico::getIni() const {return inicio;}
+Hora Medico::getFim() const {return fim;}
+void Medico::setDur(unsigned int d){duracao = d;}
+void Medico::setEspe(Especialidade *e){espe = e;}
+Especialidade * Medico::getEspe() const{return espe;}
+unsigned long Medico::getCed() const {return id;}
+unsigned int Medico::getDur() const {return duracao;}
+void Medico::setIni(Hora &i){inicio = i;}
+void Medico::setFim(Hora &f){fim = f;}
+
 
 ostream & operator<<(ostream & os, Medico &m)
 {
-  os << m.getNome() << "|" << m.getTel() << "|" << m.getEspe() << "|" << m.getCos() << endl; 
+  os << m.id <<"|"<< m.nome << "|" << m.tel << "|" << m.espe->getNom()<< "|"   << endl; 
  return os;
 }
