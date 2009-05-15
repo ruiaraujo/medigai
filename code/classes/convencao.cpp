@@ -24,6 +24,6 @@ bool Convencao::operator>(Convencao &s){return desconto>s.desconto?true:false;}
 
 ostream & operator<<(ostream & os, Convencao &c)
 {
-  os << c.getSeg() << "|" << c.getDes();
+  os << c.getSeg() << "|" << c.getDes() << "|" << c.getApo();
   return os;
 }
