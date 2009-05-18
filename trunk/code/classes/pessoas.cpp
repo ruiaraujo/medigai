@@ -42,16 +42,19 @@ unsigned int Medico::getDur() const {return duracao;}
 void Medico::setIni(Hora &i){inicio = i;}
 void Medico::setFim(Hora &f){fim = f;}
 
-long Utente::UltimoNumero = 0;
-Utente::Utente (const Utente &u): Pessoa (u.nome,u.tel, UltimoNumero++), morada(u.morada), seguro(u.seguro) {}
+unsigned long Utente::UltimoNumero = 1;
+Utente::Utente (const Utente &u): Pessoa (u.nome,u.tel, u.id), morada(u.morada), seguro(u.seguro) {}
 Utente::Utente(string n, string t, string m, Convencao p): Pessoa(n,t, UltimoNumero++), morada(m), seguro(p) {}
 Utente::Utente(string n, string t, string m , string seg = "", float d= 0.0, unsigned long a=0): Pessoa(n,t, UltimoNumero++),morada(m),seguro(seg,d,a){}
+Utente::Utente(string n, string t, string m , string seg = "", float d= 0.0, unsigned long a=0, unsigned long i=0): Pessoa(n,t, i),morada(m),seguro(seg,d,a){}
 void Utente::setMor(string m ){morada = m;}
 void Utente::setSeg(string s, float d){seguro.setSeg(s);seguro.setDes(d);}
 void Utente::setSeg(float d){seguro.setDes(d);}
 void Utente::setSeg(string s){seguro.setSeg(s);}
 string Utente::getMor() const {return morada;}
 Convencao Utente::getSeg() const {return seguro;}
+void Utente::setUN(unsigned long u ) { UltimoNumero = u; }
+long Utente::getUN() const { return UltimoNumero; }
 Utente & Utente::operator=(Utente &u)
 {
   if (this != &u)
@@ -66,18 +69,18 @@ Utente & Utente::operator=(Utente &u)
 
 ostream & operator<<(ostream & os, Medico &m)
 {
-  os << m.id <<"|"<< m.nome << "|" << m.tel << "|" << m.espe->getNom()<< "|"   << endl; 
+  os << m.id <<"|"<< m.nome << "|" << m.tel << "|" << m.espe->getNom()<< "|"  << m.inicio << "|" << m.fim << "|" << m.duracao; 
  return os;
 }
 
 ostream & operator<<(ostream & os, Utente &u)
 {
-  os << u.id << "|" << u.nome << "|" << u.tel << "|" << u.morada << "|" << u.seguro.getSeg() << "|" << u.seguro.getDes() << "|" << u.seguro.getApo() <<endl; 
+  os << u.id << "|" << u.nome << "|" << u.tel << "|" << u.morada << "|" << u.seguro.getSeg() << "|" << u.seguro.getDes() << "|" << u.seguro.getApo(); 
  return os;
 }
 
 ostream & operator<<(ostream & os, Pessoa & p)
 {
-  os << p.id << "|" << p.nome << "|" << p.tel << endl; 
+  os << p.id << "|" << p.nome << "|" << p.tel; 
  return os;
 }
