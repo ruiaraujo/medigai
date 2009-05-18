@@ -63,15 +63,18 @@ int main()
                   insPac( lista_pac );
                   listar( lista_pac );
                   Menu();
+                  cin.clear();
                   break;
-        case '3': cout << "A guardar tudo...\n";
+        case '4': cout << "A guardar tudo...\n";
                   savPac ( file_pac , lista_pac );
                   savMed ( file_med , lista_med );
                   savEsp ( file_esp , lista_esp );
                   Menu();
+                  cin.clear();
                   break;
         default: cout << "\nOpção desconhecida.\n\n";
                  Menu();
+                 cin.clear();
                  break;
       }
     }
@@ -86,15 +89,16 @@ int main()
 
 void Menu()
 {
-  cout << "Menu:\nInsira o número da opção desejada.\n1. Corpo Clínico\n2. Gestão de Utentes\n3. Gestão de Consultas\n";
-  cout << "CRTL-D para cancelar.\n";
+  cout << "Menu:\nInsira o número da opção desejada.\n1. Corpo Clínico\n2. Gestão de Utentes\n";
+  cout << "3. Gestão de Consultas\n4. Guardar as alterações\n";
+  cout << "CRTL-D para sair.\n";
 }
 
 void Menu_med()
 {
   cout << "Gestão do Corpo Clínico:\nInsira o número da opção desejada.\n";
   cout << "1. Adicionar Médico\n2. Eliminar Médico\n3. Visualisar os médicos\n";
-  cout << "CRTL-D para cancelar.\n";
+  cout << "CRTL-D para voltar ao menu anterior.\n";
 }
 
 void menu_med()
