@@ -59,6 +59,32 @@ Hora & Hora::operator+(int extra)
   return *this;
 }
 int Hora::operator-(Hora &h){return ((int)hora-(int)h.hora)*60 + ((int)min-(int)h.min);}// diferença em minutos entre duas datas (se negativo hora )
+bool Hora::operator<(Hora &h)
+{
+ if (h.hora == hora )
+ {
+  if (min < h.min)
+    return true;
+  else
+    return false;
+ }
+ else
+   if (hora < h.hora) return true;
+   else return false;
+}
+bool Hora::operator>(Hora &h)
+{
+ if (h.hora == hora )
+ {
+  if (min < h.min)
+    return false;
+  else
+    return true;
+ }
+ else
+   if (hora < h.hora) return false;
+   else return true;
+}
 Hora & Hora::operator=(Hora &h)
 {
   if (this != &h)

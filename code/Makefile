@@ -1,8 +1,8 @@
 CXX = g++
 CXXFLAGS = -Wall  -Wextra -c #-Weffc++ # -O2 
 
-all: gestaoteste.o pessoas.o consulta.o convencao.o hora.o data.o file.o especialidade.o 
-	$(CXX) hora.o data.o pessoas.o consulta.o convencao.o gestao.o file.o especialidade.o -o gestao
+all: gestaoteste.o pessoas.o consulta.o convencao.o hora.o data.o file.o especialidade.o mem.o
+	$(CXX) hora.o data.o pessoas.o consulta.o convencao.o gestao.o file.o especialidade.o mem.o -o gestao
 
 gestao: gestao.o pessoas.o consulta.o convencao.o hora.o data.o file.o especialidade.o 
 	$(CXX) hora.o data.o pessoas.o consulta.o convencao.o gestao.o file.o especialidade.o -o gestao
@@ -12,6 +12,9 @@ gestao.o: gestao.cpp
 	
 gestaoteste.o: gestaoteste.cpp
 	$(CXX) $(CXXFLAGS) gestaoteste.cpp -o gestao.o
+	
+mem.o: classes/headers/MemoryHandling.h classes/MemoryHandling.cpp 
+	$(CXX) $(CXXFLAGS)  classes/MemoryHandling.cpp  -o mem.o
 	
 file.o: classes/headers/FileHandling.h classes/FileHandling.cpp 
 	$(CXX) $(CXXFLAGS)  classes/FileHandling.cpp  -o file.o

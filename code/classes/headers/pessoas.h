@@ -50,15 +50,18 @@ class Medico : public Pessoa {
 class Utente : public Pessoa {
   string morada;
   Convencao seguro;
-  static long UltimoNumero;
+  static unsigned long UltimoNumero;
   public:
     Utente(string, string, string , Convencao);
     Utente(string, string , string, string, float, unsigned long);
+    Utente(string, string , string, string, float, unsigned long , unsigned long);
     Utente(const Utente &);
     void setMor(string);
     void setSeg(string, float);
     void setSeg(float);
     void setSeg(string);
+    void setUN(unsigned long);
+    long getUN() const ;
     string getMor()const;
     Convencao getSeg()const;
     Utente & operator=(Utente &u);
