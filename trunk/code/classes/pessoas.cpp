@@ -41,8 +41,8 @@ Especialidade * Medico::getEspe() const{return espe;}
 unsigned long Medico::getCed() const {return id;}
 unsigned int Medico::getDur() const {return duracao;}
 unsigned int Medico::getDurM() const {return dur_max;}
-void Medico::setIni(Hora &i){inicio = i;}
-void Medico::setFim(Hora &f){fim = f;}
+void Medico::setIni( const Hora & i ){inicio = i;}
+void Medico::setFim( const Hora & f ){fim = f;}
 
 unsigned long Utente::UltimoNumero = 1;
 Utente::Utente (const Utente &u): Pessoa (u.nome,u.tel, u.id), morada(u.morada), seguro(u.seguro) {}

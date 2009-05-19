@@ -16,6 +16,7 @@ void delCon( vector<Medico *> & , vector<Utente *> & , vector<Consulta *> & , Ut
 bool carregaEsp( string , vector<Especialidade *> & );
 bool carregaPac( string , vector<Utente *> & );
 bool carregaMed( string , vector<Medico *> & , vector<Especialidade *> & );
+bool carregaCon( string , vector<Medico *> & , vector<Utente *> & , vector<Consulta *> & );
 template <class Comparable> Comparable * find ( unsigned long , vector<Comparable *> & );
 bool delMed( const Medico & );
 template <class Comparable> Comparable * find ( const Comparable & , vector<Comparable *> & );

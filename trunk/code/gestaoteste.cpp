@@ -8,31 +8,22 @@ vector<Medico *> lista_med;
 vector<Utente *> lista_pac;
 vector<Especialidade *> lista_esp;
 vector<Consulta *> lista_con;
+
 string file_med = "medico.txt",file_pac="utentes.txt",file_esp="especialidade.txt";
+string file_con = "consultas.txt";
+
 void Menu();
 void menu_med();
+void Menu_med();
+void Menu_con();
+void menu_con();
+
 int main()
 {
 
   cout << "Medigai\nMedical Management for Linux Lovers.\n\n\n\n";
 
-  if ( criaFile( file_med ) )
-    fstream med( file_med.c_str() );
-  else
-  {
-    cerr << "Erro: Verifique permissões no directório de execução."<<endl;
-    return -1;
-  }
-  if ( criaFile( file_esp) )
-    fstream med( file_esp.c_str() );
-  else
-  {
-    cerr << "Erro: Verifique permissões no directório de execução."<<endl;
-    return -1;
-  }
-  if ( criaFile( file_pac ) )
-    fstream med( file_pac.c_str() );
-  else
+  if ( !criaFile( file_med ) || !criaFile( file_pac) || !criaFile( file_esp) || !criaFile( file_con) )
   {
     cerr << "Erro: Verifique permissões no directório de execução."<<endl;
     return -1;
@@ -46,6 +37,9 @@ int main()
   carregaPac ( file_pac , lista_pac );
   cout << endl;
   listar( lista_pac );
+  cout << endl;
+  carregaCon ( file_con , lista_med , lista_pac , lista_con );
+  listar( lista_con );
   cout << endl;
   Menu();
   while ( ! cin.eof() ) 
@@ -65,10 +59,15 @@ int main()
                   Menu();
                   cin.clear();
                   break;
+        case '3': menu_con();
+                  Menu();
+                  cin.clear();
+                  break;
         case '4': cout << "A guardar tudo...\n";
                   savPac ( file_pac , lista_pac );
                   savMed ( file_med , lista_med );
                   savEsp ( file_esp , lista_esp );
+                  savCon ( file_con , lista_con );
                   carregaEsp( file_esp , lista_esp );
                   carregaMed( file_med , lista_med , lista_esp );
                   listar( lista_med );
@@ -78,6 +77,8 @@ int main()
                   cout << endl;
                   listar( lista_pac );
                   cout << endl;
+                  carregaCon ( file_con , lista_med , lista_pac , lista_con );
+                  listar( lista_con );
                   Menu();
                   cin.clear();
                   break;
@@ -110,6 +111,13 @@ void Menu_med()
   cout << "CRTL-D para voltar ao menu anterior.\n";
 }
 
+void Menu_con()
+{
+  cout << "Gestão de Consultas:\nInsira o número da opção desejada.\n";
+  cout << "1. Marcar Consultas\n2. Marcar Consultas\n3. Visualisar o horário\n";
+  cout << "CRTL-D para voltar ao menu anterior.\n";
+
+}
 void menu_med()
 {
   char opcao;
@@ -125,25 +133,62 @@ void menu_med()
                   insMed( lista_med , lista_esp );
                   listar( lista_med );
                   Menu_med();
+                  cin.clear();
                   break;
         case '2': cout << "Insira a cédula do médico.\n";
                   long cedula;
                   cin >> cedula;
                   delMed ( cedula , lista_med );
                   Menu_med();
+                  cin.clear();
                   break;
         case '3': cout << "Lista de Médicos activos\n";
                   listar ( lista_med );
                   cout << endl;
                   Menu_med();
+                  cin.clear();
                   break;
         default: cout << "\nOpção desconhecida.\n\n";
-                 Menu();
+                 Menu_med();
+                 cin.clear();
                  break;
       }
     }
+  }
 }
+
+void menu_con()
+{
+  char opcao;
+  Menu_con();
+  while ( ! cin.eof() ) 
+  {
+    cin >> opcao;
+    if ( ! cin.eof() && isdigit( opcao ) )
+    {
+      switch (opcao)
+      {
+        case '1': cout << "Insira os Dados da Consulta.\n";
+                  insCon( lista_med , lista_pac , lista_con );
+                  listar ( lista_con );
+                  Menu_con();
+                  cin.clear();
+                  break;
+        
+        case '3': cout << "Lista de Consultas:" << endl;
+                  listar ( lista_con );
+                  Menu_con();
+                  cin.clear();
+                  break;                  
+        default: cout << "\nOpção desconhecida.\n\n";
+                 Menu_con();
+                 cin.clear();
+                 break;
+      }
+    }
+  }
 }
+
 
 template <class Comparable>void listar( const vector<Comparable *> & v)
 {

@@ -20,12 +20,14 @@ class Hora {
     unsigned int getHor() const ;
     unsigned int getMin() const;
     Hora & getHora();
-    Hora & operator+(int); 
+    friend Hora operator+( const Hora & , int ); 
     int operator-(Hora &);// diferença em minutos entre duas datas;
-    Hora & operator=(Hora &);
-    bool operator==( const Hora &);
-    bool operator<(Hora &);
-    bool operator>(Hora &);
+    Hora & operator=( const Hora & );
+    bool operator==( const Hora & );
+    bool operator<( const Hora & );
+    bool operator>( const Hora & );
+    bool operator<=( const Hora & );
+    bool operator>=( const Hora & );
     friend ostream & operator<<(ostream & os, Hora &);
 };
 

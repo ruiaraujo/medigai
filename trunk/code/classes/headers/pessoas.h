@@ -41,8 +41,8 @@ class Medico : public Pessoa {
     unsigned int getDur()const;
     unsigned int getDurM()const;
     unsigned long getCed()const;
-    void setIni(Hora &);
-    void setFim(Hora &);
+    void setIni( const Hora &);
+    void setFim( const Hora &);
     void setEspe(Especialidade *);
     void setDurM(unsigned int);
     void setDur(unsigned int);

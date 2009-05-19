@@ -22,7 +22,11 @@ class Data {
     unsigned int getMes() const;
     unsigned int getAno() const;
     int operator-(Data &); // diferença em dias entre duas datas;
-    bool operator==( const Data &);
+    bool operator==( const Data & );
+    bool operator<( const Data & );
+    bool operator>( const Data & );
+    bool operator<=( const Data & );
+    bool operator>=( const Data & );
     Data & operator+(int);
     Data & operator=(Data &);
     friend ostream & operator<<(ostream & os, Data &);

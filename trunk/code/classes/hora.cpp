@@ -41,25 +41,26 @@ void Hora::setHora(unsigned int h, unsigned int m)
 unsigned int Hora::getHor()const {return hora;}
 unsigned int Hora::getMin()const {return min;}
 Hora & Hora::getHora() {return *this;}
-Hora & Hora::operator+(int extra)
+Hora operator+( const Hora & h , int extra)
 {
+  Hora a(h);
   if (extra!=0)
   {
-    min += extra%60;
+    a.min += extra%60;
     extra -= extra%60;
-    if  (min >59)
+    if  (a.min >59)
     {
-      hora += min/60;
-      min = min%60;
+      a.hora += a.min/60;
+      a.min = a.min%60;
     }
-    hora += extra/60;
-    if (hora>23)
-      hora = hora%24;
+    a.hora += extra/60;
+    if (a.hora>23)
+      a.hora = a.hora%24;
   }
-  return *this;
+  return a;
 }
 int Hora::operator-(Hora &h){return ((int)hora-(int)h.hora)*60 + ((int)min-(int)h.min);}// diferença em minutos entre duas datas (se negativo hora )
-bool Hora::operator<(Hora &h)
+bool Hora::operator<( const Hora & h )
 {
  if (h.hora == hora )
  {
@@ -72,7 +73,21 @@ bool Hora::operator<(Hora &h)
    if (hora < h.hora) return true;
    else return false;
 }
-bool Hora::operator>(Hora &h)
+bool Hora::operator<=( const Hora &h)
+{
+ if ( h.hora == hora && h.min == min ) return true; 
+ if (h.hora == hora )
+ {
+  if (min < h.min)
+    return true;
+  else
+    return false;
+ }
+ else
+   if (hora < h.hora) return true;
+   else return false;
+}
+bool Hora::operator>( const Hora &h)
 {
  if (h.hora == hora )
  {
@@ -85,7 +100,21 @@ bool Hora::operator>(Hora &h)
    if (hora < h.hora) return false;
    else return true;
 }
-Hora & Hora::operator=(Hora &h)
+bool Hora::operator>=( const Hora &h )
+{
+ if ( h.hora == hora && h.min == min ) return true; 
+ if (h.hora == hora )
+ {
+  if (min < h.min)
+    return false;
+  else
+    return true;
+ }
+ else
+   if (hora < h.hora) return false;
+   else return true;
+}
+Hora & Hora::operator=( const Hora & h )
 {
   if (this != &h)
   {
