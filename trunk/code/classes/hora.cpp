@@ -40,7 +40,7 @@ void Hora::setHora(unsigned int h, unsigned int m)
 }
 unsigned int Hora::getHor()const {return hora;}
 unsigned int Hora::getMin()const {return min;}
-Hora & Hora::getHora(){return *this;}
+Hora & Hora::getHora() {return *this;}
 Hora & Hora::operator+(int extra)
 {
   if (extra!=0)
@@ -94,7 +94,7 @@ Hora & Hora::operator=(Hora &h)
   }
   return *this;
 }
-bool Hora::operator==(Hora &h){return (hora==h.hora && min==h.min );}
+bool Hora::operator==( const Hora &h){return (hora==h.hora && min==h.min );}
 
 ostream & operator << (ostream & os, Hora & h)
 {

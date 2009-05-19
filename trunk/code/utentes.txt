@@ -1,4 +1,4 @@
-1|Rui Araújo|915424417|Morada do Rui|Medis|12|123432
-2|Antoni|p232|2134|dsasf|12|321
-3|Rui Fixolas|91919191|Arcal|ADSE|12|1232
-4|Rami|915424417|Nao se sabe|Medis|150|1234565432
+1|Rui Araújo|915424417|Morada do Rui|Medis|12|123432|1
+2|Antoni|p232|2134|dsasf|12|321|1
+3|Rui Fixolas|91919191|Arcal|ADSE|12|1232|1
+4|Rami|915424417|Nao se sabe|Medis|150|1234565432|1

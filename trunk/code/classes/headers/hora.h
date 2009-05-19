@@ -23,7 +23,7 @@ class Hora {
     Hora & operator+(int); 
     int operator-(Hora &);// diferença em minutos entre duas datas;
     Hora & operator=(Hora &);
-    bool operator==(Hora &);
+    bool operator==( const Hora &);
     bool operator<(Hora &);
     bool operator>(Hora &);
     friend ostream & operator<<(ostream & os, Hora &);

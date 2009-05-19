@@ -27,6 +27,7 @@ class Pessoa {
 class Medico : public Pessoa {
   Especialidade * espe;
   unsigned int duracao;
+  unsigned int dur_max;
   Hora inicio;
   Hora fim;
   public:
@@ -38,10 +39,12 @@ class Medico : public Pessoa {
     Hora getIni() const;
     Hora getFim() const;
     unsigned int getDur()const;
+    unsigned int getDurM()const;
     unsigned long getCed()const;
     void setIni(Hora &);
     void setFim(Hora &);
     void setEspe(Especialidade *);
+    void setDurM(unsigned int);
     void setDur(unsigned int);
     Medico & operator=(Medico &);
     friend ostream & operator<<(ostream &, Medico &);
@@ -50,6 +53,7 @@ class Medico : public Pessoa {
 class Utente : public Pessoa {
   string morada;
   Convencao seguro;
+  bool sistema;
   static unsigned long UltimoNumero;
   public:
     Utente(string, string, string , Convencao);
@@ -61,6 +65,8 @@ class Utente : public Pessoa {
     void setSeg(float);
     void setSeg(string);
     void setUN(unsigned long);
+    void setSis(bool);
+    bool getSis() const;
     long getUN() const ;
     string getMor()const;
     Convencao getSeg()const;

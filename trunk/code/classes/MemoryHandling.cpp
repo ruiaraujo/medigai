@@ -27,7 +27,7 @@ int insPac ( vector<Utente *> & u)
   getline( cin , seg );
   cout << "Insira o desconto ( em prercentagem ) : ";
   getline ( cin , tmp );
-  while ( ! isNum( tmp ) && tmp.size() < 10 )
+  while ( ! isNum( tmp ) || tmp.size() < 10 )
   {
     cout << "Número inválido ou demasiado grande (tem que ser menor de 11 algarismos)\nInsira outro: ";
     getline ( cin , tmp );
@@ -36,7 +36,7 @@ int insPac ( vector<Utente *> & u)
   ss >> des; 
   cout << "Insira o número da apólice : ";
   getline ( cin , tmp );
-  while ( ! isNum( tmp ) && tmp.size() < 10 )
+  while ( ! isNum( tmp ) || tmp.size() < 10 )
   {
     cout << "Número inválido ou demasiado grande (tem que ser menor de 11 algarismos)\nInsira outro: ";
     getline ( cin , tmp );
@@ -44,14 +44,97 @@ int insPac ( vector<Utente *> & u)
   istringstream s( tmp );
   s >> apo; 
   Utente *ptr = new Utente ( nome , tel , mor , seg , des , apo );
+  ptr->setSis( true );
   insPacOrd( ptr , u );
   return findPos ( *ptr , u );  
 }
 
+vector<Consulta *>::iterator insConOrd ( Consulta * con , vector<Consulta *> & c )
+{
+  int i;
+  vector<Consulta *>::iterator it = c.begin();
+  for ( i = 0 ; i < (int) c.size() ; i++ )
+  {
+    if ( c.at( i )->getMed()->getId() == con->getMed()->getId() )
+    {
+      for ( ; i < (int) c.size() ; i++ )
+      {
+        if ( c.at( i )->getDat() == con->getDat() )
+        {
+          for ( ; i < (int) c.size() ; i++ )
+          {
+            if ( c.at( i )->getHor() == con->getHor() )
+            {
+              c.insert( it , con );
+              return it;
+            }
+            it++;
+          }
+        }
+        it++;
+      }
+    }
+    it++;
+  }
+}
+
+int insCon ( vector<Medico *> & v , vector<Utente *> & u , vector<Consulta *> &c )
+{
+  string tmp;
+  int hora , min , dia, mes , ano , duracao;
+  long ced, id;
+  float preco;
+  cout << "Insira a cédula do Médico: ";
+  cin >> ced;
+  Medico *ptr_m = find( ced , v );
+  while (ptr_m == NULL )
+  {
+    cout << "Médico Inesxistente. Insira a cédula do Médico: ";
+    cin >> ced;
+    ptr_m = find( ced , v );
+  }
+  cout << "Insira o identificador do utente: ";
+  cin >> id;
+  Utente *ptr_u = find( ced , u );
+  while ( ptr_u == NULL )
+  {
+    cout << "Utente Inesxistente. Insira a cédula do utente: ";
+    cin >> id;
+    ptr_u = find( ced , u );
+  }
+  char espaco;
+  cout << "Insira a Data separadas por um caracter: ";
+  cin >> dia >> espaco >> mes >> espaco >> ano;
+  cout << "Insira a hora: ";
+  cin >> hora >> espaco >> min;
+  cout << "Insira o preço: ";
+  cin >> preco;
+  cout << "Insira a duração: ";
+  cin >> duracao;
+  while ( duracao >(int) ptr_m->getDurM() || duracao <(int) ptr_m->getDur() )
+  {
+    if ( duracao > (int) ptr_m->getDurM() )
+    {
+      cout << "Duração acima da duração máxima do médico. Insira outra duração: ";
+      cin >> duracao;    
+    }
+    if ( duracao < (int) ptr_m->getDur() )
+    {
+      cout << "Duração abaixo da duração mínima do médico. Insira outra duração: ";
+      cin >> duracao;    
+    } 
+  }
+  Hora h( hora , min );
+  Data d ( dia , mes , ano );
+  Consulta *con = new Consulta ( ptr_m , ptr_u  , d , h , preco );
+  con->setDur( duracao );
+  insConOrd( con , c );
+  return 1;
+}
 
 int insMed( vector<Medico *>  & v , vector<Especialidade *> & e )
 {
-  string nome,tel,espe;
+  string nome, tel, espe, tmp;
   int duracao;
   int hora_i , hora_f , min_i , min_f;
   getline( cin, nome ); //limpar o cin;
@@ -74,9 +157,32 @@ int insMed( vector<Medico *>  & v , vector<Especialidade *> & e )
     esp->setNom( espe );  
   } 
   cout << "Insira a cédula do(a) médico(a): ";
-  cin >> cedula;
+  getline ( cin , tmp );
+  while ( ! isNum( tmp ) && tmp.size() < 10 )
+  {
+    cout << "Número inválido ou demasiado grande (tem que ser menor de 11 algarismos)\nInsira outro: ";
+    getline ( cin , tmp );
+  }
+  istringstream ss( tmp );
+  ss  >> cedula;
   cout << "Insira a duracao média da consulta do(a) médico(a): ";
-  cin >> duracao;
+  getline ( cin , tmp );
+  while ( ! isNum( tmp ) && tmp.size() < 10 )
+  {
+    cout << "Número inválido ou demasiado grande (tem que ser menor de 11 algarismos)\nInsira outro: ";
+    getline ( cin , tmp );
+  }
+  istringstream s( tmp );
+  s >> duracao;
+  cout << "Insira a duracao máxima da consulta do(a) médico(a): ";
+  getline ( cin , tmp );
+  while ( ! isNum( tmp ) && tmp.size() < 10 )
+  {
+    cout << "Número inválido ou demasiado grande (tem que ser menor de 11 algarismos)\nInsira outro: ";
+    getline ( cin , tmp );
+  }
+  istringstream sss( tmp );
+  sss >> duracao;
   char espaco;
   cout << "Insira a hora do início do trabalho do(a) médico(a) separado por um caracter: ";
   cin >> hora_i >> espaco >> min_i;
@@ -195,8 +301,8 @@ template <class Comparable> Comparable * find ( unsigned long ced, vector<Compar
   while ( left <= right )
   {
     int middle = ( left + right )  / 2;
-    if ( ced == ( *v.at( middle ) ).getCed() ) return v.at( middle );
-    else if ( ced < ( *v.at( middle ) ).getCed() ) right = middle - 1;
+    if ( ced == ( *v.at( middle ) ).getId() ) return v.at( middle );
+    else if ( ced < ( *v.at( middle ) ).getId() ) right = middle - 1;
     else left = middle + 1;
   }
   return NULL;
@@ -219,6 +325,7 @@ bool carregaEsp( string m , vector<Especialidade *> & v )
     cerr << "Ficheiro não encontrado." << endl;
     return false;
   }
+  v.clear();
     string line;
     while ( ! fin.eof() )
     {
@@ -237,7 +344,7 @@ bool carregaEsp( string m , vector<Especialidade *> & v )
 bool carregaMed ( string m , vector<Medico *> & v , vector<Especialidade *> & e )
 {
   string nome, tel, espe, tmp;
-  int duracao;
+  int duracao, dur_max;
   int hora_i,hora_f, min_i, min_f;
   long ced=-1;
   char espaco;
@@ -247,6 +354,7 @@ bool carregaMed ( string m , vector<Medico *> & v , vector<Especialidade *> & e 
     cerr << "Ficheiro não encontrado." << endl;
     return false;
   }
+  v.clear();
     while ( !fin.eof() )
     {
       getline( fin , tmp , '|' );
@@ -279,15 +387,22 @@ bool carregaMed ( string m , vector<Medico *> & v , vector<Especialidade *> & e 
         istringstream ss ( tmp );
         ss >> hora_f >> espaco >> min_f;
       }
-      getline(fin, tmp );
+      getline(fin, tmp , '|' );
       if (!tmp.empty())
       {
         istringstream ss(tmp);
         ss >> duracao;
+      }
+      getline(fin, tmp );      
+      if (!tmp.empty())
+      {
+        istringstream ss ( tmp );
+        ss >> dur_max;
         Medico *ptr;
         ptr = new Medico ( nome , tel , duracao , ced );
         Hora fim( hora_f , min_f );
         Hora inicio( hora_i , min_i );
+        ptr->setDurM( dur_max );
         ptr->setIni( inicio );
         ptr->setFim( fim );
         ptr->setEspe( esp );
@@ -302,12 +417,14 @@ bool carregaPac( string m , vector<Utente *> & u )
   string nome, tel, seg, mor, tmp;
   int desconto;
   long id, apolice, ultimo=0;
+  bool sistema;
   ifstream fin( m.c_str() );
   if ( fin.fail() )
   {
     cerr << "Ficheiro não encontrado." << endl;
     return false;
   }
+  u.clear();
   while ( !fin.eof() )
   {
     getline( fin , tmp , '|' ); 
@@ -329,13 +446,20 @@ bool carregaPac( string m , vector<Utente *> & u )
         istringstream ss ( tmp );
         ss >> desconto;
       }
-      getline( fin , tmp );
+      getline( fin , tmp , '|' );
       if ( !tmp.empty() )
       {
         istringstream ss ( tmp );
         ss >> apolice;
+      }
+      getline( fin , tmp );
+      if ( !tmp.empty() )
+      {
+        istringstream ss ( tmp );
+        ss >> sistema;
         Utente *ptr = new Utente ( nome , tel , mor, seg, desconto, apolice, id);
-        (*ptr).setUN(ultimo);
+        ptr->setUN( ultimo );
+        ptr->setSis( sistema );
         insPacOrd( ptr , u );
       }
     }
@@ -350,11 +474,26 @@ bool delMed( const Medico &  )
 return false;
 
 }
-bool delMed( unsigned long  )
+bool delMed( unsigned long  ced , vector<Medico *> & v )
 {
-return false;
-
-
+  int pos = findPos( ced , v );
+  if ( pos == -1) return false;
+  if ( pos > (int)( v.size() / 2 ) )
+  {
+    vector<Medico *>::iterator it = v.end();
+    it--;
+    for ( int i = v.size()-1 ; i > pos ; i-- )
+      it--;
+    v.erase(it);
+  }
+  else
+  {
+    vector<Medico *>::iterator it = v.begin();
+    for ( int i = 0 ; i < pos ; i++ )
+      it++;
+    v.erase(it);
+  }
+  return true;
 }
 
 void listar ( const vector<Especialidade *> & v )

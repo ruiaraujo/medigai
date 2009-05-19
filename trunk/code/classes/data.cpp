@@ -15,6 +15,7 @@ Data::Data (unsigned int d = 1,unsigned  int m = 1,unsigned int a = 1970)
   }
  }
 Data::Data (const Data &d) : dia(d.dia), mes(d.mes), ano(d.ano) {} 
+void Data::setData( const Data & d) { setData(d.dia, d.mes , d.ano);}
 void Data::setDia(unsigned int d)
 {
   if (mes < 8)
@@ -107,11 +108,11 @@ void Data::setData(unsigned int d, unsigned int m, unsigned int a)
 }
 void Data::imprimeData (ostream & os){os <<dia<<"/"<<mes<<"/"<<ano;}
 Data & Data::getData(){return *this;}
-unsigned int Data::getDia(){return dia;}
-unsigned int Data::getMes(){return mes;}
-unsigned int Data::getAno(){return ano;}
+unsigned int Data::getDia() const {return dia;}
+unsigned int Data::getMes() const {return mes;}
+unsigned int Data::getAno() const {return ano;}
 int Data::operator-(Data &d){return d.dia-dia;} // diferença em dias entre duas datas{}
-bool Data::operator==(Data &d){return (d.getDia()==dia && d.getMes() == mes && d.getAno() == ano);}
+bool Data::operator==( const Data & d ){return ( d.getDia()==dia && d.getMes() == mes && d.getAno() == ano);}
 Data & Data::operator=(Data &a)
 {
   if (this!=&a)

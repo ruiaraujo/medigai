@@ -18,7 +18,7 @@ Pessoa & Pessoa::operator=(Pessoa &p)
   return *this; 
 }
 
-Medico::Medico (Pessoa &p, Especialidade *e, Hora i, Hora f, unsigned int d=0) : Pessoa(p), espe(e), duracao(d), fim (f), inicio(i) {}
+Medico::Medico (Pessoa &p, Especialidade *e, Hora i, Hora f, unsigned int d=0) : Pessoa(p), espe(e), duracao(d), inicio(i), fim (f) {}
 Medico::Medico (Pessoa &p, Especialidade *e, unsigned int d=0): Pessoa(p), espe(e), duracao(d) {}
 Medico::Medico (string n, string t="", unsigned int d=0, unsigned long c=0): Pessoa(n,t,c), espe(), duracao(d) {}
 Medico::Medico (const Medico &m): Pessoa(m.nome,m.tel, 0), espe(m.espe), duracao(m.duracao) {}
@@ -35,10 +35,12 @@ Medico & Medico::operator=(Medico &m)
 Hora Medico::getIni() const {return inicio;}
 Hora Medico::getFim() const {return fim;}
 void Medico::setDur(unsigned int d){duracao = d;}
+void Medico::setDurM(unsigned int d){dur_max = d;}
 void Medico::setEspe(Especialidade *e){espe = e;}
 Especialidade * Medico::getEspe() const{return espe;}
 unsigned long Medico::getCed() const {return id;}
 unsigned int Medico::getDur() const {return duracao;}
+unsigned int Medico::getDurM() const {return dur_max;}
 void Medico::setIni(Hora &i){inicio = i;}
 void Medico::setFim(Hora &f){fim = f;}
 
@@ -53,6 +55,8 @@ void Utente::setSeg(float d){seguro.setDes(d);}
 void Utente::setSeg(string s){seguro.setSeg(s);}
 string Utente::getMor() const {return morada;}
 Convencao Utente::getSeg() const {return seguro;}
+bool Utente::getSis() const {return sistema;}
+void Utente::setSis( bool e ) { sistema = e; }
 void Utente::setUN(unsigned long u ) { UltimoNumero = u; }
 long Utente::getUN() const { return UltimoNumero; }
 Utente & Utente::operator=(Utente &u)
@@ -69,13 +73,13 @@ Utente & Utente::operator=(Utente &u)
 
 ostream & operator<<(ostream & os, Medico &m)
 {
-  os << m.id <<"|"<< m.nome << "|" << m.tel << "|" << m.espe->getNom()<< "|"  << m.inicio << "|" << m.fim << "|" << m.duracao; 
+  os << m.id <<"|"<< m.nome << "|" << m.tel << "|" << m.espe->getNom()<< "|"  << m.inicio << "|" << m.fim << "|" << m.duracao << "|" << m.dur_max; 
  return os;
 }
 
 ostream & operator<<(ostream & os, Utente &u)
 {
-  os << u.id << "|" << u.nome << "|" << u.tel << "|" << u.morada << "|" << u.seguro.getSeg() << "|" << u.seguro.getDes() << "|" << u.seguro.getApo(); 
+  os << u.id << "|" << u.nome << "|" << u.tel << "|" << u.morada << "|" << u.seguro.getSeg() << "|" << u.seguro.getDes() << "|" << u.seguro.getApo()<<"|"<<u.sistema; 
  return os;
 }
 

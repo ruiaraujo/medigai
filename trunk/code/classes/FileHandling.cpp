@@ -12,7 +12,7 @@ bool savPac ( string f , const vector<Utente *> & u )
   {
     fout << ( *(u.at( i ) ) ).getId() << "|" << ( *(u.at( i ) ) ).getNome() << "|";
     fout << ( *(u.at( i ) ) ).getTel() << "|" << ( *(u.at( i ) ) ).getMor() << "|" << ( *(u.at( i ) ) ).getSeg().getSeg();
-    fout << "|" << ( *(u.at( i ) ) ).getSeg().getDes() << "|" << ( *(u.at( i ) ) ).getSeg().getApo()<< endl;
+    fout << "|" << ( *(u.at( i ) ) ).getSeg().getDes() << "|" << ( *(u.at( i ) ) ).getSeg().getApo()<< "|" << ( *(u.at( i ) ) ).getSis() << endl;
   }
   fout.flush();
   return true;
@@ -46,7 +46,7 @@ bool savMed ( string f , const vector<Medico *> & u )
     fout << ( *(u.at( i ) ) ).getTel() << "|" << ( *(u.at( i ) ) ).getEspe()->getNom() << "|"; 
     fout << ( *(u.at( i ) ) ).getIni().getHor() << ":" << ( *(u.at( i ) ) ).getIni().getMin() << "|";
     fout << ( *(u.at( i ) ) ).getFim().getHor() << ":" << ( *(u.at( i ) ) ).getFim().getMin() << "|";
-    fout << "|" << ( *(u.at( i ) ) ).getDur() << endl;
+    fout << ( *(u.at( i ) ) ).getDur() << "|" << ( *(u.at( i ) ) ).getDurM() << endl;
   }
   fout.flush();
   return true;
