@@ -15,13 +15,14 @@ class Data {
     void setMes(unsigned int);
     void setAno(unsigned int);
     void setData(unsigned int, unsigned int, unsigned int);
+    void setData ( const Data & );
     void imprimeData (ostream & os);
     Data & getData();
-    unsigned int getDia();
-    unsigned int getMes();
-    unsigned int getAno();
+    unsigned int getDia() const;
+    unsigned int getMes() const;
+    unsigned int getAno() const;
     int operator-(Data &); // diferença em dias entre duas datas;
-    bool operator==(Data &);
+    bool operator==( const Data &);
     Data & operator+(int);
     Data & operator=(Data &);
     friend ostream & operator<<(ostream & os, Data &);
