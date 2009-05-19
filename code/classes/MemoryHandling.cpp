@@ -1,4 +1,14 @@
 #include "headers/MemoryHandling.h"
+/*
+TO DO:
+vector<Consulta *>::iterator find (Consulat , vector)
+acabr o delCon
+acabar o delMed
+juntar controlo de entrada de dados no insCon
+impletar Horario
+*/
+
+
 
 void delCon( vector<Medico *> & v, vector<Utente *> & u , vector<Consulta *> & c , Utente * pac ,
              Medico * med , Hora h , Data d )
@@ -51,31 +61,47 @@ int insPac ( vector<Utente *> & u)
 
 vector<Consulta *>::iterator insConOrd ( Consulta * con , vector<Consulta *> & c )
 {
-  int i;
   vector<Consulta *>::iterator it = c.begin();
-  for ( i = 0 ; i < (int) c.size() ; i++ )
+  vector<Consulta *>::iterator it_f = c.end();
+  it_f--;
+  for (int i = c.size()-1 ; i >= 0 ; i--,it_f--)
   {
     if ( c.at( i )->getMed()->getId() == con->getMed()->getId() )
     {
-      for ( ; i < (int) c.size() ; i++ )
-      {
-        if ( c.at( i )->getDat() == con->getDat() )
+      break;
+    }
+  }
+  for ( int i = 0 ; i < (int) c.size() ; i++ ,it++)
+  {
+    if ( c.at( i )->getMed()->getId() >= con->getMed()->getId() )
+    {
+        for ( ; it < it_f ; it++,it_f--)
         {
-          for ( ; i < (int) c.size() ; i++ )
+          if ( c.at( i )->getDat() >= con->getDat() )
           {
-            if ( c.at( i )->getHor() == con->getHor() )
+            for ( ; it < it_f; it++)
             {
-              c.insert( it , con );
-              return it;
+              if ( c.at( i )->getHor() >= con->getHor() )
+              {
+                c.insert( it , con );
+                it++;
+                return it;
+              }
             }
+            c.insert( it , con );
             it++;
+            return it;
           }
         }
+        c.insert( it , con);
         it++;
-      }
+        return it;
     }
-    it++;
   }
+  c.push_back(con);
+  it_f = c.end();
+  it_f--;
+  return it_f;
 }
 
 int insCon ( vector<Medico *> & v , vector<Utente *> & u , vector<Consulta *> &c )
@@ -95,12 +121,12 @@ int insCon ( vector<Medico *> & v , vector<Utente *> & u , vector<Consulta *> &c
   }
   cout << "Insira o identificador do utente: ";
   cin >> id;
-  Utente *ptr_u = find( ced , u );
+  Utente *ptr_u = find( id , u );
   while ( ptr_u == NULL )
   {
     cout << "Utente Inesxistente. Insira a cédula do utente: ";
     cin >> id;
-    ptr_u = find( ced , u );
+    ptr_u = find( id , u );
   }
   char espaco;
   cout << "Insira a Data separadas por um caracter: ";
@@ -301,8 +327,8 @@ template <class Comparable> Comparable * find ( unsigned long ced, vector<Compar
   while ( left <= right )
   {
     int middle = ( left + right )  / 2;
-    if ( ced == ( *v.at( middle ) ).getId() ) return v.at( middle );
-    else if ( ced < ( *v.at( middle ) ).getId() ) right = middle - 1;
+    if ( ced == v.at( middle )->getId() ) return v.at( middle );
+    else if ( ced < v.at( middle )->getId() ) right = middle - 1;
     else left = middle + 1;
   }
   return NULL;
@@ -338,6 +364,76 @@ bool carregaEsp( string m , vector<Especialidade *> & v )
           a->setNom( m );
         }
     }
+  return true;
+}
+
+bool carregaCon( string f , vector<Medico *> & v , vector<Utente *> & u , vector<Consulta *> & c )
+{
+  unsigned long ced , id;
+  int dia, mes , ano, duracao , preco , hora , min;
+  char estado;
+  string tmp;
+  ifstream fin( f.c_str() );
+  if ( fin.fail() )
+  {
+    cerr << "Ficheiro não encontrado." << endl;
+    return false;
+  }
+  c.clear();
+  while ( !fin.eof() )
+  {
+    getline( fin , tmp , '|' );
+    if ( !tmp.empty() )
+    {
+      istringstream ss ( tmp );
+      ss >> ced;
+    }
+    getline( fin , tmp , '|' );
+    if ( !tmp.empty() )
+    {
+      istringstream ss ( tmp );
+      ss >> id;
+    }
+    getline( fin , tmp , '|' );
+    if ( !tmp.empty() )
+    {
+      char espaco;
+      istringstream ss ( tmp );
+      ss >> dia >> espaco >> mes >> espaco >> ano;
+    }
+    getline( fin , tmp , '|' );
+    if ( !tmp.empty() )
+    {
+      char espaco;
+      istringstream ss ( tmp );
+      ss >> hora >> espaco >> min;
+    }
+    getline( fin , tmp , '|' );
+    if ( !tmp.empty() )
+    {
+      istringstream ss ( tmp );
+      ss >> preco;
+    }
+    getline( fin , tmp , '|' );
+    if ( !tmp.empty() )
+    {
+      istringstream ss ( tmp );
+      ss >> duracao;
+    }
+    getline( fin , tmp );
+    if ( !tmp.empty() )
+    {
+      istringstream ss ( tmp );
+      ss >> estado;
+      Medico *ptr_m = find ( ced , v );
+      Utente *ptr_u = find ( id , u );
+      Data d( dia , mes , ano );
+      Hora h( hora , min );
+      Consulta *ptr = new Consulta( ptr_m , ptr_u , d , h , preco );
+      ptr->setEst( estado );
+      c.push_back(ptr);
+    }
+  }
   return true;
 }
 

@@ -1,5 +1,25 @@
 #include "headers/FileHandling.h"
 
+bool savCon ( string f , const vector<Consulta *> & c)
+{
+ofstream fout( f.c_str() );
+  if ( fout.fail() )
+  {
+    cerr << "Não conseguiu escrever no ficheiro " << f << "." << endl;
+    return false;
+  }
+  for (int i = 0 ; i< (int) c.size() ; i++ )
+  {
+    fout << c.at( i )->getMed()->getCed() << "|" << c.at( i )->getUte()->getId() << "|";
+    fout << c.at( i )->getDat().getDia() << "/" << c.at( i )->getDat().getMes() << "/" << c.at( i )->getDat().getAno();
+    fout << "|" << c.at( i )->getHor().getHor() << ":" << c.at( i )->getHor().getMin();
+    fout << "|" << c.at( i )->getPre() << "|" << c.at( i )->getDur();
+    fout << "|" << c.at( i )->getEst() <<endl;
+  }
+  fout.flush();
+  return true;
+}
+
 bool savPac ( string f , const vector<Utente *> & u )
 {
   ofstream fout( f.c_str() );
@@ -10,9 +30,9 @@ bool savPac ( string f , const vector<Utente *> & u )
   }
   for (int i = 0 ; i< (int) u.size() ; i++ )
   {
-    fout << ( *(u.at( i ) ) ).getId() << "|" << ( *(u.at( i ) ) ).getNome() << "|";
-    fout << ( *(u.at( i ) ) ).getTel() << "|" << ( *(u.at( i ) ) ).getMor() << "|" << ( *(u.at( i ) ) ).getSeg().getSeg();
-    fout << "|" << ( *(u.at( i ) ) ).getSeg().getDes() << "|" << ( *(u.at( i ) ) ).getSeg().getApo()<< "|" << ( *(u.at( i ) ) ).getSis() << endl;
+    fout << u.at( i )->getId() << "|" << u.at( i )->getNome() << "|";
+    fout << u.at( i )->getTel() << "|" << u.at( i )->getMor() << "|" << u.at( i )->getSeg().getSeg();
+    fout << "|" << u.at( i )->getSeg().getDes() << "|" << u.at( i )->getSeg().getApo()<< "|" << u.at( i )->getSis() << endl;
   }
   fout.flush();
   return true;
@@ -27,7 +47,7 @@ bool savEsp ( string f , const vector<Especialidade *> & e )
     return false;
   }
   for (int i = 0 ; i< (int) e.size() ; i++ )
-    fout << ( *(e.at( i ) ) ).getNom() << endl;
+    fout << e.at( i )->getNom() << endl;
   fout.flush();
   return true;  
 }
@@ -42,11 +62,11 @@ bool savMed ( string f , const vector<Medico *> & u )
   }
   for (int i = 0 ; i< (int) u.size() ; i++ )
   {
-    fout << ( *(u.at( i ) ) ).getCed() << "|" << ( *(u.at( i ) ) ).getNome() << "|";
-    fout << ( *(u.at( i ) ) ).getTel() << "|" << ( *(u.at( i ) ) ).getEspe()->getNom() << "|"; 
-    fout << ( *(u.at( i ) ) ).getIni().getHor() << ":" << ( *(u.at( i ) ) ).getIni().getMin() << "|";
-    fout << ( *(u.at( i ) ) ).getFim().getHor() << ":" << ( *(u.at( i ) ) ).getFim().getMin() << "|";
-    fout << ( *(u.at( i ) ) ).getDur() << "|" << ( *(u.at( i ) ) ).getDurM() << endl;
+    fout << u.at( i )->getCed() << "|" << u.at( i )->getNome() << "|";
+    fout << u.at( i )->getTel() << "|" << u.at( i )->getEspe()->getNom() << "|"; 
+    fout << u.at( i )->getIni().getHor() << ":" << u.at( i )->getIni().getMin() << "|";
+    fout << u.at( i )->getFim().getHor() << ":" << u.at( i )->getFim().getMin() << "|";
+    fout << u.at( i )->getDur() << "|" << u.at( i )->getDurM() << endl;
   }
   fout.flush();
   return true;

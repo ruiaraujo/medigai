@@ -113,6 +113,94 @@ unsigned int Data::getMes() const {return mes;}
 unsigned int Data::getAno() const {return ano;}
 int Data::operator-(Data &d){return d.dia-dia;} // diferença em dias entre duas datas{}
 bool Data::operator==( const Data & d ){return ( d.getDia()==dia && d.getMes() == mes && d.getAno() == ano);}
+bool Data::operator<( const Data & d )
+{
+ if ( *this == d ) return false;
+ if ( ano < d.ano )
+   return true;
+ else
+   if ( ano > d.ano )
+      return false;
+   else
+   {
+      if ( mes < d.mes )
+        return true;
+      else
+        if ( mes > d.mes )
+          return false;
+        else
+          if (dia < d.dia )
+            return true;
+          else
+            return false;
+   }
+}
+bool Data::operator>( const Data & d )
+{
+ if ( *this == d ) return false;
+ if ( ano < d.ano )
+   return false;
+ else
+   if ( ano > d.ano )
+      return true;
+   else
+   {
+      if ( mes < d.mes )
+        return false;
+      else
+        if ( mes > d.mes )
+          return true;
+        else
+          if (dia < d.dia )
+            return false;
+          else
+            return true;
+    }
+}
+bool Data::operator<=( const Data & d )
+{
+ if ( *this == d ) return true;
+ if ( ano < d.ano )
+   return true;
+ else
+   if ( ano > d.ano )
+      return false;
+   else
+   {
+      if ( mes < d.mes )
+        return true;
+      else
+        if ( mes > d.mes )
+          return false;
+        else
+          if (dia < d.dia )
+            return true;
+          else
+            return false;
+    }
+}
+bool Data::operator>=( const Data & d )
+{
+ if ( *this == d ) return true;
+ if ( ano < d.ano )
+   return false;
+ else
+   if ( ano > d.ano )
+      return true;
+   else
+   {
+      if ( mes < d.mes )
+        return false;
+      else
+        if ( mes > d.mes )
+          return true;
+        else
+          if (dia < d.dia )
+            return false;
+          else
+            return true;
+    }
+}
 Data & Data::operator=(Data &a)
 {
   if (this!=&a)

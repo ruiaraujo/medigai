@@ -20,10 +20,14 @@ class Consulta {
     Hora getHor() const;
     unsigned int getDur() const;
     char getEst() const;
+    float getPre() const;
     void setEst( char );
     void setDur( unsigned int );
     void setHor( unsigned int , unsigned int );
     void setHor( const Hora & );
     void setDat( unsigned int , unsigned int , unsigned int );
     void setDat( const Data &);
+    void setPre( float );
+    friend ostream & operator<<( ostream & , Consulta &);
+    
 };

@@ -16,3 +16,4 @@ bool delCon(fstream &, const Consulta &);
 bool savPac ( string , const vector<Utente *> & );
 bool savEsp ( string , const vector<Especialidade *> & );
 bool savMed ( string , const vector<Medico *> & );
+bool savCon ( string , const vector<Consulta *> &);
