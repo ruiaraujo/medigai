@@ -9,6 +9,7 @@ string file_med = "medico.txt",file_pac="utentes.txt",file_esp="especialidade.tx
 vector<Medico *> lista_med;
 vector<Utente *> lista_pac;
 vector<Especialidade *> lista_esp;
+vector<Consulta *> lista_con;
 
 void log();
 void menupr();
