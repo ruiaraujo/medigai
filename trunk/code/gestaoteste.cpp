@@ -40,7 +40,7 @@ int main()
   cout << endl;
   carregaCon ( file_con , lista_med , lista_pac , lista_con );
   listar( lista_con );
-  cout << endl;
+  cout << endl ;
   Menu();
   while ( ! cin.eof() ) 
   {
@@ -114,7 +114,7 @@ void Menu_med()
 void Menu_con()
 {
   cout << "Gestão de Consultas:\nInsira o número da opção desejada.\n";
-  cout << "1. Marcar Consultas\n2. Marcar Consultas\n3. Visualisar o horário\n";
+  cout << "1. Marcar Consultas\n2. Desmarcar Consultas\n3. Visualisar o horário\n";
   cout << "CRTL-D para voltar ao menu anterior.\n";
 
 }
@@ -174,7 +174,11 @@ void menu_con()
                   Menu_con();
                   cin.clear();
                   break;
-        
+        case '2': cout << "Insira os dados da Consulta:" << endl;
+                  delCon( lista_med , lista_con );
+                  Menu_con();
+                  cin.clear();
+                  break;        
         case '3': cout << "Lista de Consultas:" << endl;
                   listar ( lista_con );
                   Menu_con();

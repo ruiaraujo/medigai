@@ -9,6 +9,7 @@ class Pessoa {
   protected:
     string nome;
     string tel;
+    bool sistema;
     const unsigned long id;
   public:
     Pessoa (string, string, unsigned long );
@@ -17,6 +18,8 @@ class Pessoa {
     void setTel(string);
     string getNome() const;
     string getTel() const;
+    void setSis(bool);
+    bool getSis() const;
     unsigned long getId() const;
     Pessoa & operator=(Pessoa &);
     friend ostream & operator<<(ostream &, Pessoa &);
@@ -53,7 +56,6 @@ class Medico : public Pessoa {
 class Utente : public Pessoa {
   string morada;
   Convencao seguro;
-  bool sistema;
   static unsigned long UltimoNumero;
   public:
     Utente(string, string, string , Convencao);
@@ -65,8 +67,6 @@ class Utente : public Pessoa {
     void setSeg(float);
     void setSeg(string);
     void setUN(unsigned long);
-    void setSis(bool);
-    bool getSis() const;
     long getUN() const ;
     string getMor()const;
     Convencao getSeg()const;

@@ -18,6 +18,7 @@ Data::Data (const Data &d) : dia(d.dia), mes(d.mes), ano(d.ano) {}
 void Data::setData( const Data & d) { setData(d.dia, d.mes , d.ano);}
 void Data::setDia(unsigned int d)
 {
+  if ( d == 0 ) throw DiaInesxistente();
   if (mes < 8)
   {
     if ((mes%2)!= 0 )

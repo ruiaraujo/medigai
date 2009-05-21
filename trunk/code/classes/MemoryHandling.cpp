@@ -1,21 +1,107 @@
 #include "headers/MemoryHandling.h"
 /*
 TO DO:
-vector<Consulta *>::iterator find (Consulat , vector)
-acabr o delCon
+Extra:::
 acabar o delMed
-juntar controlo de entrada de dados no insCon
 impletar Horario
+acabar de proteger contra eof
 */
 
-
-
-void delCon( vector<Medico *> & v, vector<Utente *> & u , vector<Consulta *> & c , Utente * pac ,
-             Medico * med , Hora h , Data d )
+vector<Consulta *>::iterator find ( Consulta * con, vector<Consulta *> & c )
 {
-  
+  vector<Consulta *>::iterator it = c.begin();
+  for ( int i = 0 ; i < (int) c.size() ; i++ ,it++)
+  {
+    if ( c.at( i )->getMed()->getId() == con->getMed()->getId() )
+    {
+        for ( ;  i < (int) c.size()  ; i++ , it++ )
+        {
+          if ( c.at( i )->getDat() == con->getDat() )
+          {
+            for ( ;  i < (int) c.size() ; i++, it++)
+            {
+              if ( c.at( i )->getHor() == con->getHor() )
+              {
+                return it;
+              }
+            }
+          }
+        }
+    }
+  }
+  it = c.end();
+  return it;
+
 }
 
+bool delCon( vector<Consulta *> & c , Medico * & med , Hora & h , Data & d )
+{
+  Consulta *ptr =  new Consulta (med , NULL , d , h , 0);
+  vector<Consulta *>::iterator it = find ( ptr, c );
+  if ( it == c.end() )
+  {
+    cout << "Não foi encontrada uma consulta com estas características. Logo não foi desmarcada nenhuma consulta.\n";
+    return false;
+  }
+  c.erase ( it );
+  return true;
+}
+
+bool delCon( vector<Medico *> & v , vector<Consulta *> & c)
+{
+  unsigned long ced;
+  int dia, mes, ano , hora , min;
+  char espaco;
+  string tmp;
+  cin.get();
+  cout << "Insira a cédula do Médico : ";
+  try
+  {
+    ced = getLong();
+  }
+  catch (EOI &)
+  {
+    return false;
+  }
+  Medico *ptr_med = find ( ced , v );
+  while ( ptr_med == NULL )
+  {
+    cout << "Médico Inexistente.\nInsira a cédula do Médico : ";
+    try
+    {
+      ced = getLong();
+    }
+    catch (EOI &)
+    {
+      return false;
+    }
+    ptr_med = find ( ced , v );
+  }
+  cout << "Insira a data da consulta separadas por um caracter (no formato dd/mm/aaaa): ";
+  getline( cin , tmp );
+  while (!isDat( tmp ) )
+  {
+    cout << "Data inválida. Insira outra: " << endl;
+    getline( cin , tmp );  
+  }
+  istringstream ss(tmp);
+  ss >> dia >> espaco >> mes >> espaco >> ano;
+  Data d( dia , mes , ano );
+  cout << "Insira a hora da consulta separadas por um caracter (no formato hh:mm : ";
+  getline( cin , tmp );
+  while (!isHor( tmp ) )
+  {
+    cout << "Hora inválida. Insira outra: " << endl;
+    getline( cin , tmp );  
+  }
+  istringstream sss(tmp);
+  sss >> hora >> espaco >> min;
+  Hora h( hora , min ); 
+  if ( delCon ( c , ptr_med , h , d ) )
+    return true;
+  else
+    return false;
+}
 int insPac ( vector<Utente *> & u)
 {
   string nome, tel, seg, mor , tmp;
@@ -26,33 +112,65 @@ int insPac ( vector<Utente *> & u)
   getline( cin , nome );
   cout << "Insira o telefone do utente: ";
   getline( cin , tel );
-  while ( ! isNum( tel )  )
+  while ( ! isNum( tel ) || tel.size() > 9 )
   {
-    cout << "Número inválido ou demasiado grande (tem que ser menor de 11 algarismos)\nInsira outro: ";
+    cout << "Número inválido ou demasiado grande (tem que ser menor de 10 algarismos)\nInsira outro: ";
     getline ( cin , tel );
   } 
   cout << "Insira a morada: ";
   getline( cin , mor );
-  cout << "Insira a seguradora: ";
+  cout << "Insira a seguradora (escreva ""Sem"" para indicar sem seguro): ";
   getline( cin , seg );
-  cout << "Insira o desconto ( em prercentagem ) : ";
-  getline ( cin , tmp );
-  while ( ! isNum( tmp ) || tmp.size() < 10 )
+  if ( seg=="Sem" || seg == "sem" )
   {
-    cout << "Número inválido ou demasiado grande (tem que ser menor de 11 algarismos)\nInsira outro: ";
-    getline ( cin , tmp );
-  } 
-  istringstream ss( tmp );
-  ss >> des; 
-  cout << "Insira o número da apólice : ";
-  getline ( cin , tmp );
-  while ( ! isNum( tmp ) || tmp.size() < 10 )
-  {
-    cout << "Número inválido ou demasiado grande (tem que ser menor de 11 algarismos)\nInsira outro: ";
-    getline ( cin , tmp );
+    des = 0;
+    apo = 0;
   }
-  istringstream s( tmp );
-  s >> apo; 
+  else
+  {
+    if ( seg == "Caixa" )
+    {
+      cout << "Insira a taxa moderadora que o utente paga : ";
+      getline ( cin , tmp );
+      while ( ! isNum( tmp ) || tmp.size() > 10 )
+      {
+        cout << "Número inválido ou demasiado grande (tem que ser menor de 11 algarismos)\nInsira outro: ";
+        getline ( cin , tmp );
+      } 
+      istringstream ss( tmp );
+      ss >> des; 
+      cout << "Insira o número de beneficiario : ";
+      getline ( cin , tmp );
+      while ( ! isNum( tmp ) || tmp.size() > 10 )
+      {
+        cout << "Número inválido ou demasiado grande (tem que ser menor de 11 algarismos)\nInsira outro: ";
+        getline ( cin , tmp );
+      }
+      istringstream s( tmp );
+      s >> apo;
+    }
+    else
+    {
+      cout << "Insira a percentagem que o utente paga : ";
+      getline ( cin , tmp );
+      while ( ! isNum( tmp ) || tmp.size() > 2 )
+      {
+        cout << "Número inválido ou demasiado grande (tem que ser menor de 3 algarismos)\nInsira outro: ";
+        getline ( cin , tmp );
+      } 
+      istringstream ss( tmp );
+      ss >> des; 
+      cout << "Insira o número da apólice : ";
+      getline ( cin , tmp );
+      while ( ! isNum( tmp ) || tmp.size() > 10 )
+      {
+        cout << "Número inválido ou demasiado grande (tem que ser menor de 11 algarismos)\nInsira outro: ";
+        getline ( cin , tmp );
+      }
+      istringstream s( tmp );
+      s >> apo;
+    }
+  }
   Utente *ptr = new Utente ( nome , tel , mor , seg , des , apo );
   ptr->setSis( true );
   insPacOrd( ptr , u );
@@ -111,30 +229,116 @@ int insCon ( vector<Medico *> & v , vector<Utente *> & u , vector<Consulta *> &c
   long ced, id;
   float preco;
   cout << "Insira a cédula do Médico: ";
-  cin >> ced;
+  try
+  {
+    ced = getLong();
+  }
+  catch (EOI &)
+  {
+    return false;
+  }
   Medico *ptr_m = find( ced , v );
   while (ptr_m == NULL )
   {
     cout << "Médico Inesxistente. Insira a cédula do Médico: ";
-    cin >> ced;
+    try
+    {
+      ced = getLong();
+    }
+    catch (EOI &)
+    {
+      return false;
+    }
     ptr_m = find( ced , v );
   }
   cout << "Insira o identificador do utente: ";
-  cin >> id;
+  try
+  {
+    id = getLong();
+  }
+  catch (EOI &)
+  {
+    return false;
+  }
   Utente *ptr_u = find( id , u );
   while ( ptr_u == NULL )
   {
     cout << "Utente Inesxistente. Insira a cédula do utente: ";
-    cin >> id;
+    try
+    {
+      id = getLong();
+    }
+    catch (EOI &)
+    {
+      return false;
+    }
     ptr_u = find( id , u );
   }
   char espaco;
-  cout << "Insira a Data separadas por um caracter: ";
-  cin >> dia >> espaco >> mes >> espaco >> ano;
+  cout << "Insira a Data separadas por um caracter (no formato dd/mm/aaaa): ";
+  getline( cin , tmp );
+  if ( cin.eof() )
+  {
+    cin.clear();
+    return -1;
+  }
+  while (!isDat( tmp ) )
+  {
+    cout << "Data inválida. Insira outra: " << endl;
+    getline( cin , tmp );
+    if ( cin.eof() )
+    {
+      cin.clear();
+      return -1;
+    } 
+  }
+  istringstream s(tmp);
+  s >> dia >> espaco >> mes >> espaco >> ano;
   cout << "Insira a hora: ";
-  cin >> hora >> espaco >> min;
-  cout << "Insira o preço: ";
-  cin >> preco;
+  getline( cin , tmp );
+  if ( cin.eof() )
+  {
+    cin.clear();
+    return -1;
+  }
+  while (!isHor( tmp ) )
+  {
+    cout << "Hora inválida. Insira outra: " << endl;
+    getline( cin , tmp );
+    if ( cin.eof() )
+    {
+      cin.clear();
+      return -1;
+    }  
+  }
+  istringstream ss(tmp);
+  ss >> hora >> espaco >> min;
+  if ( ptr_u->getSeg().getSeg() == "Caixa")
+  {
+    preco = ptr_u->getSeg().getDes();
+  }
+  else
+  {
+    cout << "Insira o preço: ";
+    getline ( cin , tmp );
+    if ( cin.eof() )
+    {
+      cin.clear();
+      return -1;
+    }
+    while ( ! isNum( tmp ) && tmp.size() < 10 )
+    {
+      cout << "Número inválido ou demasiado grande (tem que ser menor de 11 algarismos)\nInsira outro: ";
+      getline ( cin , tmp );
+      if ( cin.eof() )
+      {
+        cin.clear();
+        return -1;
+      }
+    }
+    istringstream sss( tmp );
+    sss  >> preco;
+  }
   cout << "Insira a duração: ";
   cin >> duracao;
   while ( duracao >(int) ptr_m->getDurM() || duracao <(int) ptr_m->getDur() )
@@ -161,21 +365,41 @@ int insCon ( vector<Medico *> & v , vector<Utente *> & u , vector<Consulta *> &c
 int insMed( vector<Medico *>  & v , vector<Especialidade *> & e )
 {
   string nome, tel, espe, tmp;
-  int duracao;
+  int duracao, dur_max;
   int hora_i , hora_f , min_i , min_f;
   getline( cin, nome ); //limpar o cin;
   cout << "Insira o nome do(a) médico(a): ";
   long cedula;
   getline( cin , nome );
+  if ( cin.eof() )
+  {
+    cin.clear();
+    return -1;
+  }
   cout << "Insira o telefone do(a) médico(a): ";
   getline( cin , tel );
+  if ( cin.eof() )
+  {
+    cin.clear();
+    return -1;
+  }
   while ( ! isNum( tel )  )
   {
     cout << "Número inválido ou demasiado grande (tem que ser menor de 11 algarismos)\nInsira outro: ";
     getline ( cin , tel );
+    if ( cin.eof() )
+    {
+      cin.clear();
+      return -1;
+    }
   } 
   cout << "Insira a especialidade do(a) médico(a): ";
   getline( cin , espe );
+  if ( cin.eof() )
+  {
+    cin.clear();
+    return -1;
+  }
   Especialidade *esp = findEsp ( espe , e );
   if ( esp == NULL )
   {
@@ -184,36 +408,144 @@ int insMed( vector<Medico *>  & v , vector<Especialidade *> & e )
   } 
   cout << "Insira a cédula do(a) médico(a): ";
   getline ( cin , tmp );
+  if ( cin.eof() )
+  {
+    cin.clear();
+    return -1;
+  }
   while ( ! isNum( tmp ) && tmp.size() < 10 )
   {
     cout << "Número inválido ou demasiado grande (tem que ser menor de 11 algarismos)\nInsira outro: ";
     getline ( cin , tmp );
+    if ( cin.eof() )
+    {
+      cin.clear();
+      return -1;
+    }
   }
   istringstream ss( tmp );
   ss  >> cedula;
   cout << "Insira a duracao média da consulta do(a) médico(a): ";
   getline ( cin , tmp );
+  if ( cin.eof() )
+  {
+    cin.clear();
+    return -1;
+  }
   while ( ! isNum( tmp ) && tmp.size() < 10 )
   {
     cout << "Número inválido ou demasiado grande (tem que ser menor de 11 algarismos)\nInsira outro: ";
     getline ( cin , tmp );
+    if ( cin.eof() )
+    {
+      cin.clear();
+      return -1;
+    }
   }
   istringstream s( tmp );
   s >> duracao;
+  while ( duracao <= 0 )
+  {
+    cout << "Duração das consultas tem de ser superior a zero. Insira outra: ";
+    getline ( cin , tmp );
+    if ( cin.eof() )
+    {
+      cin.clear();
+      return -1;
+    }
+    while ( ! isNum( tmp ) && tmp.size() < 10 )
+    {
+      cout << "Número inválido ou demasiado grande (tem que ser menor de 11 algarismos)\nInsira outro: ";
+      getline ( cin , tmp );
+      if ( cin.eof() )
+      {
+        cin.clear();
+        return -1;
+      }
+    }
+    istringstream sss( tmp );
+    sss >> duracao;  
+  }
   cout << "Insira a duracao máxima da consulta do(a) médico(a): ";
   getline ( cin , tmp );
+  if ( cin.eof() )
+  {
+    cin.clear();
+    return -1;
+  }
   while ( ! isNum( tmp ) && tmp.size() < 10 )
   {
     cout << "Número inválido ou demasiado grande (tem que ser menor de 11 algarismos)\nInsira outro: ";
     getline ( cin , tmp );
+    if ( cin.eof() )
+    {
+      cin.clear();
+      return -1;
+    }
   }
   istringstream sss( tmp );
-  sss >> duracao;
+  sss >> dur_max;
+    while ( dur_max <= 0 || dur_max <= duracao )
+  {
+    cout << "Duração das consultas tem de ser superior a zero e superior à duração média . Insira outra: ";
+    getline ( cin , tmp );
+    if ( cin.eof() )
+    {
+      cin.clear();
+      return -1;
+    }
+    while ( ! isNum( tmp ) && tmp.size() < 10 )
+    {
+      cout << "Número inválido ou demasiado grande (tem que ser menor de 11 algarismos)\nInsira outro: ";
+      getline ( cin , tmp );
+      if ( cin.eof() )
+      {
+        cin.clear();
+        return -1;
+      }
+    }
+    istringstream sss( tmp );
+    sss >> dur_max;  
+  }
   char espaco;
   cout << "Insira a hora do início do trabalho do(a) médico(a) separado por um caracter: ";
-  cin >> hora_i >> espaco >> min_i;
+  getline( cin , tmp );
+  if ( cin.eof() )
+  {
+    cin.clear();
+    return -1;
+  }
+  while (!isHor( tmp ) )
+  {
+    cout << "Hora inválida. Insira outra: " << endl;
+    getline( cin , tmp );
+    if ( cin.eof() )
+    {
+      cin.clear();
+      return -1;
+    }  
+  }
+  istringstream sssss(tmp);
+  sssss >> hora_i >> espaco >> min_i;
   cout << "Insira a hora do final do trabalho  do(a) médico(a) separado por um caracter: ";
-  cin >> hora_f >> espaco >> min_f;
+  getline( cin , tmp );
+  if ( cin.eof() )
+  {
+    cin.clear();
+    return -1;
+  }
+  while (!isHor( tmp ))
+  {
+    cout << "Hora inválida. Insira outra: " << endl;
+    getline( cin , tmp );  
+    if ( cin.eof() )
+    {
+      cin.clear();
+      return -1;
+    }
+  }
+  istringstream ssss(tmp);
+  ssss >> hora_f >> espaco >> min_f;
   Hora inicio ( hora_i , min_i );
   Hora fim ( hora_f , min_f );
   Medico a ( nome , tel , duracao , cedula );
@@ -225,6 +557,7 @@ int insMed( vector<Medico *>  & v , vector<Especialidade *> & e )
     ptr->setIni( inicio );
     ptr->setFim( fim );
     ptr->setEspe( esp );
+    ptr->setDurM( dur_max );
     insMedOrd( ptr , v );
     return findPos( cedula , v );
   }
@@ -607,5 +940,264 @@ bool isNum( string s )
         return false;
     return true;
   }
+  else {cout << "s="<<s << endl;return false;}
+}
+
+bool isDat ( string s )
+{
+  Data d;
+  int dia,mes,ano;
+  char espaco;
+  if ( ! s.empty()  && s.size() <= 10 && s.size() >= 8 ) 
+  {
+    if ( s.size() == 10 )
+    {
+      for (int i = 0 ; i < (int) s.size() ; i++)
+      {
+        if ( i != 2 && i != 5 )
+        {
+          if (!isdigit( s.at( i ) ) ) return false;      
+        }
+        else
+        {
+          if (isdigit( s.at( i ) ) ) return false;
+        }
+      }
+      istringstream ss( s );
+      ss >> dia >> espaco >> mes >> espaco >> ano;
+      try
+      {
+        d.setData( dia , mes , ano );
+      }
+      catch(DataImpossivel & d)
+      {
+        return false;
+      }
+      return true;
+    }
+    else
+    {
+      if ( s.size() == 8 )
+      {
+        for (int i = 0 ; i < (int) s.size() ; i++)
+        {
+          if ( i != 1 && i!= 3 )
+          {
+            if (!isdigit( s.at( i ) ) ) return false;   
+          }
+          else
+          {
+             if (isdigit( s.at( i ) ) ) return false;   
+          }
+        }
+        istringstream ss( s );
+        ss >> dia >> espaco >> mes >> espaco >> ano;
+        try
+        {
+          d.setData( dia , mes , ano );
+        }
+        catch(DataImpossivel & d)
+        {
+          return false;
+        }
+        return true;
+      }
+      else
+      {
+        if ( !isdigit( s.at(1) ) )
+        {
+          for (int i = 0 ; i < (int) s.size() ; i++)
+          {
+            if ( i != 1 && i!= 4 )
+            {
+              if (!isdigit( s.at( i ) ) ) return false;
+            }
+            else
+            {
+             if ( isdigit( s.at( i ) ) ) return false;
+            }
+          }
+          istringstream ss( s );
+          ss >> dia >> espaco >> mes >> espaco >> ano;
+          try
+          {
+            d.setData( dia , mes , ano );
+          }
+          catch(DataImpossivel & d)
+          {
+            return false;
+          }
+          return true;
+        }
+        else
+        {
+          for (int i = 0 ; i < (int) s.size() ; i++)
+          {
+            if ( i != 2 && i!= 4 )
+            {
+              if (!isdigit( s.at( i ) ) ) return false;   
+            }
+            else
+            {
+             if (isdigit( s.at( i ) ) ) return false;                 
+            }
+          }
+          istringstream ss( s );
+          ss >> dia >> espaco >> mes >> espaco >> ano;
+          try
+          {
+            d.setData( dia , mes , ano );
+          }
+          catch(DataImpossivel & d)
+          {
+            return false;
+          }
+          return true;
+        }
+      }
+    }
+  }
   else return false;
+}
+
+bool isHor( string s)
+{
+  Hora h;
+  int hora,min;
+  char espaco;
+  if ( ! s.empty()  && s.size() <= 5 && s.size() >= 3 ) 
+  {
+    if ( s.size() == 5 )
+    {
+      for (int i = 0 ; i < (int) s.size() ; i++)
+      {
+        if ( i != 2 )
+        {
+          if (!isdigit( s.at( i ) ) ) return false;      
+        }
+        else
+        {
+          if (isdigit( s.at( i ) ) ) return false;
+        }
+      }
+      istringstream ss( s );
+      ss >> hora >> espaco >> min;
+      try
+      {
+        h.setHora( hora , min );
+      }
+      catch(HoraImpossivel & d)
+      {
+        return false;
+      }
+      return true;
+    }
+    else
+    {
+      if ( s.size() == 3 )
+      {
+        for (int i = 0 ; i < (int) s.size() ; i++)
+        {
+          if ( i != 1 )
+          {
+            if (!isdigit( s.at( i ) ) ) return false;   
+          }
+          else
+          {
+             if (isdigit( s.at( i ) ) ) return false;   
+          }
+        }
+        istringstream ss( s );
+        ss >> hora >> espaco >> min;
+        try
+        {
+          h.setHora( hora , min );
+        }
+        catch(HoraImpossivel & d)
+        {
+          return false;
+        }
+        return true;
+      }
+      else
+      {
+        if ( !isdigit( s.at(1) ) )
+        {
+          for (int i = 0 ; i < (int) s.size() ; i++)
+          {
+            if ( i != 1)
+            {
+              if (!isdigit( s.at( i ) ) ) return false;
+            }
+            else
+            {
+             if (isdigit( s.at( i ) ) ) return false;
+            }
+          }
+          istringstream ss( s );
+          ss >> hora >> espaco >> min;
+          try
+          {
+            h.setHora( hora , min );
+          }
+          catch(HoraImpossivel & d)
+          {
+            return false;
+          }
+          return true;
+        }
+        else
+        {
+          for (int i = 0 ; i < (int) s.size() ; i++)
+          {
+            if ( i != 2 )
+            {
+              if (!isdigit( s.at( i ) ) ) return false;   
+            }
+            else
+            {
+             if (isdigit( s.at( i ) ) ) return false;                 
+            }
+          }
+          istringstream ss( s );
+          ss >> hora >> espaco >> min;
+          try
+          {
+            h.setHora( hora , min );
+          }
+          catch(HoraImpossivel & d)
+          {
+            return false;
+          }
+          return true;
+        }
+      }
+    }
+  }
+  else return false;
+}
+
+long getLong()
+{
+  long id;
+  string tmp;
+  getline ( cin , tmp );
+  if ( cin.eof() )
+  {
+    cin.clear();
+    throw EOI();
+  }
+  while ( ! isNum( tmp ) && tmp.size() < 10 )
+  {
+    cout << "Número inválido ou demasiado grande (tem que ser menor de 11 algarismos)\nInsira outro: ";
+    getline ( cin , tmp );
+    if ( cin.eof() )
+    {
+      cin.clear();
+      throw EOI();
+    }
+  }
+  istringstream s( tmp );
+  s  >> id;
+  return id;
 }

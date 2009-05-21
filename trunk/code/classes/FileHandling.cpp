@@ -66,7 +66,7 @@ bool savMed ( string f , const vector<Medico *> & u )
     fout << u.at( i )->getTel() << "|" << u.at( i )->getEspe()->getNom() << "|"; 
     fout << u.at( i )->getIni().getHor() << ":" << u.at( i )->getIni().getMin() << "|";
     fout << u.at( i )->getFim().getHor() << ":" << u.at( i )->getFim().getMin() << "|";
-    fout << u.at( i )->getDur() << "|" << u.at( i )->getDurM() << endl;
+    fout << u.at( i )->getDur() << "|" << u.at( i )->getDurM() << "|" << u.at( i )->getSis() << endl;
   }
   fout.flush();
   return true;
@@ -108,7 +108,7 @@ bool addMed(fstream &f,const Medico &m)
   f.clear();
   f.seekp(0,ios_base::end);
   f << m.getCed() << "|" << m.getNome() << "|" << m.getTel() << "|" <<m.getEspe()->getNom() << "|";
-  f << m.getIni().getHor() << ":" << m.getIni().getMin() << "|" << m.getFim().getHor() << ":" << m.getFim().getMin() << "|" << m.getDur() << endl;
+  f << m.getIni().getHor() << ":" << m.getIni().getMin() << "|" << m.getFim().getHor() << ":" << m.getFim().getMin() << "|" << m.getDur() << "|" << m.getSis() << endl;
   f.flush();
   return true;
 }
@@ -167,7 +167,7 @@ bool addPac(fstream &f, const Utente &u)
   }
   f.clear();
   f.seekp(0,ios_base::end);
-  f <<u.getId()<<"|"<< u.getNome() << "|" << u.getTel() << "|" <<u.getMor() << "|" << u.getSeg().getSeg() << "|" << u.getSeg().getDes() << "|" << u.getSeg().getApo()<< endl;
+  f <<u.getId()<<"|"<< u.getNome() << "|" << u.getTel() << "|" <<u.getMor() << "|" << u.getSeg().getSeg() << "|" << u.getSeg().getDes() << "|" << u.getSeg().getApo() << "|" << u.getSis() << endl;
   f.flush();
   return true;
 }
