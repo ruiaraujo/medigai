@@ -14,86 +14,46 @@ void log();
 void menupr();
 void menu_med();
 void menu_utente();
-
-void menu_consulta(){
-system("clear");
-
-log();
-
-cout<<"Menu:\n\nInsira o numero da opção desejada.\n\n1. Marcar Consulta\n2. Alterar Consulta\n3. Desmarcar Consulta\n4. Visualizar Horario\n5. Visualizar Consulta\n6. 'A' Para voltar ao menu anterior.\n";
-
-char opcao;
-  
-  while ( ! cin.eof() ) 
-  {	 cin.clear();
-    cin >> opcao;
-    if ( ! cin.eof() && isdigit( opcao ) )
-    {
-      switch (opcao)
-      {
-        case '1': cout << "Insira os Dados da Consulta.\n";
-                  //insCon( lista_med , lista_pac , //lista_con );
-                  //listar ( lista_con );
-                  menu_consulta();
-                  cin.clear();
-                  break;
-        case '2': break;        
-        case '3': cout << "Insira os dados da Consulta:" << endl;
-                  //delCon( lista_med , lista_con );
-                  menu_consulta();
-                  cin.clear();
-                  break;       
-	case '4': break;
-	case '5': cout << "Lista de Consultas:" << endl;
-                  //listar ( lista_con );
-                  menu_consulta();
-                  cin.clear();
-                  break;
-	case 'A': break;                   
-        default: cout << "\nOpção desconhecida.\n\n";
-                 menu_consulta();
-                 cin.clear();
-                 break;
-      }
-    }
-  }
-}
+void menu_consulta();
 
 
-int main(){
+int main()
+{
 
-if ( !criaFile( file_med ) || !criaFile( file_pac) || !criaFile( file_esp) || !criaFile( file_con) )
+  if ( !criaFile( file_med ) || !criaFile( file_pac) || !criaFile( file_esp) || !criaFile( file_con) )
   {
     cerr << "Erro: Verifique permissões no directório de execução."<<endl;
     return -1;
   }
 
-while ( ! cin.eof() ) {
+  while ( ! cin.eof() )
+  {
 
-system("clear");
-log();
+    system("clear");
+    log();
 
-cout << "Menu:\n\nInsira o número da opção desejada.\n\n1. Corpo Clínico\n2. Gestão de Utentes\n";
-cout << "3. Gestão de Consultas\n4. Guardar as alterações\n";
-cout << "Prima 'X' ou 'x' para sair.\n";
+    cout << "Menu:\n\nInsira o número da opção desejada.\n\n1. Corpo Clínico\n2. Gestão de Utentes\n";
+    cout << "3. Gestão de Consultas\n4. Guardar as alterações\n";
+    cout << "Pressione CRTL-D para sair.\n";
 
-char opcao;
+    char opcao;
 
 
-while(!cin.eof()){
-
-cin>>opcao;
-if (!cin.eof() && isdigit(opcao))
-{
-switch (opcao)
+    while( !cin.eof() )
+    {
+      cin>>opcao;
+      if ( !cin.eof() && isdigit(opcao) )
       {
-        case '1': menu_med();
-                  break;
-        case '2': //menu_utente();
-		  break;
-        case '3': menu_consulta();
-		  break;
-	case '4': cout << "A guardar tudo...\n";
+          switch (opcao)
+          {
+            case '1': menu_med();
+                     
+                      break;
+            case '2': //menu_utente();
+		                  break;
+            case '3': menu_consulta();
+		                  break;
+	          case '4': cout << "A guardar tudo...\n";
                   //savPac ( file_pac , lista_pac );
                   //savMed ( file_med , lista_med );
                   //savEsp ( file_esp , lista_esp );
@@ -101,25 +61,24 @@ switch (opcao)
                   //carregaEsp( file_esp , lista_esp );
                   //carregaMed( file_med , lista_med , lista_esp );
                   //listar( lista_med );
-                  cout << endl;
+                      cout << endl;
                   //listar( lista_esp );
                   //carregaPac ( file_pac , lista_pac );
-                  cout << endl;
+                      cout << endl;
                   //listar( lista_pac );
-                  cout << endl;
+                      cout << endl;
                   //carregaCon ( file_con , lista_med , lista_pac , lista_con );
                   //listar( lista_con );
-		  cin.clear();
-		
-        default: cout << "\nOpção desconhecida.\n\n";
-		 break;
-	
-
-	}
-}}}
+		                  cin.clear();
+		                  break;
+            default:  cout << "\nOpção desconhecida.\n\n";
+		                  break;
+		      }
+        }
+      }
+    }
 
 return 0;
-
 }
 
 void log(){
@@ -138,6 +97,51 @@ cout<<"*************************************************************************
 
 }
 
+void menu_consulta(){
+  system("clear");
+
+  log();
+
+  cout << "Menu:\n\nInsira o numero da opção desejada." << endl << endl;
+  cout << "1. Marcar Consulta\n2. Alterar Consulta\n3. Desmarcar Consulta" << endl;
+  cout << "4. Visualizar Horario\n5. Visualizar Consulta\n6. 'A' Para voltar ao menu anterior.\n";
+
+  char opcao;
+  
+  while ( ! cin.eof() ) 
+  {	 
+    cin.clear();
+    cin >> opcao;
+    if ( ! cin.eof() && isdigit( opcao ) )
+    {
+      switch (opcao)
+      {
+        case '1': cout << "Insira os Dados da Consulta.\n";
+                  //insCon( lista_med , lista_pac , //lista_con );
+                  //listar ( lista_con );
+                  menu_consulta();
+                  cin.clear();
+                  break;
+        case '2': break;        
+        case '3': cout << "Insira os dados da Consulta:" << endl;
+                  //delCon( lista_med , lista_con );
+                  menu_consulta();
+                  cin.clear();
+                  break;       
+	      case '4': break;
+	      case '5': cout << "Lista de Consultas:" << endl;
+                  //listar ( lista_con );
+                  menu_consulta();
+                  cin.clear();
+                  break;                   
+        default: cout << "\nOpção desconhecida.\n\n";
+                 menu_consulta();
+                 cin.clear();
+                 break;
+      }
+    }
+  }
+}
 
 
 void menu_med(){
