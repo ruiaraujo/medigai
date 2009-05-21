@@ -1,13 +1,15 @@
 #include "headers/pessoas.h"
 
 
-Pessoa::Pessoa (string n, string t, unsigned long i) : nome(n), tel(t), id(i) {}
+Pessoa::Pessoa (string n, string t, unsigned long i) : nome(n), tel(t), sistema(1) , id(i) {}
 Pessoa::Pessoa (const Pessoa & p) : nome(p.nome), tel(p.tel), id(p.id) {}
 void Pessoa::setNome(string n){nome=n;}
 void Pessoa::setTel(string t){tel=t;}
 string Pessoa::getNome() const {return nome;}
 string Pessoa::getTel() const{return tel;}
 unsigned long Pessoa::getId() const {return id;}
+bool Pessoa::getSis() const {return sistema;}
+void Pessoa::setSis( bool e ) { sistema = e; }
 Pessoa & Pessoa::operator=(Pessoa &p)
 {
   if (this != &p)
@@ -55,8 +57,6 @@ void Utente::setSeg(float d){seguro.setDes(d);}
 void Utente::setSeg(string s){seguro.setSeg(s);}
 string Utente::getMor() const {return morada;}
 Convencao Utente::getSeg() const {return seguro;}
-bool Utente::getSis() const {return sistema;}
-void Utente::setSis( bool e ) { sistema = e; }
 void Utente::setUN(unsigned long u ) { UltimoNumero = u; }
 long Utente::getUN() const { return UltimoNumero; }
 Utente & Utente::operator=(Utente &u)
@@ -73,18 +73,18 @@ Utente & Utente::operator=(Utente &u)
 
 ostream & operator<<(ostream & os, Medico &m)
 {
-  os << m.id <<"|"<< m.nome << "|" << m.tel << "|" << m.espe->getNom()<< "|"  << m.inicio << "|" << m.fim << "|" << m.duracao << "|" << m.dur_max; 
+  os << m.id <<"|"<< m.nome << "|" << m.tel << "|" << m.espe->getNom()<< "|"  << m.inicio << "|" << m.fim << "|" << m.duracao << "|" << m.dur_max << "|" << m.sistema; 
  return os;
 }
 
 ostream & operator<<(ostream & os, Utente &u)
 {
-  os << u.id << "|" << u.nome << "|" << u.tel << "|" << u.morada << "|" << u.seguro.getSeg() << "|" << u.seguro.getDes() << "|" << u.seguro.getApo()<<"|"<<u.sistema; 
+  os << u.id << "|" << u.nome << "|" << u.tel << "|" << u.morada << "|" << u.seguro.getSeg() << "|" << u.seguro.getDes() << "|" << u.seguro.getApo() << "|" << u.sistema; 
  return os;
 }
 
 ostream & operator<<(ostream & os, Pessoa & p)
 {
-  os << p.id << "|" << p.nome << "|" << p.tel; 
+  os << p.id << "|" << p.nome << "|" << p.tel << "|" << p.sistema; 
  return os;
 }

@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -Wall  -Wextra -c #-Weffc++ # -O2 
+CXXFLAGS =  -c -Wall  -Wextra  #-Weffc++ # -O2 
 
 all: gestaoteste.o pessoas.o consulta.o convencao.o hora.o data.o file.o especialidade.o mem.o
 	$(CXX) hora.o data.o pessoas.o consulta.o convencao.o gestao.o file.o especialidade.o mem.o -o gestao

@@ -16,5 +16,10 @@ class MinImpossivel : public runtime_error{
     MinImpossivel(): runtime_error( "Minuto impossível" ) {}
 };
 
+class EOI : public runtime_error{
+  public:
+    EOI(): runtime_error( "Detectado fim do input" ) {}
+};
+
 #endif
 
