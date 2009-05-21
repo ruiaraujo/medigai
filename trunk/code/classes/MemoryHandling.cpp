@@ -1201,3 +1201,72 @@ long getLong()
   s  >> id;
   return id;
 }
+
+void altcon(vector<Consulta *> & c ,vector<Utente *> & u,vector<Medico * > & v ){
+	unsigned long id;	
+	
+	cout<<"\nIntroduza o id do Utente:";
+	id=getLong();
+	
+	Utente *ptr_u = find( id , u );
+
+	unsigned int hora;
+  	
+	
+	cout<<"\nIntroduza a hora da consulta";
+	cin>>hora;
+	Hora h(hora,0);
+	
+	unsigned int dia;
+  	unsigned int mes;
+  	unsigned int ano;
+	
+	cout<<"\nIntroduza o dia da consulta:";
+	cin>>dia;
+	cout<<"\nIntroduza o mes da consulta:";
+	cin>>mes;
+	cout<<"\nIntroduza o ano da consulta:";
+	cin>>ano;
+	Data a(dia,mes,ano);	
+		
+	//Utente *ptr = new Utente ( nomeut , tel , mor , seg , des , apo );
+	Consulta *ptr =  new Consulta (NULL , ptr_u , a , h , 0);
+	vector<Consulta *>::iterator it = find ( ptr, c );
+	//vector<Utente *>::iterator itr = findPos ( *ptr , u );
+	
+  
+	if ( it == c.end() )
+		  {
+    			cout << "Não foi encontrada uma consulta com estas características. Logo não foi desmarcada nenhuma consulta.\n";
+    			
+  		  }
+	else{
+		cout<<"\nIntroduza o novo dia da consulta:";
+		cin>>dia;
+		cout<<"\nIntroduza o novo mes da consulta:";
+		cin>>mes;
+		cout<<"\nIntroduza o novo ano da consulta:";
+		cin>>ano;
+		Data b(dia,mes,ano);
+		
+		unsigned int hor;
+  	
+	
+		cout<<"\nIntroduza a nova hora da consulta";
+		cin>>hora;
+		Hora nova_hora(hor,0);
+		
+		unsigned long ced;
+		cout<<"\nIntroduza o código do médico:";
+		cin>>ced;
+		Medico *ptr_m = find( ced , v );
+		
+		Consulta *ptr =  new Consulta (ptr_m , ptr_u , b , nova_hora , 0);
+		//(*it)=(*ptr); //definir o operador igual para isto funcionar
+		//listar ( lista_con ); //Falta definires isto
+	}
+	
+	
+
+}
+
