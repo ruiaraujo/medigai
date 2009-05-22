@@ -1,11 +1,11 @@
 CXX = g++
-CXXFLAGS =  -c -Wall  -Wextra  #-Weffc++ # -O2 
+CXXFLAGS =  -c -Wall  -Wextra  -Weffc++ # -O2 
 
 all: gestaoteste.o pessoas.o consulta.o convencao.o hora.o data.o file.o especialidade.o mem.o
 	$(CXX) hora.o data.o pessoas.o consulta.o convencao.o gestao.o file.o especialidade.o mem.o -o gestao
 
-gestao: gestao.o pessoas.o consulta.o convencao.o hora.o data.o file.o especialidade.o 
-	$(CXX) hora.o data.o pessoas.o consulta.o convencao.o gestao.o file.o especialidade.o -o gestao
+gestao:  pessoas.o consulta.o convencao.o hora.o data.o file.o especialidade.o mem.o gestao.o
+	$(CXX) hora.o data.o pessoas.o consulta.o convencao.o gestao.o file.o especialidade.o mem.o -o gestao
 	
 gestao.o: gestao.cpp
 	$(CXX) $(CXXFLAGS) gestao.cpp -o gestao.o
@@ -14,19 +14,16 @@ gestaoteste.o: gestaoteste.cpp
 	$(CXX) $(CXXFLAGS) gestaoteste.cpp -o gestao.o
 	
 mem.o: classes/headers/MemoryHandling.h classes/MemoryHandling.cpp 
-	$(CXX) $(CXXFLAGS)  classes/MemoryHandling.cpp  -o mem.o
+	$(CXX) $(CXXFLAGS) classes/MemoryHandling.cpp  -o mem.o
 	
 file.o: classes/headers/FileHandling.h classes/FileHandling.cpp 
-	$(CXX) $(CXXFLAGS)  classes/FileHandling.cpp  -o file.o
+	$(CXX) $(CXXFLAGS) classes/FileHandling.cpp  -o file.o
 	
 data.o: classes/headers/data.h classes/data.cpp
-	$(CXX) $(CXXFLAGS)  classes/data.cpp -o data.o
+	$(CXX) $(CXXFLAGS) classes/data.cpp -o data.o
   
 hora.o: classes/headers/hora.h classes/hora.cpp
 	$(CXX) $(CXXFLAGS) classes/hora.cpp -o hora.o
-
-#tempo.o: classes/headers/tempo.h classes/tempo.cpp
-#	$(CXX) $(CXXFLAGS) classes/tempo.cpp -o tempo.o
 
 especialidade.o: classes/headers/especialidade.h classes/especialidade.cpp
 	$(CXX) $(CXXFLAGS) classes/especialidade.cpp -o especialidade.o

@@ -14,6 +14,7 @@ int insPac( vector<Utente *> & );
 int insCon ( vector<Medico *> &, vector<Utente *> & , vector<Consulta *> &);
 bool delCon( vector<Consulta *> & , Medico * & , Hora & , Data & );
 bool delCon( vector<Medico *> & , vector<Consulta *> & );
+bool altCon( vector<Consulta *> & , vector<Utente *> & , vector<Medico * > & );
 bool carregaEsp( string , vector<Especialidade *> & );
 bool carregaPac( string , vector<Utente *> & );
 bool carregaMed( string , vector<Medico *> & , vector<Especialidade *> & );
@@ -24,6 +25,7 @@ template <class Comparable> Comparable * find ( const Comparable & , vector<Comp
 template <class Comparable> int findPos( unsigned long , vector<Comparable *> & );
 template <class Comparable> int findPos( const Comparable & , vector<Comparable *> & );
 template <class Comparable> void listar( const vector<Comparable *> & );
+int findPos ( Consulta * , vector<Consulta *> & );
 void listar ( const vector<Especialidade *> & v );
 vector<Consulta *>::iterator insConOrd ( Consulta * , vector<Consulta *> & );
 vector<Medico *>::iterator insMedOrd( Medico * , vector<Medico *> & );
