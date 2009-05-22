@@ -1430,3 +1430,25 @@ bool ver_Con( vector<Consulta *> & c , vector<Utente *> & u , vector<Medico * > 
         return true;
 
 }
+bool del_Pac( unsigned long int ced, vector<Utente *> & u )
+{
+  int pos = findPos( ced , u );
+  if ( pos == -1) return false;
+  if ( pos > (int)( u.size() / 2 ) )
+  {
+    vector<Utente *>::iterator it = u.end();
+    it--;
+    for ( int i = u.size()-1 ; i > pos ; i-- )
+      it--;
+    u.erase(it);
+  }
+  else
+  {
+    vector<Utente *>::iterator it = u.begin();
+    for ( int i = 0 ; i < pos ; i++ )
+      it++;
+    u.erase(it);
+  }
+  return true;
+}
+
