@@ -1,11 +1,11 @@
 CXX = g++
-CXXFLAGS =  -c -Wall  -Wextra  -Weffc++ # -O2 
+CXXFLAGS =  -c -Wall  -Wextra # -Weffc++ # -O2 
 
-all: gestaoteste.o pessoas.o consulta.o convencao.o hora.o data.o file.o especialidade.o mem.o
-	$(CXX) hora.o data.o pessoas.o consulta.o convencao.o gestao.o file.o especialidade.o mem.o -o gestao
+all:  pessoas.o consulta.o convencao.o hora.o data.o file.o especialidade.o mem.o horario.o gestaoteste.o
+	$(CXX) hora.o data.o pessoas.o consulta.o convencao.o gestao.o file.o especialidade.o horario.o mem.o -o gestao
 
-gestao:  pessoas.o consulta.o convencao.o hora.o data.o file.o especialidade.o mem.o gestao.o
-	$(CXX) hora.o data.o pessoas.o consulta.o convencao.o gestao.o file.o especialidade.o mem.o -o gestao
+gestao:  pessoas.o consulta.o convencao.o hora.o data.o file.o especialidade.o mem.o horario.o gestao.o
+	$(CXX) hora.o data.o pessoas.o consulta.o convencao.o gestao.o file.o especialidade.o horario.o mem.o -o gestao
 	
 gestao.o: gestao.cpp
 	$(CXX) $(CXXFLAGS) gestao.cpp -o gestao.o
@@ -28,6 +28,8 @@ hora.o: classes/headers/hora.h classes/hora.cpp
 especialidade.o: classes/headers/especialidade.h classes/especialidade.cpp
 	$(CXX) $(CXXFLAGS) classes/especialidade.cpp -o especialidade.o
 
+horario.o: classes/headers/horario.h classes/horario.cpp
+	$(CXX) $(CXXFLAGS) classes/horario.cpp -o horario.o
 
 convencao.o: classes/headers/convencao.h classes/convencao.cpp
 	$(CXX) $(CXXFLAGS) classes/convencao.cpp -o convencao.o

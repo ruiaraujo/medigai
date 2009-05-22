@@ -1,4 +1,5 @@
 #include "classes/headers/MemoryHandling.h"
+#include "classes/headers/horario.h"
 #include <vector>
 #include <cstdlib>
 

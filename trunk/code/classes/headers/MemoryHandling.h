@@ -1,3 +1,5 @@
+#ifndef MEMORY_H
+#define MEMORY_H
 #include "FileHandling.h"
 #include <fstream>
 #include <iostream>
@@ -35,3 +37,6 @@ bool isDat( string );
 bool isHor( string );
 bool delMed( unsigned long , vector<Medico *> & );
 long getLong();
+
+
+#endif
