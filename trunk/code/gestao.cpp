@@ -111,20 +111,21 @@ void menu_consulta(){
       switch (opcao)
       {
         case '1': cout << "Insira os Dados da Consulta.\n";
-                  //insCon( lista_med , lista_pac , //lista_con );
-                  //listar ( lista_con );
+                  insCon( lista_med , lista_pac , lista_con );
+                  listar ( lista_con );
                   menu_consulta();
                   cin.clear();
                   break;
-        case '2': break;        
+        case '2': altCon(lista_con, lista_pac, lista_med);
+		  break;        
         case '3': cout << "Insira os dados da Consulta:" << endl;
-                  //delCon( lista_med , lista_con );
+                  delCon( lista_med , lista_con );
                   menu_consulta();
                   cin.clear();
                   break;       
-	      case '4': break;
-	      case '5': cout << "Lista de Consultas:" << endl;
-                  //listar ( lista_con );
+	case '4': break;
+        case '5': cout << "Lista de Consultas:" << endl;
+                  listar ( lista_con );
                   menu_consulta();
                   cin.clear();
                   break;                   
@@ -156,19 +157,19 @@ if ( ! cin.eof() && isdigit( op ) )
 switch(op){
 
 case '1': cout << "Insira os Dados do Médico.\n";
-                  //insMed( lista_med , lista_esp );
-                  //listar( lista_med );
+                  insMed( lista_med , lista_esp );
+                  listar( lista_med );
                   menu_med();
                   cin.clear();
                   break;
 case '2': cout << "Insira a cédula do médico.\n";
                   long cedula;
                   cin >> cedula;
-                  //delMed ( cedula , lista_med );
+                  delMed ( cedula , lista_med );
                   menu_med();
                   cin.clear();
                   break;
-case '3': //listar ( lista_med );
+case '3': listar ( lista_med );
                   cout << endl;
 	  menu_med();
 	  break;
