@@ -1,8 +1,8 @@
 #include "headers/data.h"
 
 bool bissexto(unsigned int ano){return ((ano%4==0 && ano%100!=0)||ano%400==0);}
-Data::Data(){dia=1;mes=1;ano=1970;}
-Data::Data (unsigned int d = 1,unsigned  int m = 1,unsigned int a = 1970)
+Data::Data() : dia(1) , mes(1) , ano(1970) {}
+Data::Data (unsigned int d = 1,unsigned  int m = 1,unsigned int a = 1970): dia(1) , mes(1) , ano(1970)
 {
   try
   {
@@ -112,7 +112,6 @@ Data & Data::getData(){return *this;}
 unsigned int Data::getDia() const {return dia;}
 unsigned int Data::getMes() const {return mes;}
 unsigned int Data::getAno() const {return ano;}
-int Data::operator-(Data &d){return d.dia-dia;} // diferença em dias entre duas datas{}
 bool Data::operator==( const Data & d ){return ( d.getDia()==dia && d.getMes() == mes && d.getAno() == ano);}
 bool Data::operator<( const Data & d )
 {

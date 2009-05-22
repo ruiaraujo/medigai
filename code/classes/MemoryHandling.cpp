@@ -7,6 +7,31 @@ impletar Horario
 acabar de proteger contra eof
 */
 
+int findPos ( Consulta * con, vector<Consulta *> & c )
+{
+  for ( int i = 0 ; i < (int) c.size() ; i++ )
+  {
+    if ( c.at( i )->getMed()->getId() == con->getMed()->getId() )
+    {
+        for ( ;  i < (int) c.size()  ; i++  )
+        {
+          if ( c.at( i )->getDat() == con->getDat() )
+          {
+            for ( ;  i < (int) c.size() ; i++)
+            {
+              if ( c.at( i )->getHor() == con->getHor() )
+              {
+                return i;
+              }
+            }
+          }
+        }
+    }
+  }
+  return -1;
+}
+
+
 vector<Consulta *>::iterator find ( Consulta * con, vector<Consulta *> & c )
 {
   vector<Consulta *>::iterator it = c.begin();
@@ -43,6 +68,8 @@ bool delCon( vector<Consulta *> & c , Medico * & med , Hora & h , Data & d )
     cout << "Não foi encontrada uma consulta com estas características. Logo não foi desmarcada nenhuma consulta.\n";
     return false;
   }
+  delete c.at( findPos( ptr , c ) );
+  delete ptr;
   c.erase ( it );
   return true;
 }
@@ -235,7 +262,7 @@ int insCon ( vector<Medico *> & v , vector<Utente *> & u , vector<Consulta *> &c
   }
   catch (EOI &)
   {
-    return false;
+    return -1;
   }
   Medico *ptr_m = find( ced , v );
   while (ptr_m == NULL )
@@ -359,7 +386,7 @@ int insCon ( vector<Medico *> & v , vector<Utente *> & u , vector<Consulta *> &c
   Consulta *con = new Consulta ( ptr_m , ptr_u  , d , h , preco );
   con->setDur( duracao );
   insConOrd( con , c );
-  return 1;
+  return findPos ( con , c );
 }
 
 int insMed( vector<Medico *>  & v , vector<Especialidade *> & e )
@@ -1202,7 +1229,77 @@ long getLong()
   return id;
 }
 
-void altcon(vector<Consulta *> & c ,vector<Utente *> & u,vector<Medico * > & v ){
+bool altCon( vector<Consulta *> & c , vector<Utente *> & u , vector<Medico * > & v )
+{
+  unsigned long ced;
+  int dia, mes, ano , hora , min;
+  char espaco;
+  string tmp;
+  cout << "Insira os dados da consulta que deseja alterar: " << endl;
+  cin.get();
+  cout << "Insira a cédula do Médico : ";
+  try
+  {
+    ced = getLong();
+  }
+  catch (EOI &)
+  {
+    return false;
+  }
+  Medico *ptr_med = find ( ced , v );
+  while ( ptr_med == NULL )
+  {
+    cout << "Médico Inexistente.\nInsira a cédula do Médico : ";
+    try
+    {
+      ced = getLong();
+    }
+    catch (EOI &)
+    {
+      return false;
+    }
+    ptr_med = find ( ced , v );
+  }
+  cout << "Insira a data da consulta separadas por um caracter (no formato dd/mm/aaaa): ";
+  getline( cin , tmp );
+  while (!isDat( tmp ) )
+  {
+    cout << "Data inválida. Insira outra: " << endl;
+    getline( cin , tmp );  
+  }
+  istringstream ss(tmp);
+  ss >> dia >> espaco >> mes >> espaco >> ano;
+  Data d( dia , mes , ano );
+  cout << "Insira a hora da consulta separadas por um caracter (no formato hh:mm : ";
+  getline( cin , tmp );
+  while (!isHor( tmp ) )
+  {
+    cout << "Hora inválida. Insira outra: " << endl;
+    getline( cin , tmp );  
+  }
+  istringstream sss(tmp);
+  sss >> hora >> espaco >> min;
+  Hora h( hora , min );
+  Consulta *ptr =  new Consulta ( ptr_med , NULL , d , h , 0);
+  int pos = findPos( ptr , c );
+  if ( pos == -1 )
+  {
+    cout << "Não foi encontrada uma consulta com estas características. A abortar..." << endl;
+    delete ptr;
+    return false;
+  }
+  cout << "Insira os novos dados: " << endl;
+  if ( insCon( v , u, c ) == -1 )
+  {
+    cout << "Erro na actualização da consulta. A abortar..." << endl;
+    delete ptr;
+    return false;
+  }
+  delCon( c , ptr_med , h , d );
+  delete ptr;
+  return true;
+  
+/*
 	unsigned long id;	
 	
 	cout<<"\nIntroduza o id do Utente:";
@@ -1264,9 +1361,6 @@ void altcon(vector<Consulta *> & c ,vector<Utente *> & u,vector<Medico * > & v )
 		Consulta *ptr =  new Consulta (ptr_m , ptr_u , b , nova_hora , 0);
 		//(*it)=(*ptr); //definir o operador igual para isto funcionar
 		//listar ( lista_con ); //Falta definires isto
-	}
-	
-	
-
+	}*/
 }
 
