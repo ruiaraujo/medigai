@@ -46,7 +46,7 @@ int main()
                   cin.clear();
                   main_menu();
 		              break;
-	      case '4': cout << "A guardar tudo...\n";
+	case '4': cout << "A guardar tudo...\n";
                   savPac ( file_pac , lista_pac );
                   savMed ( file_med , lista_med );
                   savEsp ( file_esp , lista_esp );
@@ -63,7 +63,9 @@ int main()
                   carregaCon ( file_con , lista_med , lista_pac , lista_con );
                   listar( lista_con );
 		              cin.clear();
-                  main_menu();
+		
+		  
+		  main_menu();
 		              break;
         default:  cout << "\nOpção desconhecida.\n\n";
                   cin.clear();
@@ -98,7 +100,7 @@ void menu_consulta(){
 
   cout << "Menu:\n\nInsira o numero da opção desejada." << endl << endl;
   cout << "1. Marcar Consulta\n2. Alterar Consulta\n3. Desmarcar Consulta" << endl;
-  cout << "4. Visualizar Horario\n5. Visualizar Consulta\n6. 'A' Para voltar ao menu anterior.\n";
+  cout << "4. Visualizar Horario\n5. Visualizar Consultas\n6. Ver Consulta\nCRTL-D para voltar ao menu anterior.\n";
 
   char opcao;
   
@@ -126,9 +128,13 @@ void menu_consulta(){
 	case '4': break;
         case '5': cout << "Lista de Consultas:" << endl;
                   listar ( lista_con );
-                  menu_consulta();
                   cin.clear();
-                  break;                   
+		  menu_consulta();
+                  break;  
+	case '6' : //ver_Con(lista_con, lista_pac, lista_con);
+		   cin.clear();
+		   menu_consulta();
+		   break;                 
         default: cout << "\nOpção desconhecida.\n\n";
                  menu_consulta();
                  cin.clear();
