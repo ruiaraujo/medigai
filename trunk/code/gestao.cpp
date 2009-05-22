@@ -5,7 +5,8 @@
 
 using namespace std;
 
-string file_med = "medico.txt",file_pac="utentes.txt",file_esp="especialidade.txt",file_con = "consultas.txt";; //nome dos ficheiros para leitura
+string file_med = "medico.txt",file_pac="utentes.txt";
+string file_esp="especialidade.txt",file_con = "consultas.txt"; //nome dos ficheiros para leitura
 vector<Medico *> lista_med;
 vector<Utente *> lista_pac;
 vector<Especialidade *> lista_esp;
@@ -16,7 +17,7 @@ void menupr();
 void menu_med();
 void menu_utente();
 void menu_consulta();
-
+void main_menu();
 
 int main()
 {
@@ -26,59 +27,51 @@ int main()
     cerr << "Erro: Verifique permissões no directório de execução."<<endl;
     return -1;
   }
-
-  while ( ! cin.eof() )
+  main_menu();
+  char opcao;
+  while( !cin.eof() )
   {
-
-    system("clear");
-    log();
-
-    cout << "Menu:\n\nInsira o número da opção desejada.\n\n1. Corpo Clínico\n2. Gestão de Utentes\n";
-    cout << "3. Gestão de Consultas\n4. Guardar as alterações\n";
-    cout << "Pressione CRTL-D para sair.\n";
-
-    char opcao;
-
-
-    while( !cin.eof() )
+    cin>>opcao;
+    if ( !cin.eof() && isdigit(opcao) )
     {
-      cin>>opcao;
-      if ( !cin.eof() && isdigit(opcao) )
+      switch (opcao)
       {
-          switch (opcao)
-          {
-            case '1': menu_med();
-                     
-                      break;
-            case '2': //menu_utente();
-		                  break;
-            case '3': menu_consulta();
-		                  break;
-	          case '4': cout << "A guardar tudo...\n";
-                  //savPac ( file_pac , lista_pac );
-                  //savMed ( file_med , lista_med );
-                  //savEsp ( file_esp , lista_esp );
-                  //savCon ( file_con , lista_con );
-                  //carregaEsp( file_esp , lista_esp );
-                  //carregaMed( file_med , lista_med , lista_esp );
-                  //listar( lista_med );
-                      cout << endl;
-                  //listar( lista_esp );
-                  //carregaPac ( file_pac , lista_pac );
-                      cout << endl;
-                  //listar( lista_pac );
-                      cout << endl;
-                  //carregaCon ( file_con , lista_med , lista_pac , lista_con );
-                  //listar( lista_con );
-		                  cin.clear();
-		                  break;
-            default:  cout << "\nOpção desconhecida.\n\n";
-		                  break;
-		      }
-        }
+        case '1': menu_med();
+                  cin.clear();
+                  main_menu();
+                  break;
+        case '2': //menu_utente();
+	                break;
+        case '3': menu_consulta();
+                  cin.clear();
+                  main_menu();
+		              break;
+	      case '4': cout << "A guardar tudo...\n";
+                  savPac ( file_pac , lista_pac );
+                  savMed ( file_med , lista_med );
+                  savEsp ( file_esp , lista_esp );
+                  savCon ( file_con , lista_con );
+                  carregaEsp( file_esp , lista_esp );
+                  carregaMed( file_med , lista_med , lista_esp );
+                  listar( lista_med );
+                  cout << endl;
+                  listar( lista_esp );
+                  carregaPac ( file_pac , lista_pac );
+                  cout << endl;
+                  listar( lista_pac );
+                  cout << endl;
+                  carregaCon ( file_con , lista_med , lista_pac , lista_con );
+                  listar( lista_con );
+		              cin.clear();
+                  main_menu();
+		              break;
+        default:  cout << "\nOpção desconhecida.\n\n";
+                  cin.clear();
+                  main_menu();
+		              break;
       }
     }
-
+  }
 return 0;
 }
 
@@ -183,6 +176,15 @@ case '3': //listar ( lista_med );
 default: cout << "\nOpção desconhecida.\n\n";
 		 break;
 	}}
+}
+
+void main_menu()
+{
+  system("clear");
+  log();
+  cout << "Menu:\n\nInsira o número da opção desejada.\n\n1. Corpo Clínico\n2. Gestão de Utentes\n";
+  cout << "3. Gestão de Consultas\n4. Guardar as alterações\n";
+  cout << "Pressione CRTL-D para sair.\n";
 }
 
 template <class Comparable>void listar( const vector<Comparable *> & v)
