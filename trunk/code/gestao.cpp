@@ -189,7 +189,7 @@ void main_menu()
 {
   system("clear");
   log();
-  cout << "Menu:\n\nInsira o número da opção desejada.\n\n1. Corpo Clínico\n2. Gestão de Utentes\n";
+  cout << "Menu:\n\nInsira o número da opção desejada:\n\n1. Corpo Clínico\n2. Gestão de Utentes\n";
   cout << "3. Gestão de Consultas\n4. Guardar as alterações\n";
   cout << "Pressione CRTL-D para sair.\n";
 }
@@ -200,4 +200,24 @@ template <class Comparable>void listar( const vector<Comparable *> & v)
    cout << *( v.at( i ) ) << endl;
 }
 
- 
+void menu_utente(){
+		
+		system("clear");
+  		log();
+  		cout << "Menu:\n\nInsira o número da opção desejada:\n\n1. Adicionr Utente\n2. Eliminar Utente\n3. Visualizar Utentes\nPressione CRTL-D para voltar ao menu anterior.";
+		
+		char op;
+		cin.clear();
+		cin>>op;
+	
+		if ( ! cin.eof() && isdigit( op ) )
+    		{
+			switch(op){
+
+					case '1': 	cin.clear();
+							insPac(lista_pac);
+							menu_utente();
+							break;
+					case '2' :	cin.clear();
+		}
+}}
