@@ -1364,3 +1364,69 @@ bool altCon( vector<Consulta *> & c , vector<Utente *> & u , vector<Medico * > &
 	}*/
 }
 
+bool ver_Con( vector<Consulta *> & c , vector<Utente *> & u , vector<Medico * > & v )
+{
+  unsigned long ced;
+  int dia, mes, ano , hora , min;
+  char espaco;
+  string tmp;
+  cout << "Insira os dados da consulta que deseja alterar: " << endl;
+  cin.get();
+  cout << "Insira a cédula do Médico : ";
+  try
+  {
+    ced = getLong();
+  }
+  catch (EOI &)
+  {
+    return false;
+  }
+  Medico *ptr_med = find ( ced , v );
+  while ( ptr_med == NULL )
+  {
+    cout << "Médico Inexistente.\nInsira a cédula do Médico : ";
+    try
+    {
+      ced = getLong();
+    }
+    catch (EOI &)
+    {
+      return false;
+    }
+    ptr_med = find ( ced , v );
+  }
+  cout << "Insira a data da consulta separadas por um caracter (no formato dd/mm/aaaa): ";
+  getline( cin , tmp );
+  while (!isDat( tmp ) )
+  {
+    cout << "Data inválida. Insira outra: " << endl;
+    getline( cin , tmp );  
+  }
+  istringstream ss(tmp);
+  ss >> dia >> espaco >> mes >> espaco >> ano;
+  Data d( dia , mes , ano );
+  cout << "Insira a hora da consulta separadas por um caracter (no formato hh:mm : ";
+  getline( cin , tmp );
+  while (!isHor( tmp ) )
+  {
+    cout << "Hora inválida. Insira outra: " << endl;
+    getline( cin , tmp );  
+  }
+  istringstream sss(tmp);
+  sss >> hora >> espaco >> min;
+  Hora h( hora , min );
+  Consulta *ptr =  new Consulta ( ptr_med , NULL , d , h , 0);
+  int pos = findPos( ptr , c );
+  if ( pos == -1 )
+  {
+    cout << "Não foi encontrada uma consulta com estas características. A abortar..." << endl;
+    delete ptr;
+    return false;
+  }
+	
+	vector<Consulta *>::iterator it = find ( ptr, c );
+	cout<<*it;
+	delete ptr;
+        return true;
+
+}
