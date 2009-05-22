@@ -29,6 +29,7 @@ int main()
   }
   main_menu();
   char opcao;
+	cin.clear();
   while( !cin.eof() )
   {
     cin>>opcao;
@@ -40,7 +41,7 @@ int main()
                   cin.clear();
                   main_menu();
                   break;
-        case '2': //menu_utente();
+        case '2': menu_utente();
 	                break;
         case '3': menu_consulta();
                   cin.clear();
