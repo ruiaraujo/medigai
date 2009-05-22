@@ -204,7 +204,7 @@ void menu_utente(){
 		
 		system("clear");
   		log();
-  		cout << "Menu:\n\nInsira o número da opção desejada:\n\n1. Adicionr Utente\n2. Eliminar Utente\n3. Visualizar Utentes\nPressione CRTL-D para voltar ao menu anterior.";
+  		cout << "Menu:\n\nInsira o número da opção desejada:\n\n1. Adicionr Utente\n2. Eliminar Utente\n3. Visualizar Utentes\n4. Alterar Utente\nPressione CRTL-D para voltar ao menu anterior.";
 		
 		char op;
 		cin.clear();
@@ -219,5 +219,18 @@ void menu_utente(){
 							menu_utente();
 							break;
 					case '2' :	cin.clear();
+							//del_pac(lista_pac);
+							menu_utente();
+							break;
+					case '3' : 	cin.clear();
+							listar(lista_pac);
+							menu_utente();
+							break;
+					case '4' :	cin.clear();
+							//alt_Pac(lista_pac);
+							menu_utente();
+							break;
+						
+		
 		}
 }}

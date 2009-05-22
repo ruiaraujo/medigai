@@ -1430,9 +1430,16 @@ bool ver_Con( vector<Consulta *> & c , vector<Utente *> & u , vector<Medico * > 
         return true;
 
 }
-bool del_Pac( unsigned long int ced, vector<Utente *> & u )
+
+bool del_Pac( vector<Utente *> & u )
 {
-  int pos = findPos( ced , u );
+	
+	unsigned long int id;
+	cin.clear();
+	cout<<"Introduza o id do utente:";
+	cin>>id;	
+
+  int pos = findPos( id , u );
   if ( pos == -1) return false;
   if ( pos > (int)( u.size() / 2 ) )
   {
@@ -1449,6 +1456,29 @@ bool del_Pac( unsigned long int ced, vector<Utente *> & u )
       it++;
     u.erase(it);
   }
+  return true;
+}
+bool alt_Pac( vector<Utente *> & u )
+{
+	
+	unsigned long int id;
+	cin.clear();
+	cout<<"Introduza o id do utente:";
+	cin>>id;	
+
+  int pos = findPos( id , u );
+  if ( pos == -1){
+			cout<<"Não foi encontrado o utente.";		
+			 return false;
+		 }
+  
+  
+    vector<Utente *>::iterator it = u.begin();
+    for ( int i = 0 ; i < pos ; i++ )
+      it++;
+    	u.erase(it);
+	insPac(u);
+  
   return true;
 }
 
