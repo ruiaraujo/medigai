@@ -99,7 +99,7 @@ template <class Person, class Time>
 void Horario< Person , Time >::printFrc(ostream & , const vector<Consulta *> & , Time & ) {}
 
 template <class Person, class Time>
-void Horario< Person , Time >::printFrc(ostream & , const vector<Consulta *> &)
+void Horario< Person , Time >::printFrc(ostream & , const vector<Consulta *> & c)
 {
   cout << "Lista de Consulta do ";
   if (type)  cout << "Sr.(a)" << person->getNome() << ":\n";

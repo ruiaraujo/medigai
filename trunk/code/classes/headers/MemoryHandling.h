@@ -37,6 +37,8 @@ bool isDat( string );
 bool isHor( string );
 bool delMed( unsigned long , vector<Medico *> & );
 long getLong();
-
-
+template <class Comparable> unsigned long find_id ( vector<Comparable *> & v );
+bool alt_Pac( vector<Utente *> & u );
+bool del_Pac( vector<Utente *> & u );
+bool ver_Con( vector<Consulta *> & c , vector<Utente *> & u , vector<Medico * > & v );
 //#endif
