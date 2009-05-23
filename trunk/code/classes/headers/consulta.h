@@ -1,3 +1,5 @@
+#ifndef CONSULTA_H
+#define CONSULTA_H
 #include "pessoas.h"
 #include "data.h"
 #include "hora.h"
@@ -31,3 +33,5 @@ class Consulta {
     friend ostream & operator<<( ostream & , Consulta &);
     
 };
+
+#endif

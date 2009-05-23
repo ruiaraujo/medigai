@@ -1,3 +1,5 @@
+#ifndef DEXCEPTION_H
+#define DEXCEPTION_H
 #include <stdexcept>
 #include <exception>
 using std::runtime_error;
@@ -21,3 +23,5 @@ class DataImpossivel : public runtime_error{
   public:
     DataImpossivel(): runtime_error( "Data Impossível!" ) {}
 };
+
+#endif

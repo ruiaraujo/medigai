@@ -1,5 +1,5 @@
-#ifndef MEMORY_H
-#define MEMORY_H
+//#ifndef MEMORY_H
+//#define MEMORY_H
 #include "FileHandling.h"
 #include <fstream>
 #include <iostream>
@@ -39,4 +39,4 @@ bool delMed( unsigned long , vector<Medico *> & );
 long getLong();
 
 
-#endif
+//#endif
