@@ -22,8 +22,8 @@ void menu_con();
 int main()
 {
 
-  cout << "Medigai\nMedical Management for Linux Lovers.\n\n\n\n";
-
+  cout << "Medigai\nMedical Management for Linux Lovers.\n";
+ 
   if ( !criaFile( file_med ) || !criaFile( file_pac) || !criaFile( file_esp) || !criaFile( file_con) )
   {
     cerr << "Erro: Verifique permissões no directório de execução."<<endl;
@@ -42,6 +42,10 @@ int main()
   carregaCon ( file_con , lista_med , lista_pac , lista_con );
   listar( lista_con );
   cout << endl ;
+  Data d(20,4,2000);
+  Medico *prt=find(31, lista_med);
+  Horario<Medico , Data > h(prt, d, 0);
+  h.printMrc(cout, lista_con);
   Menu();
   while ( ! cin.eof() ) 
   {
@@ -200,3 +204,5 @@ template <class Comparable>void listar( const vector<Comparable *> & v)
   for ( int i = 0; i< (int) v.size() ; i++ )
    cout << *( v.at( i ) ) << endl;
 }
+
+

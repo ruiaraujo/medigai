@@ -1,3 +1,5 @@
+#ifndef PESSOAS_H
+#define PESSOAS_H
 #include "convencao.h"
 #include "especialidade.h"
 #include "hora.h"
@@ -73,4 +75,6 @@ class Utente : public Pessoa {
     Utente & operator=(Utente &u);
     friend ostream & operator<<(ostream &, Utente &);
 };
+
+#endif
 

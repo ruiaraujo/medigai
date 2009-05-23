@@ -1437,10 +1437,28 @@ bool del_Pac( vector<Utente *> & u )
 	unsigned long int id;
 	cin.clear();
 	cout<<"Introduza o id do utente:";
-	cin>>id;	
-
+  try
+  {
+    id = getLong();
+  }
+  catch (EOI &)
+  {
+    return false;
+  }
   int pos = findPos( id , u );
-  if ( pos == -1) return false;
+  while ( pos == -1 )
+  {
+    cout << "Utente Inexistente.\nInsira o número identificativo do utente : ";
+    try
+    {
+      id = getLong();
+    }
+    catch (EOI &)
+    {
+      return false;
+    }
+    pos = findPos ( id , u );
+  }
   if ( pos > (int)( u.size() / 2 ) )
   {
     vector<Utente *>::iterator it = u.end();
@@ -1460,24 +1478,35 @@ bool del_Pac( vector<Utente *> & u )
 }
 bool alt_Pac( vector<Utente *> & u )
 {
-	
 	unsigned long int id;
 	cin.clear();
 	cout<<"Introduza o id do utente:";
-	cin>>id;	
-
+  try
+  {
+    id = getLong();
+  }
+  catch (EOI &)
+  {
+    return false;
+  }
   int pos = findPos( id , u );
-  if ( pos == -1){
-			cout<<"Não foi encontrado o utente.";		
-			 return false;
-		 }
-  
-  
-    vector<Utente *>::iterator it = u.begin();
-    for ( int i = 0 ; i < pos ; i++ )
-      it++;
-    	u.erase(it);
-	insPac(u);
+  while ( pos == -1 )
+  {
+    cout << "Utente Inexistente.\nInsira o número identificativo do utente : ";
+    try
+    {
+      id = getLong();
+    }
+    catch (EOI &)
+    {
+      return false;
+    }
+    pos = findPos ( id , u );
+  }
+  vector<Utente *>::iterator it = u.begin();
+  for ( int i = 0 ; i < pos ; i++ , it++ ) ;
+	if ( insPac( u ) )
+	  u.erase(it);
   
   return true;
 }
