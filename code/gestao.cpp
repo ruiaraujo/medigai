@@ -132,7 +132,7 @@ void menu_consulta(){
                   cin.clear();
 		  menu_consulta();
                   break;  
-	case '6' : //ver_Con(lista_con, lista_pac, lista_con);
+	case '6' : ver_Con(lista_con, lista_pac, lista_med);
 		   cin.clear();
 		   menu_consulta();
 		   break;                 
@@ -151,11 +151,11 @@ void menu_med(){
 system("clear");
 
 log();
-
+unsigned long id;
 char op;
 
 cout << "\n\nGestão do Corpo Clínico:\n\nInsira o número da opção desejada.\n\n";
-  cout << "1. Adicionar Médico\n2. Eliminar Médico\n3. Visualisar os médicos\n";
+  cout << "1. Adicionar Médico\n2. Eliminar Médico\n3. Visualisar os médicos\n4. Visualizar id\n";
   cout << "CRTL-D para voltar ao menu anterior.\n";
 cin.clear();
 cin>>op;
@@ -164,22 +164,29 @@ if ( ! cin.eof() && isdigit( op ) )
 switch(op){
 
 case '1': cout << "Insira os Dados do Médico.\n";
-                  insMed( lista_med , lista_esp );
+                  cin.clear();
+		  insMed( lista_med , lista_esp );
                   listar( lista_med );
                   menu_med();
-                  cin.clear();
                   break;
 case '2': cout << "Insira a cédula do médico.\n";
-                  long cedula;
+                  cin.clear();
+		  long cedula;
                   cin >> cedula;
                   delMed ( cedula , lista_med );
                   menu_med();
-                  cin.clear();
                   break;
 case '3': listar ( lista_med );
                   cout << endl;
 	  menu_med();
 	  break;
+case '4': cin.clear();
+	  id=find_id(lista_med);
+	  if(id==0)
+	  cout<<"\nNão foi encontrada um médico com esse nome.\n";
+	  else
+	  cout<<"\nId:"<<id<<endl;
+	 
 
 default: cout << "\nOpção desconhecida.\n\n";
 		 break;
@@ -202,10 +209,10 @@ template <class Comparable>void listar( const vector<Comparable *> & v)
 }
 
 void menu_utente(){
-		
+		unsigned long id;
 		system("clear");
   		log();
-  		cout << "Menu:\n\nInsira o número da opção desejada:\n\n1. Adicionr Utente\n2. Eliminar Utente\n3. Visualizar Utentes\n4. Alterar Utente\nPressione CRTL-D para voltar ao menu anterior.";
+  		cout << "Menu:\n\nInsira o número da opção desejada:\n\n1. Adicionr Utente\n2. Eliminar Utente\n3. Visualizar Utentes\n4. Alterar Utente\n5. Visualizar Id.\n Pressione CRTL-D para voltar ao menu anterior.";
 		
 		char op;
 		cin.clear();
@@ -220,7 +227,7 @@ void menu_utente(){
 							menu_utente();
 							break;
 					case '2' :	cin.clear();
-							//del_pac(lista_pac);
+							del_Pac(lista_pac);
 							menu_utente();
 							break;
 					case '3' : 	cin.clear();
@@ -228,9 +235,15 @@ void menu_utente(){
 							menu_utente();
 							break;
 					case '4' :	cin.clear();
-							//alt_Pac(lista_pac);
+							alt_Pac(lista_pac);
 							menu_utente();
 							break;
+					case '5' :	cin.clear();
+	 						id=find_id(lista_pac);
+	 						if(id==0)
+	 						cout<<"\nNão foi encontrada um utente com esse nome.\n";
+	 						else
+	 						cout<<"\nId:"<<id<<endl;
 						
 		
 		}
