@@ -1510,21 +1510,43 @@ bool alt_Pac( vector<Utente *> & u )
   
   return true;
 }
-template <class Comparable> unsigned long find_id ( vector<Comparable *> & v )
+unsigned long find_id_med ( vector<Medico *> & v )
 {
 	string nome;
 	cin.clear();
 	
 	
-	cout<<"Introduza o nome:";
+	cout<<"Introduza o nome do medico:";
 	getline(cin,nome);	
 	
-	vector<Comparable *>::iterator it = v.begin();
-	vector<Comparable *>::iterator itr = v.end();
+	vector<Medico *>::iterator it = v.begin();
+	vector<Medico *>::iterator itr = v.end();
 	
 	while(it!=itr){
-			if(it->getNome()==nome)
-			return it->getId();
+			if((*it)->getNome()==nome)
+			return (*it)->getId();
+			it++;
+			}
+	if(it==itr){
+			cerr<<"\nNão foi encontrada uma pessoa com esse nome.\n";
+			return 0;
+		   }
+}
+unsigned long find_id_ut ( vector<Utente *> & u )
+{
+	string nome;
+	cin.clear();
+	
+	
+	cout<<"Introduza o nome do utente:";
+	getline(cin,nome);	
+	
+	vector<Utente *>::iterator it = u.begin();
+	vector<Utente *>::iterator itr = u.end();
+	
+	while(it!=itr){
+			if((*it)->getNome()==nome)
+			return (*it)->getId();
 			it++;
 			}
 	if(it==itr){
