@@ -181,7 +181,7 @@ case '3': listar ( lista_med );
 	  menu_med();
 	  break;
 case '4': cin.clear();
-	  id=find_id(lista_med);
+	  id=find_id_med(lista_med);
 	  if(id==0)
 	  cout<<"\nNão foi encontrada um médico com esse nome.\n";
 	  else
@@ -239,7 +239,7 @@ void menu_utente(){
 							menu_utente();
 							break;
 					case '5' :	cin.clear();
-	 						id=find_id(lista_pac);
+	 						id=find_id_ut(lista_pac);
 	 						if(id==0)
 	 						cout<<"\nNão foi encontrada um utente com esse nome.\n";
 	 						else
