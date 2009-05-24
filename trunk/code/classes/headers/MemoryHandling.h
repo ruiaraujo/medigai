@@ -43,6 +43,6 @@ Hora getHora();
 unsigned long find_id_ut ( vector<Utente *> & u );
 unsigned long find_id_med ( vector<Medico *> & v );
 bool alt_Pac( vector<Utente *> & u );
-bool del_Pac( vector<Utente *> & u );
+bool delPac( vector<Utente *> & u );
 bool ver_Con( vector<Consulta *> & c , vector<Medico * > & v );
 #endif

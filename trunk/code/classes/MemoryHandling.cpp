@@ -757,18 +757,17 @@ bool carregaEsp( string m , vector<Especialidade *> & v )
     return false;
   }
   v.clear();
-    string line;
-    while ( ! fin.eof() )
-    {
-      getline( fin, line );
-      if ( ! line.empty() )
-        if ( findEsp ( m , v ) == NULL )
-        {
-          Especialidade * a = new Especialidade( line );
-          v.push_back( a );
-          a->setNom( m );
-        }
-    }
+  string line;
+  while ( ! fin.eof() )
+  {
+    getline( fin, line );
+    if ( ! line.empty() )
+      if ( findEsp ( line , v ) == NULL )
+      {
+        Especialidade * a = new Especialidade( line );
+        v.push_back( a );
+      }
+  }
   return true;
 }
 
@@ -1413,7 +1412,7 @@ bool ver_Con( vector<Consulta *> & c , vector<Medico * > & v )
   return true;
 }
 
-bool del_Pac( vector<Utente *> & u )
+bool delPac( vector<Utente *> & u )
 {
 	
 	unsigned long int id;
