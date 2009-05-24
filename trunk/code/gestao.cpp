@@ -11,7 +11,7 @@ vector<Medico *> lista_med;
 vector<Utente *> lista_pac;
 vector<Especialidade *> lista_esp;
 vector<Consulta *> lista_con;
-
+bool alteracoes = 0;
 void log();
 void menupr();
 void menu_med();
@@ -47,7 +47,7 @@ int main()
                   cin.clear();
                   main_menu();
 		              break;
-	case '4': cout << "A guardar tudo...\n";
+	      case '4': cout << "A guardar tudo...\n";
                   savPac ( file_pac , lista_pac );
                   savMed ( file_med , lista_med );
                   savEsp ( file_esp , lista_esp );
@@ -73,6 +73,24 @@ int main()
                   main_menu();
 		              break;
       }
+    }
+  }
+  if ( alteracoes )
+  {
+    cout << "Provalvelmente há alterações não guardadas. Deseja guardá-las agora(S/N)?"<<endl;
+    cin >> opcao;
+    while (opcao != 'S' && opcao != 'N' && opcao != 's' && opcao != 'n' )
+    {
+      cout << "Opção desconhecida. Insira outra." << endl;
+      cin >> opcao;
+    }
+    if ( opcao == 'S' || opcao == 's' )
+    {
+      cout << "A guardar tudo...\n";
+      savPac ( file_pac , lista_pac );
+      savMed ( file_med , lista_med );
+      savEsp ( file_esp , lista_esp );
+      savCon ( file_con , lista_con );
     }
   }
 return 0;
@@ -114,28 +132,28 @@ void menu_consulta(){
       switch (opcao)
       {
         case '1': cout << "Insira os Dados da Consulta.\n";
-                  insCon( lista_med , lista_pac , lista_con );
+                  if ( insCon( lista_med , lista_pac , lista_con ) != -1 ) alteracoes = true;
                   listar ( lista_con );
                   menu_consulta();
                   cin.clear();
                   break;
         case '2': altCon(lista_con, lista_pac, lista_med);
-		  break;        
+		              break;        
         case '3': cout << "Insira os dados da Consulta:" << endl;
-                  delCon( lista_med , lista_con );
+                  if ( delCon( lista_med , lista_con ) ) alteracoes = true;
                   menu_consulta();
                   cin.clear();
                   break;       
-	case '4': break;
+	      case '4': break;
         case '5': cout << "Lista de Consultas:" << endl;
                   listar ( lista_con );
                   cin.clear();
-		  menu_consulta();
+		              menu_consulta();
                   break;  
-	case '6' : ver_Con(lista_con, lista_pac, lista_med);
-		   cin.clear();
-		   menu_consulta();
-		   break;                 
+	     case '6' : ver_Con(lista_con, lista_med);
+		              cin.clear();
+		              menu_consulta();
+		              break;                 
         default: cout << "\nOpção desconhecida.\n\n";
                  menu_consulta();
                  cin.clear();

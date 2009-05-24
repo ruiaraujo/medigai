@@ -153,9 +153,4 @@ vector<Consulta *> Horario< Person , Time >::get( const vector<Consulta *> & c)
   }
   return lista;
 } 
-
- 
-
 #endif
-
-
