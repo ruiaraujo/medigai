@@ -29,6 +29,8 @@ class Consulta {
     void setHor( const Hora & );
     void setDat( unsigned int , unsigned int , unsigned int );
     void setDat( const Data &);
+    void setMed( Medico * );
+    void setUte( Utente * ); 
     void setPre( float );
     friend ostream & operator<<( ostream & , Consulta &);
     

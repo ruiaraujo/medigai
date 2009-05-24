@@ -177,7 +177,7 @@ void menu_med()
                     cout << "Input inválido. Insira outro preço: ";
                     cin >> cedula;
                   }
-                  if ( delMed ( cedula , lista_med ) ) alteracoes = true;
+                  if ( delMed ( cedula , lista_med , lista_con ) ) alteracoes = true;
                   Menu_med();
                   break;
         case '3': listar ( lista_med );
@@ -317,5 +317,6 @@ void menu_utente()
 template <class Comparable>void listar( const vector<Comparable *> & v)
 {
   for ( int i = 0; i< (int) v.size() ; i++ )
-   cout << *( v.at( i ) ) << endl;
+   if ( v.at( i )->getSis() )
+    cout << *( v.at( i ) ) << endl;
 }
