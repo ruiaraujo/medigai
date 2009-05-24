@@ -1,10 +1,7 @@
 #include "headers/MemoryHandling.h"
 /*
 TO DO:
-Extra:::
-acabar o delMed
-impletar Horario
-acabar de proteger contra eof
+Polish everything
 */
 
 int findPos ( Consulta * con, vector<Consulta *> & c )
@@ -31,6 +28,14 @@ int findPos ( Consulta * con, vector<Consulta *> & c )
   return -1;
 }
 
+vector<Medico *> listEsp( Especialidade * esp, vector<Medico *> & m )
+{
+  vector<Medico *> lista;
+  for (int i = 0 ; i < (int) m.size() ; i++)
+    if ( *esp == ( *m.at( i )->getEspe() ) )
+      lista.push_back( m.at( i ) );
+  return lista;
+}
 
 vector<Consulta *>::iterator find ( Consulta * con, vector<Consulta *> & c )
 {
@@ -106,6 +111,11 @@ bool delCon( vector<Medico *> & v , vector<Consulta *> & c)
   }
   cout << "Insira a data da consulta separadas por um caracter (no formato dd/mm/aaaa): ";
   getline( cin , tmp );
+  if ( cin.eof() )
+  {
+    cin.clear();
+    return false;
+  }
   while (!isDat( tmp ) )
   {
     cout << "Data inválida. Insira outra: " << endl;
@@ -116,6 +126,11 @@ bool delCon( vector<Medico *> & v , vector<Consulta *> & c)
   Data d( dia , mes , ano );
   cout << "Insira a hora da consulta separadas por um caracter (no formato hh:mm : ";
   getline( cin , tmp );
+  if ( cin.eof() )
+  {
+    cin.clear();
+    return false;
+  }
   while (!isHor( tmp ) )
   {
     cout << "Hora inválida. Insira outra: " << endl;
@@ -135,19 +150,49 @@ int insPac ( vector<Utente *> & u)
   float des;
   long apo;
   getline( cin, nome ); //limpar o cin;
+  if ( cin.eof() )
+  {
+    cin.clear();
+    return -1;
+  }
   cout << "Insira o nome do utente: ";
   getline( cin , nome );
+  if ( cin.eof() )
+  {
+    cin.clear();
+    return -1;
+  }
   cout << "Insira o telefone do utente: ";
   getline( cin , tel );
+  if ( cin.eof() )
+  {
+    cin.clear();
+    return -1;
+  }
   while ( ! isNum( tel ) || tel.size() > 9 )
   {
     cout << "Número inválido ou demasiado grande (tem que ser menor de 10 algarismos)\nInsira outro: ";
     getline ( cin , tel );
+    if ( cin.eof() )
+    {
+      cin.clear();
+      return -1;
+    }
   } 
   cout << "Insira a morada: ";
   getline( cin , mor );
+  if ( cin.eof() )
+  {
+    cin.clear();
+    return -1;
+  }
   cout << "Insira a seguradora (escreva ""Sem"" para indicar sem seguro): ";
   getline( cin , seg );
+  if ( cin.eof() )
+  {
+    cin.clear();
+    return -1;
+  }
   if ( seg=="Sem" || seg == "sem" )
   {
     des = 0;
@@ -159,19 +204,39 @@ int insPac ( vector<Utente *> & u)
     {
       cout << "Insira a taxa moderadora que o utente paga : ";
       getline ( cin , tmp );
+      if ( cin.eof() )
+      {
+        cin.clear();
+        return -1;
+      }
       while ( ! isNum( tmp ) || tmp.size() > 10 )
       {
         cout << "Número inválido ou demasiado grande (tem que ser menor de 11 algarismos)\nInsira outro: ";
         getline ( cin , tmp );
+        if ( cin.eof() )
+        {
+          cin.clear();
+          return -1;
+        }
       } 
       istringstream ss( tmp );
       ss >> des; 
       cout << "Insira o número de beneficiario : ";
       getline ( cin , tmp );
+      if ( cin.eof() )
+      {
+        cin.clear();
+        return -1;
+      }
       while ( ! isNum( tmp ) || tmp.size() > 10 )
       {
         cout << "Número inválido ou demasiado grande (tem que ser menor de 11 algarismos)\nInsira outro: ";
         getline ( cin , tmp );
+        if ( cin.eof() )
+        {
+          cin.clear();
+          return -1;
+        }
       }
       istringstream s( tmp );
       s >> apo;
@@ -180,19 +245,39 @@ int insPac ( vector<Utente *> & u)
     {
       cout << "Insira a percentagem que o utente paga : ";
       getline ( cin , tmp );
+      if ( cin.eof() )
+      {
+        cin.clear();
+        return -1;
+      }
       while ( ! isNum( tmp ) || tmp.size() > 2 )
       {
         cout << "Número inválido ou demasiado grande (tem que ser menor de 3 algarismos)\nInsira outro: ";
         getline ( cin , tmp );
+        if ( cin.eof() )
+        {
+          cin.clear();
+          return -1;
+        }
       } 
       istringstream ss( tmp );
       ss >> des; 
       cout << "Insira o número da apólice : ";
       getline ( cin , tmp );
+      if ( cin.eof() )
+      {
+        cin.clear();
+        return -1;
+      }
       while ( ! isNum( tmp ) || tmp.size() > 10 )
       {
         cout << "Número inválido ou demasiado grande (tem que ser menor de 11 algarismos)\nInsira outro: ";
         getline ( cin , tmp );
+        if ( cin.eof() )
+        {
+          cin.clear();
+          return -1;
+        }
       }
       istringstream s( tmp );
       s >> apo;
@@ -640,6 +725,11 @@ int insMed( vector<Medico *>  & v , vector<Especialidade *> & e )
     while ( resposta != 'S' && resposta != 'N' && resposta != 'n' && resposta != 's' )
     {
       cin >> resposta;
+      if ( cin.eof() )
+      {
+        cin.clear();
+        return -1;
+      }
       cout << "Insira uma resposta válida. S para sim e N para não.\n";
     }
     if ( resposta == 'S' || resposta == 's' )
@@ -969,32 +1059,83 @@ bool carregaPac( string m , vector<Utente *> & u )
   return true;
 }
 
-
-bool delMed( const Medico &  )
-{
-
-return false;
-
-}
-bool delMed( unsigned long  ced , vector<Medico *> & v )
+bool delMed( unsigned long  ced , vector<Medico *> & v , vector<Consulta *> & c)
 {
   int pos = findPos( ced , v );
-  if ( pos == -1) return false;
-  if ( pos > (int)( v.size() / 2 ) )
+  vector<Medico *> eq = listEsp ( v.at( pos )->getEspe() , v );
+  if ( pos == -1) return false; 
+  bool consulta = false;
+  for (int i = 0; i < (int) c.size() ; i++ )
   {
-    vector<Medico *>::iterator it = v.end();
-    it--;
-    for ( int i = v.size()-1 ; i > pos ; i-- )
-      it--;
-    v.erase(it);
+    if ( c.at(i)->getMed()->getCed() == ced && c.at(i)->getEst() == 'm' )
+      consulta = true;
   }
-  else
+  if (consulta)
   {
-    vector<Medico *>::iterator it = v.begin();
-    for ( int i = 0 ; i < pos ; i++ )
-      it++;
-    v.erase(it);
+    cout << "Este médico que deseja eliminar tem consultas marcadas.";
+    cout << "Deseja cancelá-las (S para confirmar, N para mudar o médico responsável, U para cancelar ):" << endl;
+    bool wrong = true;
+    while ( wrong )
+    {
+      char opcao;
+      cin >> opcao;
+      if ( cin.eof() )
+      {
+        cin.clear();
+        return false;
+      }
+      switch ( opcao )
+      {
+        case 'S':
+        case 's': v.at( pos )->setSis( false );
+                  for (int i = 0; i < (int) c.size() ; i++ )
+                  {
+                    if ( c.at(i)->getMed()->getCed() == ced && c.at(i)->getEst() == 'm' )
+                    {
+                      Hora h( c.at( i )->getHor() );
+                      Data d( c.at( i )->getDat() );
+                      Medico *ptr = find ( ced , v );
+                      delCon( c , ptr , h , d );
+                    }
+                  }
+                  wrong = false;
+                  break;
+        case 'U':
+        case 'u': wrong = false; 
+                  break;
+        case 'N':
+        case 'n': cout << "Estes são os médicos com a mesma especialidade do médico que eliminou. Escolha um:"<< endl;
+                  listar ( eq );
+                  unsigned long id;
+                  Medico * ptr_m;
+                  ptr_m = NULL;
+                  while (ptr_m == NULL )
+                  {                
+                    try
+                    {
+                      id = getLong();
+                    }
+                    catch (EOI &)
+                    {
+                      return false;
+                    }
+                    if ( ( ptr_m = find( id , eq ) ) == NULL )
+                      cout << "Médico inesxistente na lista de equivalência. Insira a cédula doutro médico: ";
+                  }
+                  v.at( pos )->setSis( false );
+                  for (int i = 0; i < (int) c.size() ; i++ )
+                  {
+                    if ( c.at(i)->getMed()->getCed() == ced && c.at(i)->getEst() == 'm' )
+                      c.at( i )->setMed ( ptr_m );
+                  }
+                  break;
+        default:  cout << "Opção desconhecida. Insira outra: ";
+                  wrong = false;
+                  break;
+      }
+    }            
   }
+  else v.at( pos )->setSis( false );
   return true;
 }
 
@@ -1002,6 +1143,12 @@ void listar ( const vector<Especialidade *> & v )
 {
   for ( int i = 0; i< (int) v.size() ; i++ )
    cout << (* v.at( i ) ).getNom() << endl;
+}
+
+void listar ( const vector<Consulta *> & v )
+{
+  for ( int i = 0; i< (int) v.size() ; i++ )
+    cout << *( v.at( i ) ) << endl;
 }
 
 bool isNum( string s )
