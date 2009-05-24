@@ -1,6 +1,7 @@
-//#ifndef MEMORY_H
-//#define MEMORY_H
+#ifndef MEMORY_H
+#define MEMORY_H
 #include "FileHandling.h"
+#include "horario.h"
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -37,9 +38,10 @@ bool isDat( string );
 bool isHor( string );
 bool delMed( unsigned long , vector<Medico *> & );
 long getLong();
+Hora getHora();
 unsigned long find_id_ut ( vector<Utente *> & u );
 unsigned long find_id_med ( vector<Medico *> & v );
 bool alt_Pac( vector<Utente *> & u );
 bool del_Pac( vector<Utente *> & u );
-bool ver_Con( vector<Consulta *> & c , vector<Utente *> & u , vector<Medico * > & v );
-//#endif
+bool ver_Con( vector<Consulta *> & c , vector<Medico * > & v );
+#endif

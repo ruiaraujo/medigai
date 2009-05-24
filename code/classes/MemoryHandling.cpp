@@ -252,7 +252,7 @@ vector<Consulta *>::iterator insConOrd ( Consulta * con , vector<Consulta *> & c
 int insCon ( vector<Medico *> & v , vector<Utente *> & u , vector<Consulta *> &c )
 {
   string tmp;
-  int hora , min , dia, mes , ano , duracao;
+  int dia, mes , ano , duracao;
   long ced, id;
   float preco;
   cout << "Insira a cédula do Médico: ";
@@ -321,25 +321,33 @@ int insCon ( vector<Medico *> & v , vector<Utente *> & u , vector<Consulta *> &c
   }
   istringstream s(tmp);
   s >> dia >> espaco >> mes >> espaco >> ano;
+  Data d( dia , mes , ano );
+  Horario< Medico , Data > timetable ( ptr_m , d , 0 );
+  vector<Consulta *> tt = timetable.get( c );
   cout << "Insira a hora: ";
-  getline( cin , tmp );
-  if ( cin.eof() )
+  Hora h;
+  try
   {
-    cin.clear();
+      h = getHora();
+  }
+  catch (EOI &)
+  {
     return -1;
   }
-  while (!isHor( tmp ) )
+  while ( h < ptr_m->getIni() || h >=  ptr_m->getFim() )
   {
-    cout << "Hora inválida. Insira outra: " << endl;
-    getline( cin , tmp );
-    if ( cin.eof() )
+    Hora ini(ptr_m->getIni()), fim(ptr_m->getFim());
+    cout << "Hora fora do Horário de trabalho do médico. Deve ser entre as "<< ini << " e as ";
+    cout << fim << endl;
+    try
     {
-      cin.clear();
+      h = getHora();
+    }
+    catch (EOI &)
+    {
       return -1;
-    }  
+    }
   }
-  istringstream ss(tmp);
-  ss >> hora >> espaco >> min;
   if ( ptr_u->getSeg().getSeg() == "Caixa")
   {
     preco = ptr_u->getSeg().getDes();
@@ -377,12 +385,10 @@ int insCon ( vector<Medico *> & v , vector<Utente *> & u , vector<Consulta *> &c
     }
     if ( duracao < (int) ptr_m->getDur() )
     {
-      cout << "Duração abaixo da duração mínima do médico. Insira outra duração: ";
-      cin >> duracao;    
+      cout << "Duração abaixo da duração média do médico. Insira outra duração: ";
+      cin >> duracao;
     } 
   }
-  Hora h( hora , min );
-  Data d ( dia , mes , ano );
   Consulta *con = new Consulta ( ptr_m , ptr_u  , d , h , preco );
   con->setDur( duracao );
   insConOrd( con , c );
@@ -1229,7 +1235,7 @@ long getLong()
   return id;
 }
 
-bool altCon( vector<Consulta *> & c , vector<Utente *> & u , vector<Medico * > & v )
+bool altCon( vector<Consulta *> & c ,vector<Utente * > & u , vector<Medico * > & v )
 {
   unsigned long ced;
   int dia, mes, ano , hora , min;
@@ -1298,79 +1304,15 @@ bool altCon( vector<Consulta *> & c , vector<Utente *> & u , vector<Medico * > &
   delCon( c , ptr_med , h , d );
   delete ptr;
   return true;
-  
-/*
-	unsigned long id;	
-	
-	cout<<"\nIntroduza o id do Utente:";
-	id=getLong();
-	
-	Utente *ptr_u = find( id , u );
-
-	unsigned int hora;
-  	
-	
-	cout<<"\nIntroduza a hora da consulta";
-	cin>>hora;
-	Hora h(hora,0);
-	
-	unsigned int dia;
-  	unsigned int mes;
-  	unsigned int ano;
-	
-	cout<<"\nIntroduza o dia da consulta:";
-	cin>>dia;
-	cout<<"\nIntroduza o mes da consulta:";
-	cin>>mes;
-	cout<<"\nIntroduza o ano da consulta:";
-	cin>>ano;
-	Data a(dia,mes,ano);	
-		
-	//Utente *ptr = new Utente ( nomeut , tel , mor , seg , des , apo );
-	Consulta *ptr =  new Consulta (NULL , ptr_u , a , h , 0);
-	vector<Consulta *>::iterator it = find ( ptr, c );
-	//vector<Utente *>::iterator itr = findPos ( *ptr , u );
-	
-  
-	if ( it == c.end() )
-		  {
-    			cout << "Não foi encontrada uma consulta com estas características. Logo não foi desmarcada nenhuma consulta.\n";
-    			
-  		  }
-	else{
-		cout<<"\nIntroduza o novo dia da consulta:";
-		cin>>dia;
-		cout<<"\nIntroduza o novo mes da consulta:";
-		cin>>mes;
-		cout<<"\nIntroduza o novo ano da consulta:";
-		cin>>ano;
-		Data b(dia,mes,ano);
-		
-		unsigned int hor;
-  	
-	
-		cout<<"\nIntroduza a nova hora da consulta";
-		cin>>hora;
-		Hora nova_hora(hor,0);
-		
-		unsigned long ced;
-		cout<<"\nIntroduza o código do médico:";
-		cin>>ced;
-		Medico *ptr_m = find( ced , v );
-		
-		Consulta *ptr =  new Consulta (ptr_m , ptr_u , b , nova_hora , 0);
-		//(*it)=(*ptr); //definir o operador igual para isto funcionar
-		//listar ( lista_con ); //Falta definires isto
-	}*/
 }
 
-bool ver_Con( vector<Consulta *> & c , vector<Utente *> & u , vector<Medico * > & v )
+bool ver_Con( vector<Consulta *> & c , vector<Medico * > & v )
 {
   unsigned long ced;
-  int dia, mes, ano , hora , min;
+  int dia, mes, ano;
   char espaco;
   string tmp;
-  cout << "Insira os dados da consulta que deseja alterar: " << endl;
+  cout << "Insira os dados da consulta que visualizar: " << endl;
   cin.get();
   cout << "Insira a cédula do Médico : ";
   try
@@ -1406,15 +1348,15 @@ bool ver_Con( vector<Consulta *> & c , vector<Utente *> & u , vector<Medico * > 
   ss >> dia >> espaco >> mes >> espaco >> ano;
   Data d( dia , mes , ano );
   cout << "Insira a hora da consulta separadas por um caracter (no formato hh:mm : ";
-  getline( cin , tmp );
-  while (!isHor( tmp ) )
+  Hora h;
+  try
   {
-    cout << "Hora inválida. Insira outra: " << endl;
-    getline( cin , tmp );  
+    h = getHora();
   }
-  istringstream sss(tmp);
-  sss >> hora >> espaco >> min;
-  Hora h( hora , min );
+  catch (EOI &)
+  {
+    return false;
+  }
   Consulta *ptr =  new Consulta ( ptr_med , NULL , d , h , 0);
   int pos = findPos( ptr , c );
   if ( pos == -1 )
@@ -1425,10 +1367,9 @@ bool ver_Con( vector<Consulta *> & c , vector<Utente *> & u , vector<Medico * > 
   }
 	
 	vector<Consulta *>::iterator it = find ( ptr, c );
-	cout<<*it;
-	delete ptr;
-        return true;
-
+	cout << *it << endl;
+	delete [] ptr;
+  return true;
 }
 
 bool del_Pac( vector<Utente *> & u )
@@ -1513,48 +1454,66 @@ bool alt_Pac( vector<Utente *> & u )
 unsigned long find_id_med ( vector<Medico *> & v )
 {
 	string nome;
-	cin.clear();
-	
-	
 	cout<<"Introduza o nome do medico:";
 	getline(cin,nome);	
-	
+	if ( cin.eof() )
+	{
+	  cin.clear();
+	  return 0;
+	}
 	vector<Medico *>::iterator it = v.begin();
 	vector<Medico *>::iterator itr = v.end();
 	
-	while(it!=itr){
-			if((*it)->getNome()==nome)
-			return (*it)->getId();
-			it++;
-			}
-	if(it==itr){
-			cerr<<"\nNão foi encontrada uma pessoa com esse nome.\n";
-			return 0;
-		   }
+	while( it != itr )
+	{
+    if( ( *it )->getNome() == nome )
+      return ( *it )->getId();
+    it++;
+  }
+  cerr << "\nNão foi encontrada uma pessoa com esse nome.\n";
+  return 0;
 }
+Hora getHora()
+{
+  int hora, min;
+  char espaco;
+  string tmp;
+  getline( cin , tmp );
+  if ( cin.eof() )
+	{
+	  cin.clear();
+	  throw EOI();
+	}
+  while (!isHor( tmp ) )
+  {
+    cout << "Hora inválida. Insira outra: " << endl;
+    getline( cin , tmp );  
+  }
+  istringstream s(tmp);
+  s >> hora >> espaco >> min;
+  Hora h( hora , min ); 
+  return h;
+}
+
 unsigned long find_id_ut ( vector<Utente *> & u )
 {
 	string nome;
-	cin.clear();
-	
-	
 	cout<<"Introduza o nome do utente:";
-	getline(cin,nome);	
-	
+	getline( cin , nome );	
+	if ( cin.eof() )
+	{
+	  cin.clear();
+	  return 0;
+	}
 	vector<Utente *>::iterator it = u.begin();
 	vector<Utente *>::iterator itr = u.end();
 	
-	while(it!=itr){
-			if((*it)->getNome()==nome)
-			return (*it)->getId();
-			it++;
-			}
-	if(it==itr){
-			cerr<<"\nNão foi encontrada uma pessoa com esse nome.\n";
-			return 0;
-		   }
+	while(it!=itr)
+	{
+    if( ( *it )->getNome() == nome )
+      return ( *it )->getId();
+    it++;
+  }
+    cerr << "\nNão foi encontrada uma pessoa com esse nome.\n";
+    return 0;
 }
-	
-	
-
-
