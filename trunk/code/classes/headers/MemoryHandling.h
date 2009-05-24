@@ -38,6 +38,7 @@ bool isDat( string );
 bool isHor( string );
 bool delMed( unsigned long , vector<Medico *> & );
 long getLong();
+bool horNCol ( vector<Consulta *> & , Hora & , const int & , const Hora & , const Hora & );
 Hora getHora();
 unsigned long find_id_ut ( vector<Utente *> & u );
 unsigned long find_id_med ( vector<Medico *> & v );

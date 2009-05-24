@@ -1,7 +1,7 @@
 #include "headers/consulta.h"
 
-Consulta::Consulta(const Consulta &c):  med(c.med) , pac(c.pac), data(c.data), hora(c.hora) , preco(c.preco) , estado('m') {}
-Consulta::Consulta(Medico *m , Utente *u , Data & d , Hora & h , float p ) : med(m),  pac(u) , data(d), hora(h), preco(p) , estado('m') {}
+Consulta::Consulta(const Consulta &c):  med(c.med) , pac(c.pac), data(c.data), hora(c.hora) , duracao(c.duracao), preco(c.preco) , estado('m') {}
+Consulta::Consulta(Medico *m , Utente *u , Data & d , Hora & h , float p ) : med(m),  pac(u) , data(d), hora(h), duracao( m->getDur() ), preco(p) , estado('m') {}
 Medico * Consulta::getMed() const{return med;}
 Utente * Consulta::getUte() const{return pac;}
 Data Consulta::getDat() const{return data;}
