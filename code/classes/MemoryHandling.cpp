@@ -215,6 +215,7 @@ vector<Consulta *>::iterator insConOrd ( Consulta * con , vector<Consulta *> & c
     {
       break;
     }
+  it_f++;
   }
   for ( int i = 0 ; i < (int) c.size() ; i++ ,it++)
   {
@@ -255,6 +256,7 @@ int insCon ( vector<Medico *> & v , vector<Utente *> & u , vector<Consulta *> &c
   int dia, mes , ano , duracao;
   long ced, id;
   float preco;
+  getline(cin, tmp);
   cout << "Insira a cédula do Médico: ";
   try
   {
@@ -274,7 +276,7 @@ int insCon ( vector<Medico *> & v , vector<Utente *> & u , vector<Consulta *> &c
     }
     catch (EOI &)
     {
-      return false;
+      return -1;
     }
     ptr_m = find( ced , v );
   }
@@ -285,7 +287,7 @@ int insCon ( vector<Medico *> & v , vector<Utente *> & u , vector<Consulta *> &c
   }
   catch (EOI &)
   {
-    return false;
+    return -1;
   }
   Utente *ptr_u = find( id , u );
   while ( ptr_u == NULL )
@@ -297,7 +299,7 @@ int insCon ( vector<Medico *> & v , vector<Utente *> & u , vector<Consulta *> &c
     }
     catch (EOI &)
     {
-      return false;
+      return -1;
     }
     ptr_u = find( id , u );
   }
@@ -334,11 +336,14 @@ int insCon ( vector<Medico *> & v , vector<Utente *> & u , vector<Consulta *> &c
   {
     return -1;
   }
-  while ( h < ptr_m->getIni() || h >=  ptr_m->getFim() )
+  while ( !horNCol ( tt , h , ptr_m->getDur() , ptr_m->getIni() , ptr_m->getFim() ) )
   {
     Hora ini(ptr_m->getIni()), fim(ptr_m->getFim());
-    cout << "Hora fora do Horário de trabalho do médico. Deve ser entre as "<< ini << " e as ";
-    cout << fim << endl;
+    if ( h < ini || h > fim )
+      cout << "Hora fora do Horário de trabalho do médico. Deve ser entre as "<< ini << " e as " << fim << endl;
+    else
+      cout << "Consulta incompatível com o horário existente!" << endl;
+    cout  << "Insira outra: ";
     try
     {
       h = getHora();
@@ -354,40 +359,74 @@ int insCon ( vector<Medico *> & v , vector<Utente *> & u , vector<Consulta *> &c
   }
   else
   {
-    cout << "Insira o preço: ";
-    getline ( cin , tmp );
-    if ( cin.eof() )
+    cout << "Insira o preço sem desconto: ";
+    cin >> preco;
+    while ( !cin.good() )
     {
-      cin.clear();
-      return -1;
-    }
-    while ( ! isNum( tmp ) && tmp.size() < 10 )
-    {
-      cout << "Número inválido ou demasiado grande (tem que ser menor de 11 algarismos)\nInsira outro: ";
-      getline ( cin , tmp );
       if ( cin.eof() )
       {
         cin.clear();
+        cout << endl;
         return -1;
       }
+      string lixo;
+      cin.clear();
+      getline ( cin , lixo );
+      cout << "Input inválido. Insira outro preço: ";
+      cin >> preco;
     }
-    istringstream sss( tmp );
-    sss  >> preco;
+    if ( ptr_u->getSeg().getDes() != 0 )
+      preco *= (float)(ptr_u->getSeg().getDes()/100.0);
   }
+  cout << "Preço a ser usado devido ao desconto do utente: " << preco << endl;
+  getline ( cin , tmp);
   cout << "Insira a duração: ";
-  cin >> duracao;
-  while ( duracao >(int) ptr_m->getDurM() || duracao <(int) ptr_m->getDur() )
+  try
+  {
+      duracao = getLong();
+  }
+  catch (EOI &)
+  {
+      return -1;
+  }
+  while ( duracao > (int) ptr_m->getDurM() || duracao <(int) ptr_m->getDur() || !horNCol ( tt , h , duracao , ptr_m->getIni() , ptr_m->getFim() ) )
   {
     if ( duracao > (int) ptr_m->getDurM() )
     {
       cout << "Duração acima da duração máxima do médico. Insira outra duração: ";
-      cin >> duracao;    
+      try
+      {
+        duracao = getLong();
+      }
+      catch (EOI &)
+      {
+        return -1;
+      }
     }
     if ( duracao < (int) ptr_m->getDur() )
     {
       cout << "Duração abaixo da duração média do médico. Insira outra duração: ";
-      cin >> duracao;
+      try
+      {
+        duracao = getLong();
+      }
+      catch (EOI &)
+      {
+        return -1;
+      }
     } 
+    if ( !horNCol ( tt , h , duracao , ptr_m->getIni() , ptr_m->getFim() ) )
+    {
+      cout << "Duração incompatível com o horário existente." << endl;
+      try
+      {
+        duracao = getLong();
+      }
+      catch (EOI &)
+      {
+        return -1;
+      }
+    }
   }
   Consulta *con = new Consulta ( ptr_m , ptr_u  , d , h , preco );
   con->setDur( duracao );
@@ -736,7 +775,8 @@ bool carregaEsp( string m , vector<Especialidade *> & v )
 bool carregaCon( string f , vector<Medico *> & v , vector<Utente *> & u , vector<Consulta *> & c )
 {
   unsigned long ced , id;
-  int dia, mes , ano, duracao , preco , hora , min;
+  int dia, mes , ano, duracao , hora , min;
+  float preco;
   char estado;
   string tmp;
   ifstream fin( f.c_str() );
@@ -797,6 +837,7 @@ bool carregaCon( string f , vector<Medico *> & v , vector<Utente *> & u , vector
       Hora h( hora , min );
       Consulta *ptr = new Consulta( ptr_m , ptr_u , d , h , preco );
       ptr->setEst( estado );
+      ptr->setDur( duracao );
       c.push_back(ptr);
     }
   }
@@ -1516,4 +1557,18 @@ unsigned long find_id_ut ( vector<Utente *> & u )
   }
     cerr << "\nNão foi encontrada uma pessoa com esse nome.\n";
     return 0;
+}
+
+bool horNCol ( vector<Consulta *> & c , Hora & h , const int & duracao , const Hora & ini ,const Hora & fim )
+{
+  vector<Consulta *>::iterator it = c.begin();
+  if (h > fim || h < ini) return false;
+  for (int i = 0 ; i < (int) c.size() ; i++ , it++ )
+  {
+    if ( c.at( i )->getHor() + c.at( i )->getDur() > h &&  c.at( i )->getHor() < h )
+      return false;
+    if (  c.at( i )->getHor() < h + duracao &&  c.at( i )->getHor() > h  )
+      return false;
+  }
+  return true;
 }
