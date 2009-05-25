@@ -478,7 +478,8 @@ int insCon ( vector<Medico *> & v , vector<Utente *> & u , vector<Consulta *> &c
   {
     if ( duracao > (int) ptr_m->getDurM() )
     {
-      cout << "Duração acima da duração máxima do médico. Insira outra duração: ";
+      cout << "Duração acima da duração máxima do médico. Insira outra duração entre" << ptr_m->getDur() << " e ";
+      cout << ptr_m->getDurM() << ": ";
       try
       {
         duracao = getLong();
@@ -490,7 +491,8 @@ int insCon ( vector<Medico *> & v , vector<Utente *> & u , vector<Consulta *> &c
     }
     if ( duracao < (int) ptr_m->getDur() )
     {
-      cout << "Duração abaixo da duração média do médico. Insira outra duração: ";
+      cout << "Duração abaixo da duração média do médico. Insira outra duração entre" << ptr_m->getDur() << " e ";
+      cout << ptr_m->getDurM() << ": ";
       try
       {
         duracao = getLong();
@@ -502,7 +504,9 @@ int insCon ( vector<Medico *> & v , vector<Utente *> & u , vector<Consulta *> &c
     } 
     if ( !horNCol ( tt , h , duracao , ptr_m->getIni() , ptr_m->getFim() ) )
     {
-      cout << "Duração incompatível com o horário existente." << endl;
+      cout << "Duração incompatível com o horário existente." << endl << "Este é o horário existente:" << endl;
+      timetable.print( cout , c );
+      cout << "Insira outra duração: ";
       try
       {
         duracao = getLong();
@@ -1455,20 +1459,40 @@ bool altCon( vector<Consulta *> & c ,vector<Utente * > & u , vector<Medico * > &
   }
   cout << "Insira a data da consulta separadas por um caracter (no formato dd/mm/aaaa): ";
   getline( cin , tmp );
+  if ( cin.eof() )
+  {
+    cin.clear();
+    return false;
+  }
   while (!isDat( tmp ) )
   {
     cout << "Data inválida. Insira outra: " << endl;
-    getline( cin , tmp );  
+    getline( cin , tmp );
+    if ( cin.eof() )
+    {
+      cin.clear();
+      return false;
+    }  
   }
   istringstream ss(tmp);
   ss >> dia >> espaco >> mes >> espaco >> ano;
   Data d( dia , mes , ano );
   cout << "Insira a hora da consulta separadas por um caracter (no formato hh:mm : ";
   getline( cin , tmp );
+  if ( cin.eof() )
+  {
+    cin.clear();
+    return false;
+  }
   while (!isHor( tmp ) )
   {
     cout << "Hora inválida. Insira outra: " << endl;
-    getline( cin , tmp );  
+    getline( cin , tmp );
+    if ( cin.eof() )
+    {
+      cin.clear();
+      return false;
+    }
   }
   istringstream sss(tmp);
   sss >> hora >> espaco >> min;
@@ -1526,10 +1550,20 @@ bool ver_Con( vector<Consulta *> & c , vector<Medico * > & v )
   }
   cout << "Insira a data da consulta separadas por um caracter (no formato dd/mm/aaaa): ";
   getline( cin , tmp );
+  if ( cin.eof() )
+  {
+    cin.clear();
+    return false;
+  }
   while (!isDat( tmp ) )
   {
     cout << "Data inválida. Insira outra: " << endl;
     getline( cin , tmp );  
+    if ( cin.eof() )
+    {
+      cin.clear();
+      return false;
+    }
   }
   istringstream ss(tmp);
   ss >> dia >> espaco >> mes >> espaco >> ano;
@@ -1555,7 +1589,7 @@ bool ver_Con( vector<Consulta *> & c , vector<Medico * > & v )
 	
 	vector<Consulta *>::iterator it = find ( ptr, c );
 	cout << *it << endl;
-	delete [] ptr;
+	delete ptr;
   return true;
 }
 
@@ -1762,6 +1796,28 @@ float preco_con(vector<Consulta *> & c , vector<Medico * > & v ){
 
 }
 
+template<class C> vector <C *> find_Id( vector<C *> & u)
+{
+  string nome;
+  vector<C *> lista;
+	cout<<"Introduza o nome do utente:";
+	getline( cin , nome );	
+	if ( cin.eof() )
+	{
+	  cin.clear();
+	  return lista;
+	}
+	for ( int i = 0; i < (int) u.size(); i++ )
+	  if  ( u.at( i )->getNome() == nome )
+      lista.push_back( u.at( i ) );
+  return lista;
+}
 
+template <class Comparable>void listar( const vector<Comparable *> & v)
+{
+  for ( int i = 0; i< (int) v.size() ; i++ )
+   if ( v.at( i )->getSis() )
+    cout << *( v.at( i ) ) << endl;
+}
 
 

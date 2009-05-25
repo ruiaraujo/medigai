@@ -2,7 +2,7 @@
 
 
 Pessoa::Pessoa (string n, string t, unsigned long i) : nome(n), tel(t), sistema(1) , id(i) {}
-Pessoa::Pessoa (const Pessoa & p) : nome(p.nome), tel(p.tel), id(p.id) {}
+Pessoa::Pessoa (const Pessoa & p) : nome(p.nome), tel(p.tel), sistema(1) , id(p.id){}
 void Pessoa::setNome(string n){nome=n;}
 void Pessoa::setTel(string t){tel=t;}
 string Pessoa::getNome() const {return nome;}
@@ -10,6 +10,7 @@ string Pessoa::getTel() const{return tel;}
 unsigned long Pessoa::getId() const {return id;}
 bool Pessoa::getSis() const {return sistema;}
 void Pessoa::setSis( bool e ) { sistema = e; }
+Pessoa::~Pessoa() {}
 Pessoa & Pessoa::operator=(Pessoa &p)
 {
   if (this != &p)
@@ -20,10 +21,10 @@ Pessoa & Pessoa::operator=(Pessoa &p)
   return *this; 
 }
 
-Medico::Medico (Pessoa &p, Especialidade *e, Hora i, Hora f, unsigned int d=0) : Pessoa(p), espe(e), duracao(d), inicio(i), fim (f) {}
-Medico::Medico (Pessoa &p, Especialidade *e, unsigned int d=0): Pessoa(p), espe(e), duracao(d) {}
-Medico::Medico (string n, string t="", unsigned int d=0, unsigned long c=0): Pessoa(n,t,c), espe(), duracao(d) {}
-Medico::Medico (const Medico &m): Pessoa(m.nome,m.tel, 0), espe(m.espe), duracao(m.duracao) {}
+Medico::Medico (Pessoa &p, Especialidade *e, Hora i, Hora f, unsigned int d=0) : Pessoa(p), espe(e), duracao(d) , dur_max(0), inicio(i), fim (f) {}
+Medico::Medico (Pessoa &p, Especialidade *e, unsigned int d=0): Pessoa(p), espe(e), duracao(d) , dur_max(0) , inicio(0,0) , fim (0,0){}
+Medico::Medico (string n, string t="", unsigned int d=0, unsigned long c=0): Pessoa(n,t,c), espe(NULL) ,  duracao(d) , dur_max(0), inicio(0,0) , fim (0,0){}
+Medico::Medico (const Medico &m): Pessoa(m.nome,m.tel, 0), espe(m.espe), duracao(m.duracao) , dur_max(m.dur_max) , inicio(m.inicio) , fim(m.fim){}
 Medico & Medico::operator=(Medico &m)
 {
   if (this != &m)
