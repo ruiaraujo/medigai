@@ -231,12 +231,12 @@ void menu_consulta()
     	{
       		switch (opcao)
       		{
-        		case '1': cout << "Insira os Dados da Consulta.\n";
-                  		  if ( insCon( lista_med , lista_pac , lista_con ) != -1 ) alteracoes = true;
-                  		  listar ( lista_con );
-                  		  Menu_consulta();
-				  cin.clear();
-				  break;
+        	  case '1': cout << "Insira os Dados da Consulta.\n";
+                 		  if ( insCon( lista_med , lista_pac , lista_con ) != -1 ) alteracoes = true;
+                		  listar ( lista_con );
+                 		  Menu_consulta();
+				              cin.clear();
+				              break;
 
         		case '2': altCon(lista_con, lista_pac, lista_med);
 		                  Menu_consulta();
@@ -249,30 +249,27 @@ void menu_consulta()
 		                  cin.clear();
 		                  break;       
 
-	  	        case '4': Menu_consulta();
+	  	      case '4': Menu_consulta();
 	                	  break;
-	
-		        case '5': cout << "Lista de Consultas:" << endl;
-		                  listar ( lista_con );
-		                  cin.clear();
-			          Menu_consulta();
-                  		  break;  
-	
-			case '6': ver_Con(lista_con, lista_med);
-			          cin.clear();
-			          Menu_consulta();
-			          break;
-
-			case '7': cin.clear();
-				  preco=preco_con(lista_con,lista_med);
-	                 	  if(preco==-1)
-				  cerr<<"Consulta inválida.\n";
-				  cout<<"O valor a pagar pela consulta é:"<<preco<<endl;
-
-      			default: cout << "\nOpção desconhecida.\n\n";
-                 		 Menu_consulta();
-                 		 cin.clear();
-                 		  break;
+            case '5': cout << "Lista de Consultas:" << endl;
+	      	            listar ( lista_con );
+      		            cin.clear();
+      			          Menu_consulta();
+                      break; 	
+			      case '6': ver_Con(lista_con, lista_med);
+			                cin.clear();
+			                Menu_consulta();
+			                break;
+			      case '7': cin.clear();
+				              preco = preco_con(lista_con,lista_med);
+	                    if( preco == -1 )
+				                cerr<<"Consulta inválida.\n";
+				              else
+				                cout<<"O valor a pagar pela consulta é:"<<preco<<endl;
+      			default:  cout << "\nOpção desconhecida.\n\n";
+                      Menu_consulta();
+                      cin.clear();
+                      break;
       		}
     }
   }
