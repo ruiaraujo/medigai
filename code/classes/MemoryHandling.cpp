@@ -1795,8 +1795,10 @@ float preco_con(vector<Consulta *> & c , vector<Medico * > & v ){
   	}
 	
 	vector<Consulta *>::iterator it = find ( ptr, c );
+	char estado='P';
+	(*it)->setEst(estado);
+	preco=(*it)->getPre();
 
-	preco=(*it)->getPre()*(*it)->getDur();
 	
 	return preco;
 
