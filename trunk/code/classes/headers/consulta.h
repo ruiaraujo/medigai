@@ -32,6 +32,7 @@ class Consulta {
     void setMed( Medico * );
     void setUte( Utente * ); 
     void setPre( float );
+    
     friend ostream & operator<<( ostream & , Consulta &);
     
 };
