@@ -207,52 +207,67 @@ void Menu_consulta()
   logotipo();
   cout << "Menu:\n\nInsira o numero da opção desejada." << endl << endl;
   cout << "1. Marcar Consulta\n2. Alterar Consulta\n3. Desmarcar Consulta" << endl;
-  cout << "4. Visualizar Horario\n5. Visualizar Consultas\n6. Ver Consulta\nCRTL-D para voltar ao menu anterior.\n";
+  cout << "4. Visualizar Horario\n5. Visualizar Consultas\n6. Ver Consulta\n6. Visualizar Preço da consulta.\nCRTL-D para voltar ao menu anterior.\n";
 }
 
 void menu_consulta()
 {
-  cin.clear();
-  Menu_consulta();  
-  char opcao;
+  	cin.clear();
+  	Menu_consulta();  
+  	
+	char opcao;
+	float preco;	
+	
   while ( ! cin.eof() ) 
   {
-    cin >> opcao;
-    if ( ! cin.eof() && isdigit( opcao ) )
-    {
-      switch (opcao)
-      {
-        case '1': cout << "Insira os Dados da Consulta.\n";
-                  if ( insCon( lista_med , lista_pac , lista_con ) != -1 ) alteracoes = true;
-                  listar ( lista_con );
-                  Menu_consulta();
-                  cin.clear();
-                  break;
-        case '2': altCon(lista_con, lista_pac, lista_med);
-		              Menu_consulta();
-		              cin.clear();
-		              break;        
-        case '3': cout << "Insira os dados da Consulta:" << endl;
-                  if ( delCon( lista_med , lista_con ) ) alteracoes = true;
-                  Menu_consulta();
-                  cin.clear();
-                  break;       
-	      case '4': Menu_consulta();
-	                break;
-        case '5': cout << "Lista de Consultas:" << endl;
-                  listar ( lista_con );
-                  cin.clear();
-		              Menu_consulta();
-                  break;  
-	     case '6' : ver_Con(lista_con, lista_med);
-		              cin.clear();
-		              Menu_consulta();
-		              break;                 
-        default: cout << "\nOpção desconhecida.\n\n";
-                 Menu_consulta();
-                 cin.clear();
-                 break;
-      }
+    	cin >> opcao;
+    	if ( ! cin.eof() && isdigit( opcao ) )
+    	{
+      		switch (opcao)
+      		{
+        		case '1': cout << "Insira os Dados da Consulta.\n";
+                  		  if ( insCon( lista_med , lista_pac , lista_con ) != -1 ) alteracoes = true;
+                  		  listar ( lista_con );
+                  		  Menu_consulta();
+				  cin.clear();
+				  break;
+
+        		case '2': altCon(lista_con, lista_pac, lista_med);
+		                  Menu_consulta();
+		                  cin.clear();
+		                  break;        
+
+		        case '3': cout << "Insira os dados da Consulta:" << endl;
+		                  if ( delCon( lista_med , lista_con ) ) alteracoes = true;
+		                  Menu_consulta();
+		                  cin.clear();
+		                  break;       
+
+	  	        case '4': Menu_consulta();
+	                	  break;
+	
+		        case '5': cout << "Lista de Consultas:" << endl;
+		                  listar ( lista_con );
+		                  cin.clear();
+			          Menu_consulta();
+                  		  break;  
+	
+			case '6': ver_Con(lista_con, lista_med);
+			          cin.clear();
+			          Menu_consulta();
+			          break;
+
+			case '7': cin.clear();
+				  preco=preco_con(lista_con,lista_med);
+	                 	  if(preco==-1)
+				  cerr<<"Consulta inválida.\n";
+				  cout<<"O valor a pagar pela consulta é:"<<preco<<endl;
+
+      			default: cout << "\nOpção desconhecida.\n\n";
+                 		 Menu_consulta();
+                 		 cin.clear();
+                 		  break;
+      		}
     }
   }
   cin.clear();
@@ -275,40 +290,41 @@ void menu_utente()
 	  cin >> op;
 		if ( ! cin.eof() && isdigit( op ) )
     {
-			switch(op)
-			{
-        case '1': insPac(lista_pac);
-                  Menu_utente();
-                  cin.clear();
-                  break;
-        case '2': delPac( lista_pac );
-							    Menu_utente();
-							    cin.clear();
-							    break;
-        case '3': cin.clear();
-                  listar(lista_pac);
-                  Menu_utente();
-                  cin.clear();
-                  break;
-        case '4': alt_Pac(lista_pac);
-                  Menu_utente();
-                  cin.clear();
-                  break;
-        case '5': unsigned long id;                  
-                  id = find_id_ut( lista_pac );
-                  if ( id == 0 ) 
-                    cout << "\nNão foi encontrada um utente com esse nome.\n";
-                  else
-                    cout << "\nId:" << id << endl;
-                  cout << "Enter para continuar...";
-                  cin.clear();
-                  cin.get();
-                  Menu_utente();
-                  break;
-        default:  cout << "Opção Desconhecida. Insira outra opção.\nEnter para continuar: ";
-		              cin.clear();
-		              Menu_utente();
-		              break;
+	switch(op)
+		{
+        		case '1': insPac(lista_pac);
+        		          Menu_utente();
+                		  cin.clear();
+                		  break;
+        		case '2': delPac( lista_pac );
+		  		  Menu_utente();
+		  		  cin.clear();
+		  		  break;
+        		case '3': cin.clear();
+                  		  listar(lista_pac);
+                  		  Menu_utente();
+                  		  cin.clear();
+                  		  break;
+        		case '4': alt_Pac(lista_pac);
+                  		  Menu_utente();
+                  		  cin.clear();
+                  		  break;
+        		case '5': unsigned long id;                  
+                  		  id = find_id_ut( lista_pac );
+                  		  if ( id == 0 ) 
+                    		  cout << "\nNão foi encontrada um utente com esse nome.\n";
+                  		  else
+                    		  cout << "\nId:" << id << endl;
+                  		  cout << "Enter para continuar...";
+                  		  cin.clear();
+                  		  cin.get();
+                  		  Menu_utente();
+                  		  break;
+			
+        		default:  cout << "Opção Desconhecida. Insira outra opção.\nEnter para continuar: ";
+		                  cin.clear();
+		                  Menu_utente();
+		                  break;
       }
     }
   }

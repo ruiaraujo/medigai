@@ -1718,3 +1718,90 @@ bool horNCol ( vector<Consulta *> & c , Hora & h , const int & duracao , const H
   }
   return true;
 }
+float preco_con(vector<Consulta *> & c , vector<Medico * > & v ){
+
+		unsigned long ced;
+  		int dia, mes, ano;
+  		char espaco;
+  		string tmp;
+		float preco;  		
+	
+		cout << "Insira os dados da consulta a pagar: " << endl;
+  		cin.get();
+  		cout << "Insira a cédula do Médico : ";
+  
+		try
+ 		{
+    			ced = getLong();
+  		}
+  		catch (EOI &)
+  		{
+    			return -1;
+  		}
+  
+		Medico *ptr_med = find ( ced , v );
+ 		
+	 while ( ptr_med == NULL )
+ 	 {
+    		cout << "Médico Inexistente.\nInsira a cédula do Médico : ";
+    	try
+    	{
+      		ced = getLong();
+    	}
+    	catch (EOI &)
+    	{
+      		return false;
+    	}
+    	
+	ptr_med = find ( ced , v );
+  	}
+  
+	cout << "Insira a data da consulta separadas por um caracter (no formato dd/mm/aaaa): ";
+  	getline( cin , tmp );
+  	
+	while (!isDat( tmp ) )
+  	{
+    		cout << "Data inválida. Insira outra: " << endl;
+    		getline( cin , tmp );  
+  	}
+  
+
+	istringstream ss(tmp);
+  
+	ss >> dia >> espaco >> mes >> espaco >> ano;
+  	
+	Data d( dia , mes , ano );
+  	
+	cout << "Insira a hora da consulta separadas por um caracter (no formato hh:mm : ";
+  	
+	Hora h;
+  	
+	try
+ 	{
+    		h = getHora();
+  	}
+  	catch (EOI &)
+  	{
+    		return false;
+  	}
+  
+	Consulta *ptr =  new Consulta ( ptr_med , NULL , d , h , 0);
+  	int pos = findPos( ptr , c );
+  	if ( pos == -1 )
+  	{
+    	cout << "Não foi encontrada uma consulta com estas características. A abortar..." << endl;
+    	delete ptr;
+    	return -1;
+  	}
+	
+	vector<Consulta *>::iterator it = find ( ptr, c );
+
+	preco=(*it)->getPre()*(*it)->getDur();
+	
+	return preco;
+
+}
+
+
+
+
