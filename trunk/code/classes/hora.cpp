@@ -1,6 +1,6 @@
 #include "headers/hora.h"
 
-Hora::Hora(unsigned int h,unsigned  int m) {
+Hora::Hora(unsigned int h,unsigned  int m): hora(h) , min(m) {
   try
   {
     setHor(h);

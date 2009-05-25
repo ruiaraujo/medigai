@@ -18,6 +18,7 @@ class Pessoa {
     Pessoa (const Pessoa &);
     void setNome(string);
     void setTel(string);
+    virtual ~Pessoa() = 0;
     string getNome() const;
     string getTel() const;
     void setSis(bool);
@@ -40,6 +41,7 @@ class Medico : public Pessoa {
     Medico (Pessoa &, Especialidade *, Hora, Hora, unsigned int);
     Medico (string, string, unsigned int, unsigned long);
     Medico (const Medico &);
+    ~Medico() {}
     Especialidade * getEspe() const;
     Hora getIni() const;
     Hora getFim() const;
@@ -64,6 +66,7 @@ class Utente : public Pessoa {
     Utente(string, string , string, string, float, unsigned long);
     Utente(string, string , string, string, float, unsigned long , unsigned long);
     Utente(const Utente &);
+    ~Utente() {}
     void setMor(string);
     void setSeg(string, float);
     void setSeg(float);

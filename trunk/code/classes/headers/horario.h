@@ -43,8 +43,8 @@ void Horario< Person , Time >::print(ostream & os, const vector<Consulta *> & c 
       if ( person->getId() == c.at( i )->getUte()->getId() && time == c.at( i )->getDat() )
       {
         Hora h( c.at( i )->getHor() );
-        cout << h << " , com o Dr.(a) " << c.at(i)->getMed()->getNome();
-        cout << " de " << c.at(i)->getMed()->getEspe()->getNom()<< endl;
+        os << h << " , com o Dr.(a) " << c.at(i)->getMed()->getNome();
+        os << " de " << c.at(i)->getMed()->getEspe()->getNom()<< endl;
       }
   }
   else
@@ -52,8 +52,11 @@ void Horario< Person , Time >::print(ostream & os, const vector<Consulta *> & c 
     for ( int i = 0 ; i < (int) c.size(); i++ )
       if ( person->getId() == c.at( i )->getMed()->getId() && time == c.at( i )->getDat() )
       {
-        Hora h( c.at( i )->getHor() );
-        cout << h << " , com o Sr.(a) " << c.at(i)->getUte()->getNome() << endl;
+        if ( person->getId() == c.at( i + 1 )->getMed()->getId() && time == c.at( i + 1 )->getDat() )
+        {
+        Hora ini( c.at( i )->getHor() ), fim( c.at( i )->getHor() + c.at( i )->getDur() );
+        os << ini << "| Sr.(a) " << c.at(i)->getUte()->getNome() << endl;
+        }
       }
   }
 }

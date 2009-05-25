@@ -1,8 +1,5 @@
-#include "classes/headers/MemoryHandling.h"
 #include "classes/headers/horario.h"
-#include <vector>
-#include <cstdlib>
-#include<iostream>
+
 
 using namespace std;
 
@@ -95,21 +92,25 @@ int main()
   }
   if ( alteracoes )
   {
-    cout << "Provalvelmente há alterações não guardadas. Deseja guardá-las agora(S/N)?"<<endl;
+    cin.clear();
+    cout << "Há alterações não guardadas. Deseja guardá-las agora(S/N)?"<<endl;
     cin >> opcao;
     while (opcao != 'S' && opcao != 'N' && opcao != 's' && opcao != 'n' )
     {
-      cout << "Opção desconhecida. Insira outra." << endl;
       cin >> opcao;
+      if ( opcao == 'S' || opcao == 's' )
+      {
+        cout << "A guardar tudo...\n";
+        savPac ( file_pac , lista_pac );
+        savMed ( file_med , lista_med );
+        savEsp ( file_esp , lista_esp );
+        savCon ( file_con , lista_con );
+      }
+      else
+        cout << "Opção desconhecida. Insira outra (S/N)." << endl;
+      cin.clear();
     }
-    if ( opcao == 'S' || opcao == 's' )
-    {
-      cout << "A guardar tudo...\n";
-      savPac ( file_pac , lista_pac );
-      savMed ( file_med , lista_med );
-      savEsp ( file_esp , lista_esp );
-      savCon ( file_con , lista_con );
-    }
+    
   }
 return 0;
 }
@@ -117,14 +118,14 @@ return 0;
 void logotipo(){
 
 cout<<"******************************************************************************"<<endl;
-cout<<"*    __          __   ____   ________  ( )  _______        ______       ( )  *"<<endl;
-cout<<"*   |  \\        /  | |____| |  __    |  _  |  _____|      /  __  \\       _   *"<<endl;
-cout<<"*   |  |\\      /|  | |____  | |  |   | | | | |           /  /  \\  \\     | |  *"<<endl;
-cout<<"*   |  | \\    / |  | |____| | |  |   | | | | |_____     /  /____\\  \\    | |  *"<<endl;
-cout<<"*   |  |  \\  /  |  | |____  | |__|   | | | | |_____|   /  /______\\  \\   | |  *"<<endl;
-cout<<"*   |__|   \\/   |__| |____| |________| |_| |_______|  /__/        \\__\\  |_|  *"<<endl;
+cout<<"*   __          __   _____   ________  (_)  _______        ______       (_)  *"<<endl;
+cout<<"*  |  \\        /  | | ____| |  __    |  _  |  _____|      /  __  \\       _   *"<<endl;
+cout<<"*  |  |\\      /|  | | |___  | |  |   | | | | | ____      /  /  \\  \\     | |  *"<<endl;
+cout<<"*  |  | \\    / |  | | ____| | |  |   | | | | | |___|    /  /____\\  \\    | |  *"<<endl;
+cout<<"*  |  |  \\  /  |  | | |___  | |__|   | | | | |___|_|   /  /______\\  \\   | |  *"<<endl;
+cout<<"*  |__|   \\/   |__| |_____| |________| |_| |_______|  /__/        \\__\\  |_|  *"<<endl;
 cout<<"*                                                                            *"<<endl; 
-cout<<"*                 Medical Management for Linux Lovers.                       *"<<endl;
+cout<<"*                   Medical Management for Linux Lovers.                     *"<<endl;
 cout<<"*                                                                            *"<<endl;
 cout<<"******************************************************************************"<<endl;
 
@@ -144,7 +145,7 @@ void Menu_med()
 {
   system("clear");
   logotipo();
-  cout << "\n\nGestão do Corpo Clínico:\n\nInsira o número da opção desejada.\n\n";
+  cout << "\nGestão do Corpo Clínico:\n\nInsira o número da opção desejada.\n\n";
   cout << "1. Adicionar Médico\n2. Eliminar Médico\n3. Visualisar os médicos\n4. Visualizar id\n";
   cout << "CRTL-D para voltar ao menu anterior.\n";
 }
@@ -160,8 +161,10 @@ void menu_med()
     {
       switch(op)
       {
-        case '1': cout << "Insira os Dados do Médico.\n";
+        case '1': cout << endl << endl << "Insira os Dados do Médico.\n";
                   cin.clear();
+		              system("clear");
+		              logotipo();
 		              if ( insMed( lista_med , lista_esp ) != -1) alteracoes = true;
                   listar( lista_med );
                   Menu_med();
@@ -231,7 +234,9 @@ void menu_consulta()
     	{
       		switch (opcao)
       		{
-        	  case '1': cout << "Insira os Dados da Consulta.\n";
+        	  case '1': system( "clear" );
+        	            logotipo();
+        	            cout << "Insira os Dados da Consulta.\n";
                  		  if ( insCon( lista_med , lista_pac , lista_con ) != -1 ) alteracoes = true;
                 		  listar ( lista_con );
                  		  Menu_consulta();
