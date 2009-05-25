@@ -1638,28 +1638,7 @@ bool alt_Pac( vector<Utente *> & u )
   
   return true;
 }
-unsigned long find_id_med ( vector<Medico *> & v )
-{
-	string nome;
-	cout<<"Introduza o nome do medico:";
-	getline(cin,nome);	
-	if ( cin.eof() )
-	{
-	  cin.clear();
-	  return 0;
-	}
-	vector<Medico *>::iterator it = v.begin();
-	vector<Medico *>::iterator itr = v.end();
-	
-	while( it != itr )
-	{
-    if( ( *it )->getNome() == nome )
-      return ( *it )->getId();
-    it++;
-  }
-  cerr << "\nNão foi encontrada uma pessoa com esse nome.\n";
-  return 0;
-}
+
 Hora getHora()
 {
   int hora, min;
@@ -1682,28 +1661,7 @@ Hora getHora()
   return h;
 }
 
-unsigned long find_id_ut ( vector<Utente *> & u )
-{
-	string nome;
-	cout<<"Introduza o nome do utente:";
-	getline( cin , nome );	
-	if ( cin.eof() )
-	{
-	  cin.clear();
-	  return 0;
-	}
-	vector<Utente *>::iterator it = u.begin();
-	vector<Utente *>::iterator itr = u.end();
-	
-	while(it!=itr)
-	{
-    if( ( *it )->getNome() == nome )
-      return ( *it )->getId();
-    it++;
-  }
-    cerr << "\nNão foi encontrada uma pessoa com esse nome.\n";
-    return 0;
-}
+
 
 bool horNCol ( vector<Consulta *> & c , Hora & h , const int & duracao , const Hora & ini ,const Hora & fim )
 {

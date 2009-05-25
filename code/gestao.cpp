@@ -152,6 +152,7 @@ void menu_med()
 {
   Menu_med();
   char op;
+  vector <Medico *> ced;
   while ( !cin.eof() )
   {
     cin>>op;
@@ -185,14 +186,19 @@ void menu_med()
                   Menu_med();
                   break;
         case '4': cin.clear();
-                  unsigned long id;
-	                id = find_id_med(lista_med);
-	                if ( id == 0 )
+                  ced =  find_Id(lista_med);
+	                if ( ced.empty() )
 	                  cout << "\nNão foi encontrada um médico com esse nome.\n";
 	                else
-	                  cout << "\nId:" << id << endl;
+	                {
+	                  cout << "\nLista de Médicos Possíveis:\n" << endl;
+	                  listar( ced );
+	                }
+	                cout << "Enter para continuar...";
+                  cin.clear();
+                  cin.get();
+                  Menu_med();
 	                break;
-	                Menu_med();
 	      default:  cout << "\nOpção desconhecida.\n\n";
 		              Menu_med();
 		              break;
@@ -284,6 +290,7 @@ void menu_utente()
 {
   Menu_utente();
   char op;
+  vector<Utente *> id;
   cin.clear();
 	while ( !cin.eof() )
 	{
@@ -309,12 +316,15 @@ void menu_utente()
                   		  Menu_utente();
                   		  cin.clear();
                   		  break;
-        		case '5': unsigned long id;                  
-                  		  id = find_id_ut( lista_pac );
-                  		  if ( id == 0 ) 
+        		case '5':              
+                  		  id = find_Id( lista_pac );
+                  		  if ( id.empty() ) 
                     		  cout << "\nNão foi encontrada um utente com esse nome.\n";
                   		  else
-                    		  cout << "\nId:" << id << endl;
+                  		  {
+                    		  cout << "\nLista de Utentes possíveis:" <<  endl;
+                    		  listar ( id ); 
+                  		  }
                   		  cout << "Enter para continuar...";
                   		  cin.clear();
                   		  cin.get();
@@ -328,6 +338,24 @@ void menu_utente()
       }
     }
   }
+}
+
+
+template<class C> vector <C *> find_Id( vector<C *> & u)
+{
+  string nome;
+  vector<C *> lista;
+	cout<<"Introduza o nome do utente:";
+	getline( cin , nome );	
+	if ( cin.eof() )
+	{
+	  cin.clear();
+	  return lista;
+	}
+	for ( int i = 0; i < (int) u.size(); i++ )
+	  if  ( u.at( i )->getNome() == nome )
+      lista.push_back( u.at( i ) );
+  return lista;
 }
 
 template <class Comparable>void listar( const vector<Comparable *> & v)
