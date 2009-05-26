@@ -6,7 +6,7 @@ all:  pessoas.o consulta.o convencao.o hora.o data.o file.o especialidade.o mem.
 	$(CXX) hora.o data.o pessoas.o consulta.o convencao.o gestaoteste.o file.o especialidade.o horario.o mem.o -o gestao
 
 gestao:  pessoas.o consulta.o convencao.o hora.o data.o file.o especialidade.o mem.o horario.o gestao.o
-	$(CXX) hora.o data.o pessoas.o consulta.o convencao.o gestao.o file.o especialidade.o horario.o mem.o -o gestao
+	$(CXX) hora.o data.o pessoas.o consulta.o convencao.o gestao.o file.o especialidade.o horario.o mem.o -o builds/gestao
 	
 gestao.o: gestao.cpp
 	$(CXX) $(CXXFLAGS) gestao.cpp -o gestao.o
@@ -49,7 +49,7 @@ consulta.o: classes/headers/consulta.h classes/consulta.cpp
 
 
 win32: pessoasm.o consultam.o convencaom.o horam.o datam.o filem.o especialidadem.o memm.o horariom.o gestaom.o
-	$(CX) horam.o datam.o pessoasm.o consultam.o convencaom.o gestaom.o filem.o especialidadem.o horariom.o memm.o -o gestao.exe
+	$(CX) horam.o datam.o pessoasm.o consultam.o convencaom.o gestaom.o filem.o especialidadem.o horariom.o memm.o -o builds/gestao.exe
 
 gestaom.o: gestao.cpp
 	$(CX) $(CXXFLAGS) gestao.cpp -o gestaom.o
