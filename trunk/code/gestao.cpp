@@ -16,7 +16,7 @@ bool alteracoes = 0;
 void menu_med();
 void menu_utente();
 void menu_consulta();
-
+void pauseM();
 
 
 //Texto dos Menus
@@ -78,6 +78,7 @@ int main()
                   cout << endl;
                   carregaCon ( file_con , lista_med , lista_pac , lista_con );
                   listar( lista_con );
+                  alteracoes = false;
                   getline( cin , lixo );
 		              cout << "Enter para continuar...";
 		              cin.get();
@@ -216,17 +217,14 @@ void Menu_consulta()
   logotipo();
   cout << "Menu:\n\nInsira o numero da opção desejada." << endl << endl;
   cout << "1. Marcar Consulta\n2. Alterar Consulta\n3. Desmarcar Consulta" << endl;
-  cout << "4. Visualizar Horario\n5. Visualizar Consultas\n6. Ver Consulta\n6. Visualizar Preço da consulta.\nCRTL-D para voltar ao menu anterior.\n";
+  cout << "4. Visualizar Horario\n5. Visualizar Consultas\n6. Ver Consulta\n7. Pagar a consulta.\nCRTL-D para voltar ao menu anterior.\n";
 }
 
 void menu_consulta()
 {
-  	cin.clear();
-  	Menu_consulta();  
-  	
-	char opcao;
-	float preco;	
-	
+  cin.clear();
+  Menu_consulta();    	
+	char opcao;	
   while ( ! cin.eof() ) 
   {
     	cin >> opcao;
@@ -266,11 +264,9 @@ void menu_consulta()
 			                Menu_consulta();
 			                break;
 			      case '7': cin.clear();
-				              preco = preco_con(lista_con,lista_med);
-	                    if( preco == -1 )
-				                cerr<<"Consulta inválida.\n";
-				              else
-				                cout<<"O valor a pagar pela consulta é:"<<preco<<endl;
+				              if ( pagarCon(lista_con,lista_med) ) alteracoes = true;
+	                    Menu_consulta();
+	                    break;
       			default:  cout << "\nOpção desconhecida.\n\n";
                       Menu_consulta();
                       cin.clear();
@@ -342,6 +338,12 @@ void menu_utente()
   }
 }
 
+void pauseM()
+{
+  cin.clear();
+  cout << endl << "Enter para continuar: ";
+  cin.get();
+}
 
 template<class C> vector <C *> find_Id( vector<C *> & u)
 {
