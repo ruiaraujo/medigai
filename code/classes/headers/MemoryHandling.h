@@ -45,5 +45,5 @@ Hora getHora();
 bool alt_Pac( vector<Utente *> & u );
 bool delPac( vector<Utente *> & u );
 bool ver_Con( vector<Consulta *> & c , vector<Medico * > & v );
-float preco_con(vector<Consulta *> & c , vector<Medico * > & v );
+bool pagarCon(vector<Consulta *> & c , vector<Medico * > & v );
 #endif
