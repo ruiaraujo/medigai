@@ -1,5 +1,6 @@
 CXX = g++
 CXXFLAGS =  -c -Wall  -Wextra -Weffc++ 	# -O3 
+CX = i586-mingw32msvc-g++
 
 all:  pessoas.o consulta.o convencao.o hora.o data.o file.o especialidade.o mem.o horario.o gestaoteste.o
 	$(CXX) hora.o data.o pessoas.o consulta.o convencao.o gestaoteste.o file.o especialidade.o horario.o mem.o -o gestao
@@ -45,6 +46,46 @@ medico.o: medico.h medico.cpp
 
 consulta.o: classes/headers/consulta.h classes/consulta.cpp
 	$(CXX) $(CXXFLAGS) classes/consulta.cpp -o consulta.o
+
+
+win32: pessoasm.o consultam.o convencaom.o horam.o datam.o filem.o especialidadem.o memm.o horariom.o gestaom.o
+	$(CX) horam.o datam.o pessoasm.o consultam.o convencaom.o gestaom.o filem.o especialidadem.o horariom.o memm.o -o gestao.exe
+
+gestaom.o: gestao.cpp
+	$(CX) $(CXXFLAGS) gestao.cpp -o gestaom.o
+
+memm.o: classes/headers/MemoryHandling.h classes/MemoryHandling.cpp 
+	$(CX) $(CXXFLAGS) classes/MemoryHandling.cpp  -o memm.o
+	
+filem.o: classes/headers/FileHandling.h classes/FileHandling.cpp 
+	$(CX) $(CXXFLAGS) classes/FileHandling.cpp  -o filem.o
+	
+datam.o: classes/headers/data.h classes/data.cpp
+	$(CX) $(CXXFLAGS) classes/data.cpp -o datam.o
+  
+horam.o: classes/headers/hora.h classes/hora.cpp
+	$(CX) $(CXXFLAGS) classes/hora.cpp -o horam.o
+
+especialidadem.o: classes/headers/especialidade.h classes/especialidade.cpp
+	$(CX) $(CXXFLAGS) classes/especialidade.cpp -o especialidadem.o
+
+horariom.o: classes/headers/horario.h classes/horario.cpp
+	$(CX) $(CXXFLAGS) classes/horario.cpp -o horariom.o
+
+convencaom.o: classes/headers/convencao.h classes/convencao.cpp
+	$(CX) $(CXXFLAGS) classes/convencao.cpp -o convencaom.o
+
+pessoasm.o: classes/headers/pessoas.h classes/pessoas.cpp
+	$(CX) $(CXXFLAGS) classes/pessoas.cpp -o pessoasm.o
+  
+utentem.o:  convencao.o utente.h utente.cpp
+	$(CX) $(CXXFLAGS) utente.cpp -o utentem.o
+  
+medicom.o: medico.h medico.cpp
+	$(CX) $(CXXFLAGS) medico.cpp -o medicom.o
+
+consultam.o: classes/headers/consulta.h classes/consulta.cpp
+	$(CX) $(CXXFLAGS) classes/consulta.cpp -o consultam.o	
 
 clean:
 	rm -f *.o gestao
