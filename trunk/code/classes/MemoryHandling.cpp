@@ -4,6 +4,95 @@ TO DO:
 Polish everything
 */
 
+float precoMedioP( vector<Utente *> & v , vector<Consulta *> & c)
+{
+  long ced;
+  cout << "Insira o identificador do utente: ";
+  try
+  {
+    ced = getLong();
+  }
+  catch (EOI &)
+  {
+    return false;
+  }
+  Utente *ptr_u = find( ced , v );
+  while (ptr_u == NULL )
+  {
+    cout << "Utente Inesxistente. Insira o identificador do utente: ";
+    try
+    {
+      ced = getLong();
+    }
+    catch (EOI &)
+    {
+      return false;
+    }
+    ptr_u = find( ced , v );
+  }
+  float total = 0.0;
+  int dur_total = 0;
+  for ( int i = 0 ; i < (int) c.size() ; i++ )
+  {
+    if ( c.at( i )->getUte()->getId() == ptr_u->getId() )
+    {
+      total += c.at( i )->getPre();
+      dur_total += c.at( i )->getDur();
+    }  
+  }
+  total /= (float)dur_total;
+  if ( dur_total != 0 )
+    cout << "Preço médio que o Sr.(a) " << ptr_u->getNome() << " paga por minuto é " << total << "€." << endl;
+  else 
+    cout << "Este utente ainda não efectou consultas logo não sabemos quanto é a sua média." << endl;
+  return total;
+}
+
+
+float precoMedio( vector<Medico *> & v , vector<Consulta *> & c)
+{
+  long ced;
+  cout << "Insira a cédula do médico: ";
+  try
+  {
+    ced = getLong();
+  }
+  catch (EOI &)
+  {
+    return false;
+  }
+  Medico *ptr_m = find( ced , v );
+  while (ptr_m == NULL )
+  {
+    cout << "Médico Inesxistente. Insira a cédula do Médico: ";
+    try
+    {
+      ced = getLong();
+    }
+    catch (EOI &)
+    {
+      return false;
+    }
+    ptr_m = find( ced , v );
+  }
+  float total = 0.0;
+  int dur_total = 0;
+  for ( int i = 0 ; i < (int) c.size() ; i++ )
+  {
+    if ( c.at( i )->getMed()->getCed() == ptr_m->getCed() )
+    {
+      total += c.at( i )->getPre();
+      dur_total += c.at( i )->getDur();
+    }  
+  }
+  total /= (float)dur_total;
+  if ( dur_total != 0 )
+    cout << "Preço médio por minuto que o Dr.(a) " << ptr_m->getNome() << " cobra é " << total << "€." << endl;
+  else 
+    cout << "Este médico ainda não efectou consultas logo não sabemos quanto é a sua média." << endl;
+  return total;
+}
+
 int findPos ( Consulta * con, vector<Consulta *> & c )
 {
   for ( int i = 0 ; i < (int) c.size() ; i++ )
@@ -124,7 +213,7 @@ bool delCon( vector<Medico *> & v , vector<Consulta *> & c)
   istringstream ss(tmp);
   ss >> dia >> espaco >> mes >> espaco >> ano;
   Data d( dia , mes , ano );
-  cout << "Insira a hora da consulta separadas por um caracter (no formato hh:mm : ";
+  cout << "Insira a hora da consulta separadas por um caracter (no formato hh:mm ): ";
   getline( cin , tmp );
   if ( cin.eof() )
   {
@@ -149,18 +238,23 @@ int insPac ( vector<Utente *> & u)
   string nome, tel, seg, mor , tmp;
   float des;
   long apo;
-  getline( cin, nome ); //limpar o cin;
-  if ( cin.eof() )
-  {
-    cin.clear();
-    return -1;
-  }
+  //getline( cin, nome ); //limpar o cin;
   cout << "Insira o nome do utente: ";
   getline( cin , nome );
   if ( cin.eof() )
   {
     cin.clear();
     return -1;
+  }
+  while ( nome.empty() )
+  {
+    cout << "O nome não deve estar em branco." << endl << "Insira outra vez: ";
+    getline( cin , nome );
+    if ( cin.eof() )
+    {
+      cin.clear();
+      return -1;
+    }
   }
   cout << "Insira o telefone do utente: ";
   getline( cin , tel );
@@ -193,8 +287,9 @@ int insPac ( vector<Utente *> & u)
     cin.clear();
     return -1;
   }
-  if ( seg=="Sem" || seg == "sem" )
+  if ( seg=="Sem" || seg == "sem" || seg.empty() )
   {
+    seg = "Sem";
     des = 0;
     apo = 0;
   }
@@ -259,7 +354,7 @@ int insPac ( vector<Utente *> & u)
           cin.clear();
           return -1;
         }
-      } 
+      }
       istringstream ss( tmp );
       ss >> des; 
       cout << "Insira o número da apólice : ";
@@ -425,9 +520,12 @@ int insCon ( vector<Medico *> & v , vector<Utente *> & u , vector<Consulta *> &c
   {
     Hora ini(ptr_m->getIni()), fim(ptr_m->getFim());
     if ( h < ini || h > fim )
-      cout << "Hora fora do Horário de trabalho do médico. Deve ser entre as "<< ini << " e as " << fim << endl;
+      cout << "Hora fora do Horário de trabalho do médico. Deve ser entre as  "<< ini << " e as " << fim << endl;
     else
+    {
       cout << "Consulta incompatível com o horário existente!" << endl;
+      timetable.print( cout , c);
+    }
     cout  << "Insira outra: ";
     try
     {
@@ -715,8 +813,17 @@ int insMed( vector<Medico *>  & v , vector<Especialidade *> & e )
   if (ptr == NULL)
   {
     ptr = new Medico ( nome , tel , duracao , cedula );
-    ptr->setIni( inicio );
-    ptr->setFim( fim );
+    if ( inicio <= fim )
+    {
+      ptr->setIni( inicio );
+      ptr->setFim( fim );
+    }
+    else
+    {
+      cout << "Hora final anterior à inicial. A trocar automaticamente... Porque o sistema não está preparado para médicos que trabalhem à noite." << endl;
+      ptr->setIni( fim );
+      ptr->setFim( inicio );    
+    }
     ptr->setEspe( esp );
     ptr->setDurM( dur_max );
     insMedOrd( ptr , v );
@@ -1143,7 +1250,7 @@ bool delMed( unsigned long  ced , vector<Medico *> & v , vector<Consulta *> & c)
   }
   if (consulta)
   {
-    cout << "Este médico que deseja eliminar tem consultas marcadas.";
+    cout << "Este médico que deseja eliminar tem consultas marcadas." << endl;
     cout << "Deseja cancelá-las (S para confirmar, N para mudar o médico responsável, U para cancelar ):" << endl;
     bool wrong = true;
     while ( wrong )
@@ -1241,7 +1348,7 @@ bool isNum( string s )
         return false;
     return true;
   }
-  else {cout << "s="<<s << endl;return false;}
+  else return false;
 }
 
 bool isDat ( string s )
@@ -1554,7 +1661,7 @@ bool altCon( vector<Consulta *> & c ,vector<Utente * > & u , vector<Medico * > &
   istringstream ss(tmp);
   ss >> dia >> espaco >> mes >> espaco >> ano;
   Data d( dia , mes , ano );
-  cout << "Insira a hora da consulta separadas por um caracter (no formato hh:mm : ";
+  cout << "Insira a hora da consulta separadas por um caracter (no formato hh:mm ): ";
   getline( cin , tmp );
   if ( cin.eof() )
   {
@@ -1645,7 +1752,7 @@ bool ver_Con( vector<Consulta *> & c , vector<Medico * > & v )
   istringstream ss(tmp);
   ss >> dia >> espaco >> mes >> espaco >> ano;
   Data d( dia , mes , ano );
-  cout << "Insira a hora da consulta separadas por um caracter (no formato hh:mm : ";
+  cout << "Insira a hora da consulta separadas por um caracter (no formato hh:mm ): ";
   Hora h;
   try
   {
@@ -1663,16 +1770,15 @@ bool ver_Con( vector<Consulta *> & c , vector<Medico * > & v )
     delete ptr;
     return false;
   }
-	
-	vector<Consulta *>::iterator it = find ( ptr, c );
-	cout << *it << endl;
+	Hora h1 = h + c.at( pos )->getDur();
+	cout << endl << "Dr.(ª) " << c.at( pos )->getMed()->getNome() << " no dia " <<  d << " às " << h << " até ";
+	cout << h1  << "com o Sr.(ª) " << c.at( pos )->getUte()->getNome() << endl;
 	delete ptr;
   return true;
 }
 
-bool delPac( vector<Utente *> & u )
+bool delPac( vector<Utente *> & u , vector<Consulta *> & c)
 {
-	
 	unsigned long int id;
 	cin.clear();
 	cout<<"Introduza o id do utente:";
@@ -1698,7 +1804,31 @@ bool delPac( vector<Utente *> & u )
     }
     pos = findPos ( id , u );
   }
-  if ( pos > (int)( u.size() / 2 ) )
+  bool consulta = false;
+  for (int i = 0; i < (int) c.size() ; i++ )
+  {
+    if ( c.at(i)->getUte()->getId() == id && c.at(i)->getEst() == 'm' )
+      consulta = true;
+  }
+  if (consulta)
+  {
+    cout << "Este utente tem consultas marcadas. A desmarcar..."  << endl;
+    u.at( pos )->setSis( false );
+    for (int i = 0; i < (int) c.size() ; i++ )
+    {
+      if ( c.at(i)->getUte()->getId() == id && c.at(i)->getEst() == 'm' )
+      {
+        Hora h( c.at( i )->getHor() );
+        Data d( c.at( i )->getDat() );
+        Medico * ptr = c.at(i)->getMed();
+        delCon( c , ptr , h , d );
+        i--;
+      }
+    }
+  }
+  else u.at( pos )->setSis( false );
+  
+/*  if ( pos > (int)( u.size() / 2 ) )
   {
     vector<Utente *>::iterator it = u.end();
     it--;
@@ -1713,11 +1843,17 @@ bool delPac( vector<Utente *> & u )
       it++;
     u.erase(it);
   }
+  return true;*/
+  
   return true;
 }
 bool alt_Pac( vector<Utente *> & u )
 {
+  string nome, tel, seg, mor , tmp;
+  float des;
+  long apo;
 	unsigned long int id;
+	cin.get();
 	cin.clear();
 	cout<<"Introduza o id do utente:";
   try
@@ -1742,11 +1878,158 @@ bool alt_Pac( vector<Utente *> & u )
     }
     pos = findPos ( id , u );
   }
-  vector<Utente *>::iterator it = u.begin();
-  for ( int i = 0 ; i < pos ; i++ , it++ ) ;
-	if ( insPac( u ) )
-	  u.erase(it);
   
+ /* vector<Utente *>::iterator it = u.begin();
+  for ( int i = 0 ; i < pos ; i++ , it++ ) ;
+  int n =  insPac( u );
+	if ( n != -1 )
+	{
+	  u.at( n )->setUN( id );
+	  u.erase(it);
+  }*/
+  cout << "Insira o nome do utente: ";
+  getline( cin , nome );
+  if ( cin.eof() )
+  {
+    cin.clear();
+    return -1;
+  }
+  while ( nome.empty() )
+  {
+    cout << "O nome não deve estar em branco." << endl << "Insira outra vez: ";
+    getline( cin , nome );
+    if ( cin.eof() )
+    {
+      cin.clear();
+      return -1;
+    }
+  }
+  cout << "Insira o telefone do utente: ";
+  getline( cin , tel );
+  if ( cin.eof() )
+  {
+    cin.clear();
+    return -1;
+  }
+  while ( ! isNum( tel ) || tel.size() > 9 )
+  {
+    cout << "Número inválido ou demasiado grande (tem que ser menor de 10 algarismos)\nInsira outro: ";
+    getline ( cin , tel );
+    if ( cin.eof() )
+    {
+      cin.clear();
+      return -1;
+    }
+  } 
+  cout << "Insira a morada: ";
+  getline( cin , mor );
+  if ( cin.eof() )
+  {
+    cin.clear();
+    return -1;
+  }
+  cout << "Insira a seguradora (escreva ""Sem"" para indicar sem seguro): ";
+  getline( cin , seg );
+  if ( cin.eof() )
+  {
+    cin.clear();
+    return -1;
+  }
+  if ( seg=="Sem" || seg == "sem" || seg.empty() )
+  {
+    seg = "Sem";
+    des = 0;
+    apo = 0;
+  }
+  else
+  {
+    if ( seg == "Caixa" )
+    {
+      cout << "Insira a taxa moderadora que o utente paga : ";
+      getline ( cin , tmp );
+      if ( cin.eof() )
+      {
+        cin.clear();
+        return -1;
+      }
+      while ( ! isNum( tmp ) || tmp.size() > 10 )
+      {
+        cout << "Número inválido ou demasiado grande (tem que ser menor de 11 algarismos)\nInsira outro: ";
+        getline ( cin , tmp );
+        if ( cin.eof() )
+        {
+          cin.clear();
+          return -1;
+        }
+      } 
+      istringstream ss( tmp );
+      ss >> des; 
+      cout << "Insira o número de beneficiario : ";
+      getline ( cin , tmp );
+      if ( cin.eof() )
+      {
+        cin.clear();
+        return -1;
+      }
+      while ( ! isNum( tmp ) || tmp.size() > 10 )
+      {
+        cout << "Número inválido ou demasiado grande (tem que ser menor de 11 algarismos)\nInsira outro: ";
+        getline ( cin , tmp );
+        if ( cin.eof() )
+        {
+          cin.clear();
+          return -1;
+        }
+      }
+      istringstream s( tmp );
+      s >> apo;
+    }
+    else
+    {
+      cout << "Insira a percentagem que o utente paga : ";
+      getline ( cin , tmp );
+      if ( cin.eof() )
+      {
+        cin.clear();
+        return -1;
+      }
+      while ( ! isNum( tmp ) || tmp.size() > 2 )
+      {
+        cout << "Número inválido ou demasiado grande (tem que ser menor de 3 algarismos)\nInsira outro: ";
+        getline ( cin , tmp );
+        if ( cin.eof() )
+        {
+          cin.clear();
+          return -1;
+        }
+      }
+      istringstream ss( tmp );
+      ss >> des; 
+      cout << "Insira o número da apólice : ";
+      getline ( cin , tmp );
+      if ( cin.eof() )
+      {
+        cin.clear();
+        return -1;
+      }
+      while ( ! isNum( tmp ) || tmp.size() > 10 )
+      {
+        cout << "Número inválido ou demasiado grande (tem que ser menor de 11 algarismos)\nInsira outro: ";
+        getline ( cin , tmp );
+        if ( cin.eof() )
+        {
+          cin.clear();
+          return -1;
+        }
+      }
+      istringstream s( tmp );
+      s >> apo;
+    }
+  }
+  u.at( pos )->setNome( nome );
+  u.at( pos )->setMor( mor ) ;
+  u.at( pos )->setTel( tel );
+  u.at( pos )->setSeg( seg , des , apo );
   return true;
 }
 
@@ -1777,7 +2060,8 @@ Hora getHora()
 bool horNCol ( vector<Consulta *> & c , Hora & h , const int & duracao , const Hora & ini ,const Hora & fim )
 {
   vector<Consulta *>::iterator it = c.begin();
-  if (h > fim || h < ini) return false;
+  Hora h0 = h + duracao;
+  if (h > fim || h < ini  || h0 > fim ) return false;
   for (int i = 0 ; i < (int) c.size() ; i++ , it++ )
   {
     if ( c.at( i )->getHor() + c.at( i )->getDur() > h &&  c.at( i )->getHor() < h )
@@ -1840,7 +2124,7 @@ bool pagarCon(vector<Consulta *> & c , vector<Medico * > & v )
   istringstream s(tmp);
   s >> dia >> espaco >> mes >> espaco >> ano;
   Data d( dia , mes , ano );
-	cout << "Insira a hora da consulta separadas por um caracter (no formato hh:mm : ";
+	cout << "Insira a hora da consulta separadas por um caracter (no formato hh:mm ): ";
   Hora h;
   try
  	{
@@ -1858,8 +2142,12 @@ bool pagarCon(vector<Consulta *> & c , vector<Medico * > & v )
     delete ptr;
     return false;
   }
-  c.at( pos )->setEst('p' );
-  cout << "Consulta Efectuada e paga." << endl;
+  if (  c.at( pos )->getEst() != 'p' || c.at( pos )->getEst() != 'P' )
+  {
+    c.at( pos )->setEst('p' );
+    cout << "Consulta Efectuada e paga." << endl;
+  }
+  else cout << "Esta consulta já foi paga anteriormente." << endl;
   return true;
 }
 

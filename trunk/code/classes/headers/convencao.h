@@ -14,7 +14,7 @@ class Convencao{
      Convencao (const Convencao &);
      void setSeg(string);
      void setDes(float);
-     void setAPo(unsigned long);
+     void setApo(unsigned long);
      unsigned long getApo() const;
      string getSeg() const;
      float getDes() const;

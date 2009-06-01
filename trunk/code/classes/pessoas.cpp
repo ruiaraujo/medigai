@@ -54,6 +54,7 @@ Utente::Utente(string n, string t, string m , string seg = "", float d= 0.0, uns
 Utente::Utente(string n, string t, string m , string seg = "", float d= 0.0, unsigned long a=0, unsigned long i=0): Pessoa(n,t, i),morada(m),seguro(seg,d,a){}
 void Utente::setMor(string m ){morada = m;}
 void Utente::setSeg(string s, float d){seguro.setSeg(s);seguro.setDes(d);}
+void Utente::setSeg(string s, float d , unsigned long a){seguro.setSeg(s);seguro.setDes(d);seguro.setApo(a);}
 void Utente::setSeg(float d){seguro.setDes(d);}
 void Utente::setSeg(string s){seguro.setSeg(s);}
 string Utente::getMor() const {return morada;}

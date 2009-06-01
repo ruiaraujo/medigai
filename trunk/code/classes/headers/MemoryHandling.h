@@ -43,8 +43,10 @@ long getLong();
 bool horNCol ( vector<Consulta *> & , Hora & , const int & , const Hora & , const Hora & );
 Hora getHora();
 bool alt_Pac( vector<Utente *> & u );
-bool delPac( vector<Utente *> & u );
+bool delPac( vector<Utente *> & u , vector<Consulta *> & );
 bool ver_Con( vector<Consulta *> & c , vector<Medico * > & v );
 bool pagarCon(vector<Consulta *> & c , vector<Medico * > & v );
 bool horario_med( vector<Medico *> & , vector<Consulta *> & );
+float precoMedio( vector<Medico *> & , vector<Consulta *> & c);
+float precoMedioP( vector<Utente *> & v , vector<Consulta *> & c);
 #endif
