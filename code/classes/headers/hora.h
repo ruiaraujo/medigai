@@ -2,6 +2,7 @@
 #define HORA_H
 
 #include <iostream>
+#include <iomanip>
 #include "HoraExceptions.h"
 
 using namespace std;

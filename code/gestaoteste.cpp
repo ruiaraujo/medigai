@@ -32,6 +32,7 @@ int main()
   char opcao;
   carregaEsp( file_esp , lista_esp );
   carregaMed( file_med , lista_med , lista_esp );
+    cout << "1";
   listar( lista_med );
   cout << endl;
   listar( lista_esp );
@@ -40,12 +41,16 @@ int main()
   listar( lista_pac );
   cout << endl;
   carregaCon ( file_con , lista_med , lista_pac , lista_con );
+      cout << "1";
   listar( lista_con );
   cout << endl ;
   Data d(20,4,2000);
-  Medico *prt=find(31, lista_med);
+    cout << "14";
+  Medico *prt = find(31, lista_med);
+  cout << "13";
   Horario<Medico , Data > h(prt, d, 0);
-  h.printMrc(cout, lista_con);
+  h.print(cout, lista_con);
+  cout << "2";
   Menu();
   while ( ! cin.eof() ) 
   {
@@ -143,7 +148,7 @@ void menu_med()
         case '2': cout << "Insira a cédula do médico.\n";
                   long cedula;
                   cin >> cedula;
-                  delMed ( cedula , lista_med );
+                  delMed ( cedula , lista_med , lista_con );
                   Menu_med();
                   cin.clear();
                   break;

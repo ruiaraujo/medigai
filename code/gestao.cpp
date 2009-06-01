@@ -84,12 +84,15 @@ int main()
 		              cin.get();
 		              main_menu();
 		              break;
-        default:  cout << "\nOpção desconhecida.\n\n";
+        default:  cout << "\nOpção desconhecida.\n";
+                  cin.get();
+                  pauseM();
                   cin.clear();
                   main_menu();
 		              break;
       }
     }
+    main_menu();
   }
   if ( alteracoes )
   {
@@ -136,7 +139,7 @@ void main_menu()
 {
   system("clear");
   logotipo();
-  cout << "Menu:\n\nInsira o número da opção desejada:\n\n1. Corpo Clínico\n2. Gestão de Utentes\n";
+  cout << "\nMenu:\n\nInsira o número da opção desejada:\n\n1. Corpo Clínico\n2. Gestão de Utentes\n";
   cout << "3. Gestão de Consultas\n4. Guardar as alterações\n";
   cout << "Pressione CRTL-D para sair.\n";
 }
@@ -148,6 +151,7 @@ void Menu_med()
   logotipo();
   cout << "\nGestão do Corpo Clínico:\n\nInsira o número da opção desejada.\n\n";
   cout << "1. Adicionar Médico\n2. Eliminar Médico\n3. Visualisar os médicos\n4. Visualizar id\n";
+  cout << "5. Visualizar tempo médio de consulta\n6. Visualizar preço médio de consulta"  << endl;  
   cout << "CRTL-D para voltar ao menu anterior.\n";
 }
 void menu_med()
@@ -168,6 +172,7 @@ void menu_med()
 		              logotipo();
 		              if ( insMed( lista_med , lista_esp ) != -1) alteracoes = true;
                   listar( lista_med );
+                  pauseM();
                   Menu_med();
                   break;
         case '2': cout << "Insira a cédula do médico.\n";
@@ -183,13 +188,19 @@ void menu_med()
                     cin >> cedula;
                   }
                   if ( delMed ( cedula , lista_med , lista_con ) ) alteracoes = true;
+                  cin.get();
+                  pauseM();
                   Menu_med();
                   break;
-        case '3': listar ( lista_med );
+        case '3': cout << endl << "Lista de Médicos:" << endl;
+                  listar ( lista_med );
                   cout << endl;
+                  cin.get();
+                  pauseM();
                   Menu_med();
                   break;
         case '4': cin.clear();
+                  cin.get();
                   ced =  find_Id(lista_med);
 	                if ( ced.empty() )
 	                  cout << "\nNão foi encontrada um médico com esse nome.\n";
@@ -198,12 +209,12 @@ void menu_med()
 	                  cout << "\nLista de Médicos Possíveis:\n" << endl;
 	                  listar( ced );
 	                }
-	                cout << "Enter para continuar...";
-                  cin.clear();
-                  cin.get();
+	                pauseM();
                   Menu_med();
 	                break;
-	      default:  cout << "\nOpção desconhecida.\n\n";
+	      default:  cout << "\nOpção desconhecida.\n";
+	                cin.get();
+		              pauseM();
 		              Menu_med();
 		              break;
       }
@@ -217,7 +228,8 @@ void Menu_consulta()
   logotipo();
   cout << "Menu:\n\nInsira o numero da opção desejada." << endl << endl;
   cout << "1. Marcar Consulta\n2. Alterar Consulta\n3. Desmarcar Consulta" << endl;
-  cout << "4. Visualizar Horario\n5. Visualizar Consultas\n6. Ver Consulta\n7. Pagar a consulta.\nCRTL-D para voltar ao menu anterior.\n";
+  cout << "4. Visualizar Horario\n5. Visualizar Consultas\n6. Ver Consulta\n7. Pagar a consulta." << endl;
+  cout << "CRTL-D para voltar ao menu anterior.\n";
 }
 
 void menu_consulta()
@@ -240,34 +252,39 @@ void menu_consulta()
                  		  Menu_consulta();
 				              cin.clear();
 				              break;
-
         		case '2': altCon(lista_con, lista_pac, lista_med);
 		                  Menu_consulta();
 		                  cin.clear();
 		                  break;        
-
 		        case '3': cout << "Insira os dados da Consulta:" << endl;
 		                  if ( delCon( lista_med , lista_con ) ) alteracoes = true;
 		                  Menu_consulta();
 		                  cin.clear();
 		                  break;       
-
-	  	      case '4': Menu_consulta();
-	                	  break;
-            case '5': cout << "Lista de Consultas:" << endl;
+	  	      case '4': horario_med( lista_med , lista_con );
+	  	                pauseM();
+	    	              Menu_consulta();
+	    	           	  break;
+	    	    case '5': cout << "Lista de Consultas:" << endl;
 	      	            listar ( lista_con );
+	      	            cin.get();
+	      	            pauseM();
       		            cin.clear();
       			          Menu_consulta();
                       break; 	
 			      case '6': ver_Con(lista_con, lista_med);
+			                pauseM();
 			                cin.clear();
 			                Menu_consulta();
 			                break;
 			      case '7': cin.clear();
 				              if ( pagarCon(lista_con,lista_med) ) alteracoes = true;
+				              pauseM();
 	                    Menu_consulta();
 	                    break;
-      			default:  cout << "\nOpção desconhecida.\n\n";
+      			default:  cout << "\nOpção desconhecida." << endl;
+      			          cin.get();
+      			          pauseM();
                       Menu_consulta();
                       cin.clear();
                       break;
@@ -281,7 +298,10 @@ void Menu_utente()
 {
   system("clear");
   logotipo();
-  cout << "Menu:\n\nInsira o número da opção desejada:\n\n1. Adicionr Utente\n2. Eliminar Utente\n3. Visualizar Utentes\n4. Alterar Utente\n5. Visualizar Id.\n Pressione CRTL-D para voltar ao menu anterior.";
+  cout << "Menu:\n\nInsira o número da opção desejada:\n\n1. Adicionr Utente\n";
+  cout << "2. Eliminar Utente\n3. Visualizar Utentes\n4. Alterar Utente\n5. Visualizar Id.\n";
+  cout << "6. Visualizar tempo médio de consulta\n7. Visualizar preço médio de consulta"  << endl;  
+  cout << "Pressione CRTL-D para voltar ao menu anterior." << endl;
 }
 
 void menu_utente()
@@ -295,42 +315,42 @@ void menu_utente()
 	  cin >> op;
 		if ( ! cin.eof() && isdigit( op ) )
     {
-	switch(op)
-		{
-        		case '1': insPac(lista_pac);
-        		          Menu_utente();
-                		  cin.clear();
-                		  break;
-        		case '2': delPac( lista_pac );
-		  		  Menu_utente();
-		  		  cin.clear();
-		  		  break;
-        		case '3': cin.clear();
-                  		  listar(lista_pac);
-                  		  Menu_utente();
-                  		  cin.clear();
-                  		  break;
-        		case '4': alt_Pac(lista_pac);
-                  		  Menu_utente();
-                  		  cin.clear();
-                  		  break;
-        		case '5':              
-                  		  id = find_Id( lista_pac );
-                  		  if ( id.empty() ) 
-                    		  cout << "\nNão foi encontrada um utente com esse nome.\n";
-                  		  else
-                  		  {
-                    		  cout << "\nLista de Utentes possíveis:" <<  endl;
-                    		  listar ( id ); 
-                  		  }
-                  		  cout << "Enter para continuar...";
-                  		  cin.clear();
-                  		  cin.get();
-                  		  Menu_utente();
-                  		  break;
+    switch(op)
+      {
+        case '1': insPac(lista_pac);
+                  Menu_utente();
+             		  cin.clear();
+             		  break;
+        case '2': delPac( lista_pac );
+                  Menu_utente();
+                  cin.clear();
+                  break;
+        case '3': cin.clear();
+                  listar(lista_pac);
+                  pauseM();
+                  Menu_utente();
+                  cin.clear();
+                  break;
+        case '4': alt_Pac(lista_pac);
+                  Menu_utente();
+                  cin.clear();
+                  break;
+        case '5':    
+                  id = find_Id( lista_pac );
+                  if ( id.empty() ) 
+                    cout << "\nNão foi encontrada um utente com esse nome.\n";
+                  else
+                  {
+                    cout << "\nLista de Utentes possíveis:" <<  endl;
+                    listar ( id ); 
+                  }
+                  pauseM();
+                  Menu_utente();
+                  break;
 			
-        		default:  cout << "Opção Desconhecida. Insira outra opção.\nEnter para continuar: ";
-		                  cin.clear();
+        		default:  cout << "Opção Desconhecida." << endl;
+        		          cin.get();
+        		          pauseM();
 		                  Menu_utente();
 		                  break;
       }
@@ -349,7 +369,7 @@ template<class C> vector <C *> find_Id( vector<C *> & u)
 {
   string nome;
   vector<C *> lista;
-	cout<<"Introduza o nome do utente:";
+	cout<<"Introduza o nome da pessoa:";
 	getline( cin , nome );	
 	if ( cin.eof() )
 	{
@@ -357,7 +377,7 @@ template<class C> vector <C *> find_Id( vector<C *> & u)
 	  return lista;
 	}
 	for ( int i = 0; i < (int) u.size(); i++ )
-	  if  ( u.at( i )->getNome() == nome )
+	  if  ( u.at( i )->getNome().find( nome ) != string::npos )
       lista.push_back( u.at( i ) );
   return lista;
 }

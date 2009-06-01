@@ -2,11 +2,11 @@ CXX = g++
 CXXFLAGS =  -c -Wall  -Wextra -Weffc++ 	# -O3 
 CX = i586-mingw32msvc-g++
 
-all:  pessoas.o consulta.o convencao.o hora.o data.o file.o especialidade.o mem.o horario.o gestaoteste.o
+all:  pessoas.o consulta.o convencao.o hora.o data.o file.o especialidade.o horario.o gestaoteste.o
 	$(CXX) hora.o data.o pessoas.o consulta.o convencao.o gestaoteste.o file.o especialidade.o horario.o mem.o -o gestao
 
-gestao:  pessoas.o consulta.o convencao.o hora.o data.o file.o especialidade.o mem.o horario.o gestao.o
-	$(CXX) hora.o data.o pessoas.o consulta.o convencao.o gestao.o file.o especialidade.o horario.o mem.o -o builds/gestao
+gestao:  pessoas.o consulta.o convencao.o hora.o data.o file.o especialidade.o  horario.o gestao.o
+	$(CXX) hora.o data.o pessoas.o consulta.o convencao.o gestao.o file.o especialidade.o horario.o mem.o -o gestao
 	
 gestao.o: gestao.cpp
 	$(CXX) $(CXXFLAGS) gestao.cpp -o gestao.o
@@ -14,7 +14,7 @@ gestao.o: gestao.cpp
 gestaoteste.o: gestaoteste.cpp
 	$(CXX) $(CXXFLAGS) gestaoteste.cpp -o gestaoteste.o
 	
-mem.o: classes/headers/MemoryHandling.h classes/MemoryHandling.cpp 
+mem.o: classes/headers/MemoryHandling.h classes/MemoryHandling.cpp
 	$(CXX) $(CXXFLAGS) classes/MemoryHandling.cpp  -o mem.o
 	
 file.o: classes/headers/FileHandling.h classes/FileHandling.cpp 
@@ -29,7 +29,7 @@ hora.o: classes/headers/hora.h classes/hora.cpp
 especialidade.o: classes/headers/especialidade.h classes/especialidade.cpp
 	$(CXX) $(CXXFLAGS) classes/especialidade.cpp -o especialidade.o
 
-horario.o: classes/headers/horario.h classes/horario.cpp
+horario.o: mem.o classes/headers/horario.h classes/horario.cpp
 	$(CXX) $(CXXFLAGS) classes/horario.cpp -o horario.o
 
 convencao.o: classes/headers/convencao.h classes/convencao.cpp

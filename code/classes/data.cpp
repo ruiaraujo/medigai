@@ -213,6 +213,7 @@ Data & Data::operator=(Data &a)
 }
 ostream & operator<<(ostream & os, Data &d)
 {
-  os << d.dia << "/" << d.mes << "/" << d.ano;
+  os << setfill('0') << setw(2) << d.dia << "/" << setfill('0') << setw(2) << d.mes;
+  os << "/" << setfill('0') << setw(4)  << d.ano;
   return os;
 }

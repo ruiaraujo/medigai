@@ -59,7 +59,7 @@ Hora operator+( const Hora & h , int extra)
   }
   return a;
 }
-int Hora::operator-(Hora &h){return ((int)hora-(int)h.hora)*60 + ((int)min-(int)h.min);}// diferença em minutos entre duas datas (se negativo hora )
+int Hora::operator-(Hora &h){return ((int)hora-(int)h.hora)*60  + ((int)min-(int)h.min);}// diferença em minutos entre duas datas (se negativo hora )
 bool Hora::operator<( const Hora & h )
 {
  if (h.hora == hora )
@@ -127,6 +127,6 @@ bool Hora::operator==( const Hora &h){return (hora==h.hora && min==h.min );}
 
 ostream & operator << (ostream & os, Hora & h)
 {
-  os << h.hora << ":" << h.min;
+  os << setfill('0') << setw(2) << h.hora << ":" << setfill('0') << setw(2) << h.min;
   return os;
 }

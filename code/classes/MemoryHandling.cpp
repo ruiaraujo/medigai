@@ -784,6 +784,61 @@ vector<Utente *>::iterator insPacOrd ( Utente * m , vector<Utente *> & v )
   return it;
 } 
 
+bool horario_med( vector<Medico *> & v , vector<Consulta *> & c )
+{
+  string tmp;
+  int dia, mes , ano;
+  char espaco;
+  long ced;
+  cin.get();
+  cout << "Insira a cédula do médico: ";
+  try
+  {
+    ced = getLong();
+  }
+  catch (EOI &)
+  {
+    return false;
+  }
+  Medico *ptr_m = find( ced , v );
+  while (ptr_m == NULL )
+  {
+    cout << "Médico Inesxistente. Insira a cédula do Médico: ";
+    try
+    {
+      ced = getLong();
+    }
+    catch (EOI &)
+    {
+      return false;
+    }
+    ptr_m = find( ced , v );
+  }
+  cout << "Insira a Data separadas por um caracter (no formato dd/mm/aaaa): ";
+  getline( cin , tmp );
+  if ( cin.eof() )
+  {
+    cin.clear();
+    return false;
+  }
+  while (!isDat( tmp ) )
+  {
+    cout << "Data inválida. Insira outra: ";
+    getline( cin , tmp );
+    if ( cin.eof() )
+    {
+      cin.clear();
+      return false;
+    } 
+  }
+  istringstream s(tmp);
+  s >> dia >> espaco >> mes >> espaco >> ano;
+  Data d( dia , mes , ano );
+  Horario <Medico , Data> horario (ptr_m , d , 0);
+  horario.print( cout , c );
+  return true;
+}
+
 template <class Comparable>int findPos ( unsigned long ced , vector<Comparable *> & v )
 {
   int left = 0, right = v.size() - 1;
@@ -802,33 +857,40 @@ template <class Comparable> int findPos ( const Comparable & m , vector<Comparab
   while (left <= right)
   {
     int middle = (left + right) / 2;
-    if ( m.getId() == (*v.at(middle)).getId() ) return middle;
-    else if ( m.getId() < (*v.at(middle)).getId() ) right = middle - 1;
+    if ( m.getId() == v.at(middle)->getId() ) return middle;
+    else if ( m.getId() < v.at(middle)->getId() ) right = middle - 1;
     else left = middle + 1;
   }
   return -1;
 }
 template <class Comparable > Comparable * find ( const Comparable & m , vector<Comparable *> & v )
 {
-  int left = 0 , right = v.size() - 1;
-  while ( left <= right )
+  if ( !v.empty() )
   {
-    int middle = ( left + right ) / 2;
-    if ( m.getId() == ( *v.at( middle ) ).getId() ) return v.at( middle );
-    else if ( m.getId() < ( *v.at( middle ) ).getId() ) right = middle - 1;
-    else left = middle + 1;
+    int left = 0 , right = v.size() - 1;
+    while ( left <= right )
+    {
+      int middle = ( left + right ) / 2;
+      if ( m.getId() == v.at( middle )->getId() ) return v.at( middle );
+      else if ( m.getId() < v.at( middle )->getId() ) right = middle - 1;
+      else left = middle + 1;
+    }
   }
   return NULL;
 }
 template <class Comparable> Comparable * find ( unsigned long ced, vector<Comparable *> & v )
 {
-  int left = 0 , right = v.size() - 1;
-  while ( left <= right )
+  if ( !v.empty() )
   {
-    int middle = ( left + right )  / 2;
-    if ( ced == v.at( middle )->getId() ) return v.at( middle );
-    else if ( ced < v.at( middle )->getId() ) right = middle - 1;
-    else left = middle + 1;
+    int left = 0 , right = v.size() - 1;
+
+    while ( left <= right )
+    {
+      int middle = ( left + right )  / 2;
+      if ( ced == v.at( middle )->getId() ) return v.at( middle );
+      else if ( ced < v.at( middle )->getId() ) right = middle - 1;
+      else left = middle + 1;
+    }
   }
   return NULL;
 }
@@ -1067,6 +1129,11 @@ bool delMed( unsigned long  ced , vector<Medico *> & v , vector<Consulta *> & c)
 {
   int pos = findPos( ced , v );
   vector<Medico *> eq = listEsp ( v.at( pos )->getEspe() , v );
+  vector<Medico *>::iterator it = eq.begin();
+  for ( int i = 0  ; i < (int) eq.size(); i++ , it++)
+    if ( ced == eq.at( i )->getCed() )
+     eq.erase ( it );
+  
   if ( pos == -1) return false; 
   bool consulta = false;
   for (int i = 0; i < (int) c.size() ; i++ )
@@ -1082,6 +1149,7 @@ bool delMed( unsigned long  ced , vector<Medico *> & v , vector<Consulta *> & c)
     while ( wrong )
     {
       char opcao;
+      cin.get();
       cin >> opcao;
       if ( cin.eof() )
       {
@@ -1098,8 +1166,9 @@ bool delMed( unsigned long  ced , vector<Medico *> & v , vector<Consulta *> & c)
                     {
                       Hora h( c.at( i )->getHor() );
                       Data d( c.at( i )->getDat() );
-                      Medico *ptr = find ( ced , v );
+                      Medico * ptr = find ( ced , v );
                       delCon( c , ptr , h , d );
+                      i--;
                     }
                   }
                   wrong = false;
@@ -1108,29 +1177,37 @@ bool delMed( unsigned long  ced , vector<Medico *> & v , vector<Consulta *> & c)
         case 'u': wrong = false; 
                   break;
         case 'N':
-        case 'n': cout << "Estes são os médicos com a mesma especialidade do médico que eliminou. Escolha um:"<< endl;
-                  listar ( eq );
-                  unsigned long id;
-                  Medico * ptr_m;
-                  ptr_m = NULL;
-                  while (ptr_m == NULL )
-                  {                
-                    try
-                    {
-                      id = getLong();
-                    }
-                    catch (EOI &)
-                    {
-                      return false;
-                    }
-                    if ( ( ptr_m = find( id , eq ) ) == NULL )
-                      cout << "Médico inesxistente na lista de equivalência. Insira a cédula doutro médico: ";
-                  }
-                  v.at( pos )->setSis( false );
-                  for (int i = 0; i < (int) c.size() ; i++ )
+        case 'n': if ( !eq.empty() )
                   {
-                    if ( c.at(i)->getMed()->getCed() == ced && c.at(i)->getEst() == 'm' )
-                      c.at( i )->setMed ( ptr_m );
+                    cout << "Estes são os médicos com a mesma especialidade do médico que quer eliminar.";
+                    cout << "Escolha um:"<< endl;
+                    listar ( eq );
+                    unsigned long id;
+                    Medico * ptr_m;
+                    ptr_m = NULL;
+                    while (ptr_m == NULL )
+                    {                
+                      try
+                      {
+  id = getLong();
+                      }
+                      catch (EOI &)
+                      {
+  return false;
+                      }
+                      if ( ( ptr_m = find( id , eq ) ) == NULL )
+  cout << "Médico inesxistente na lista de equivalência. Insira a cédula doutro médico: ";
+                    }
+                      v.at( pos )->setSis( false );
+                    for (int i = 0; i < (int) c.size() ; i++ )
+                    {
+                      if ( c.at(i)->getMed()->getCed() == ced && c.at(i)->getEst() == 'm' )
+ c.at( i )->setMed ( ptr_m );
+                    }
+                  }
+                  else
+                  {
+                  cout << "Não há médicos com uma especialidade equivalente. Insira outra opção: " << endl;
                   }
                   break;
         default:  cout << "Opção desconhecida. Insira outra: ";
@@ -1782,6 +1859,7 @@ bool pagarCon(vector<Consulta *> & c , vector<Medico * > & v )
     return false;
   }
   c.at( pos )->setEst('p' );
+  cout << "Consulta Efectuada e paga." << endl;
   return true;
 }
 
