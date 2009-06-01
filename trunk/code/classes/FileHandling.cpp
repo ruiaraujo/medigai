@@ -75,10 +75,10 @@ bool savMed ( string f , const vector<Medico *> & u )
 bool criaFile(string f)
 {
   ifstream fi(f.c_str());
-  if (fi.fail())
+  if ( fi.fail() )
   {
     ofstream fo(f.c_str());
-    if (fo.fail())
+    if ( fo.fail() )
     {
       fo.close();
       return false;  
