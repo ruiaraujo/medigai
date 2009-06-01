@@ -29,6 +29,7 @@ class Data {
     bool operator>=( const Data & );
     Data & operator=(Data &);
     friend ostream & operator<<(ostream & os, Data &);
+    
 };
 
 

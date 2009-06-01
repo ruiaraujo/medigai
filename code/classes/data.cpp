@@ -217,3 +217,4 @@ ostream & operator<<(ostream & os, Data &d)
   os << "/" << setfill('0') << setw(4)  << d.ano;
   return os;
 }
+

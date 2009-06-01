@@ -151,7 +151,7 @@ void Menu_med()
   logotipo();
   cout << "\nGestão do Corpo Clínico:\n\nInsira o número da opção desejada.\n\n";
   cout << "1. Adicionar Médico\n2. Eliminar Médico\n3. Visualisar os médicos\n4. Visualizar id\n";
-  cout << "5. Visualizar tempo médio de consulta\n6. Visualizar preço médio de consulta"  << endl;  
+  cout << "5. Visualizar preço por minuto"  << endl;  
   cout << "CRTL-D para voltar ao menu anterior.\n";
 }
 void menu_med()
@@ -171,7 +171,6 @@ void menu_med()
 		              system("clear");
 		              logotipo();
 		              if ( insMed( lista_med , lista_esp ) != -1) alteracoes = true;
-                  listar( lista_med );
                   pauseM();
                   Menu_med();
                   break;
@@ -212,6 +211,12 @@ void menu_med()
 	                pauseM();
                   Menu_med();
 	                break;
+	      case '5': cin.clear();
+	                cin.get();
+	                precoMedio( lista_med , lista_con );
+	                pauseM();
+	                Menu_med();
+	                break;
 	      default:  cout << "\nOpção desconhecida.\n";
 	                cin.get();
 		              pauseM();
@@ -248,11 +253,10 @@ void menu_consulta()
         	            logotipo();
         	            cout << "Insira os Dados da Consulta.\n";
                  		  if ( insCon( lista_med , lista_pac , lista_con ) != -1 ) alteracoes = true;
-                		  listar ( lista_con );
                  		  Menu_consulta();
 				              cin.clear();
 				              break;
-        		case '2': altCon(lista_con, lista_pac, lista_med);
+        		case '2': if ( altCon(lista_con, lista_pac, lista_med)) alteracoes = true;
 		                  Menu_consulta();
 		                  cin.clear();
 		                  break;        
@@ -300,7 +304,7 @@ void Menu_utente()
   logotipo();
   cout << "Menu:\n\nInsira o número da opção desejada:\n\n1. Adicionr Utente\n";
   cout << "2. Eliminar Utente\n3. Visualizar Utentes\n4. Alterar Utente\n5. Visualizar Id.\n";
-  cout << "6. Visualizar tempo médio de consulta\n7. Visualizar preço médio de consulta"  << endl;  
+  cout << "6. Visualizar preço médio por minuto pago"  << endl;  
   cout << "Pressione CRTL-D para voltar ao menu anterior." << endl;
 }
 
@@ -317,15 +321,21 @@ void menu_utente()
     {
     switch(op)
       {
-        case '1': insPac(lista_pac);
+        case '1': cin.get();
+                  insPac(lista_pac);
                   Menu_utente();
              		  cin.clear();
              		  break;
-        case '2': delPac( lista_pac );
+        case '2': cin.clear();
+                  cin.get();
+                  if ( delPac ( lista_pac , lista_con ) ) alteracoes = true;
+                  //cin.get();
+                  pauseM();
                   Menu_utente();
                   cin.clear();
                   break;
         case '3': cin.clear();
+                  cin.get();
                   listar(lista_pac);
                   pauseM();
                   Menu_utente();
@@ -335,7 +345,7 @@ void menu_utente()
                   Menu_utente();
                   cin.clear();
                   break;
-        case '5':    
+        case '5': cin.get();
                   id = find_Id( lista_pac );
                   if ( id.empty() ) 
                     cout << "\nNão foi encontrada um utente com esse nome.\n";
@@ -347,7 +357,12 @@ void menu_utente()
                   pauseM();
                   Menu_utente();
                   break;
-			
+			  case '6': cin.clear();
+	                cin.get();
+	                precoMedioP( lista_pac , lista_con );
+	                pauseM();
+	                Menu_utente();
+	                break;
         		default:  cout << "Opção Desconhecida." << endl;
         		          cin.get();
         		          pauseM();

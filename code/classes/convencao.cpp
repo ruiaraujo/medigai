@@ -5,7 +5,7 @@ Convencao::Convencao() : seguro(""), desconto(0), apolice (0) {}
 Convencao::Convencao (const Convencao & s ) : seguro(s.seguro), desconto(s.desconto), apolice(s.apolice) {}
 void Convencao::setSeg(string s){seguro = s;}
 void Convencao::setDes(float d){desconto = d;}
-void Convencao::setAPo(unsigned long a) {apolice = a;}
+void Convencao::setApo(unsigned long a) {apolice = a;}
 unsigned long Convencao::getApo() const {return apolice;}
 string Convencao::getSeg() const {return seguro;}
 float Convencao::getDes() const {return desconto;}

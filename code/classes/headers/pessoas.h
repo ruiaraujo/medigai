@@ -69,6 +69,7 @@ class Utente : public Pessoa {
     ~Utente() {}
     void setMor(string);
     void setSeg(string, float);
+    void setSeg(string, float , unsigned long);
     void setSeg(float);
     void setSeg(string);
     void setUN(unsigned long);
