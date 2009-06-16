@@ -32,7 +32,6 @@ int main()
   char opcao;
   carregaEsp( file_esp , lista_esp );
   carregaMed( file_med , lista_med , lista_esp );
-    cout << "1";
   listar( lista_med );
   cout << endl;
   listar( lista_esp );
@@ -41,16 +40,9 @@ int main()
   listar( lista_pac );
   cout << endl;
   carregaCon ( file_con , lista_med , lista_pac , lista_con );
-      cout << "1";
   listar( lista_con );
   cout << endl ;
-  Data d(20,4,2000);
-    cout << "14";
-  Medico *prt = find(31, lista_med);
-  cout << "13";
-  Horario<Medico , Data > h(prt, d, 0);
-  h.print(cout, lista_con);
-  cout << "2";
+  /*
   Menu();
   while ( ! cin.eof() ) 
   {
@@ -99,7 +91,11 @@ int main()
       }
     }
 
-  }
+  }*/
+  Hora g(10,0);
+  int a = -60;
+  g = g - a;
+  cout <<  g << endl;
   return 0;
 }
 

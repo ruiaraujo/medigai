@@ -1661,7 +1661,9 @@ bool altCon( vector<Consulta *> & c ,vector<Utente * > & u , vector<Medico * > &
   istringstream ss(tmp);
   ss >> dia >> espaco >> mes >> espaco >> ano;
   Data d( dia , mes , ano );
-  cout << "Insira a hora da consulta separadas por um caracter (no formato hh:mm ): ";
+  Horario <Medico , Data > horario ( ptr_med , d , 0 );
+  horario.print(cout , c );
+  cout << endl << "Insira a hora de início da consulta separadas por um caracter (no formato hh:mm ): ";
   getline( cin , tmp );
   if ( cin.eof() )
   {
@@ -1690,6 +1692,7 @@ bool altCon( vector<Consulta *> & c ,vector<Utente * > & u , vector<Medico * > &
     return false;
   }
   cout << "Insira os novos dados: " << endl;
+  cin.putback('\n');
   if ( insCon( v , u, c ) == -1 )
   {
     cout << "Erro na actualização da consulta. A abortar..." << endl;

@@ -1,4 +1,4 @@
-#include "classes/headers/horario.h"
+#include "classes/headers/MemoryHandling.h"
 
 
 using namespace std;
@@ -17,7 +17,7 @@ void menu_med();
 void menu_utente();
 void menu_consulta();
 void pauseM();
-
+void cleanBuf();
 
 //Texto dos Menus
 void Menu_med();
@@ -257,6 +257,7 @@ void menu_consulta()
 				              cin.clear();
 				              break;
         		case '2': if ( altCon(lista_con, lista_pac, lista_med)) alteracoes = true;
+        		          pauseM();
 		                  Menu_consulta();
 		                  cin.clear();
 		                  break;        
@@ -380,6 +381,25 @@ void pauseM()
   cin.get();
 }
 
+
+void cleanBuf()
+{
+  string lixo;
+  cout <<  "1" << endl;
+  char c = cin.peek();
+  cout << "2" << endl;
+  if ( c == '\n' )
+      cin.get();
+    else
+      if ( c != EOF )
+        getline( cin , lixo );
+  if (c != EOF)  
+   cout << "c= eof" << endl;
+   else
+    cout << "c= " << c << endl;
+        cout << "lizo= " << lixo << endl; 
+}
+
 template<class C> vector <C *> find_Id( vector<C *> & u)
 {
   string nome;
@@ -389,6 +409,7 @@ template<class C> vector <C *> find_Id( vector<C *> & u)
 	if ( cin.eof() )
 	{
 	  cin.clear();
+	  cout << endl << "Detectado fim de input!" << endl;
 	  return lista;
 	}
 	for ( int i = 0; i < (int) u.size(); i++ )

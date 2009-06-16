@@ -1,8 +1,12 @@
 #ifndef HORARIO_H
 #define HORARIO_H
-#include "MemoryHandling.h" 
+#include "consulta.h" 
+#include <vector>
 
-using namespace std;
+
+using std::vector;
+using std::cout;
+using std::endl;
 
 template <class Person, class Time>
 class Horario{
@@ -46,12 +50,14 @@ void Horario< Person , Time >::print(ostream & os, const vector<Consulta *> & c 
       {
         if ( !(horario.at(0)->getHor() == person->getIni()) )
         {
-          Hora h( person->getIni() ), h0 = h + horario.at(0)->getDur();
-          if ( ( h - h0) < (int) person->getDur() && ( h - h0) != 0 )
+          Hora h( person->getIni() ), h0 = horario.at(0)->getHor();
+          if ( ( h - h0 ) < (int) person->getDur() && ( h - h0) != 0 )
             os << "| " << h << " - " << h0 << " | " << "Intervalo" << endl;
           else
             if ( ( h - h0) != 0 )
               os << "| " << h << " - " << h0 << " | " << "Livre" << endl;
+          Hora ho =  horario.at(0)->getHor() + horario.at( 0 )->getDur();
+          os << "| " << h0 << " - " << ho << " | " << horario.at( 0 )->getUte()->getNome() << endl;
           for ( int i = 1 ;  i < (int) horario.size() ; i++ )
           {
             Hora h1 = horario.at( i )->getHor() , h2 = horario.at( i - 1 )->getHor() + horario.at( i - 1 )->getDur();
@@ -149,9 +155,9 @@ void Horario< Person , Time >::printFrc(ostream & , const vector<Consulta *> & c
 {
   if ( person != NULL )
   {
-    cout << "Lista de Consulta do ";
+    cout << "Horário Actual do ";
     if (type)  cout << "Sr.(a)" << person->getNome() << ":\n";
-    else  cout << "Dr.(a)" << person->getNome() << " no dia " << time << endl;
+    else  cout << "Dr.(a) " << person->getNome() << " no dia " << time << endl;
     if ( type )
     {
       for ( int i = 0 ; i < (int) c.size(); i++ )
@@ -183,6 +189,8 @@ void Horario< Person , Time >::printFrc(ostream & , const vector<Consulta *> & c
 template <class Person, class Time>
 vector<Consulta *> Horario< Person , Time >::get( const vector<Consulta *> & c)
 {
+
+
   vector<Consulta *> lista;
   if ( person != NULL )
   {
