@@ -1,0 +1,12 @@
+noinst_LIBRARIES = libutente.a libpessoa.a libmedico.a libdata.a libhora.a libconvencao.a libespecialidade.a libconsulta.a libmem.a libfile.a
+libutente_a_SOURCES = utente.h utente.cpp pessoa.h pessoa.cpp convencao.h convencao.cpp
+libmedico_a_SOURCES = medico.h medico.cpp hora.h  hora.cpp especialidade.h especialidade.cpp pessoa.h pessoa.cpp 
+libpessoa_a_SOURCES = pessoa.h pessoa.cpp
+libdata_a_SOURCES = data.h data.cpp
+libhora_a_SOURCES = hora.h hora.cpp
+libmem_a_SOURCES = MemoryHandling.h MemoryHandling.cpp FileHandling.h FileHandling.cpp consulta.h consulta.cpp medico.h medico.cpp hora.h  hora.cpp especialidade.h especialidade.cpp pessoa.h pessoa.cpp utente.h utente.cpp convencao.h convencao.cpp data.h data.cpp
+libfile_a_SOURCES = FileHandling.h FileHandling.cpp consulta.h consulta.cpp medico.h medico.cpp hora.h  hora.cpp especialidade.h especialidade.cpp pessoa.h pessoa.cpp utente.h utente.cpp convencao.h convencao.cpp data.h data.cpp
+libconvencao_a_SOURCES = convencao.h convencao.cpp
+libespecialidade_a_SOURCES = especialidade.h especialidade.cpp data.h data.cpp
+libconsulta_a_SOURCES = consulta.h consulta.cpp medico.h medico.cpp hora.h  hora.cpp especialidade.h especialidade.cpp pessoa.h pessoa.cpp utente.h utente.cpp convencao.h convencao.cpp data.h data.cpp
+INCLUDE = -I@top_srcdir@/
