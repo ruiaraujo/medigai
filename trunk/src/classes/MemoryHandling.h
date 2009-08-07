@@ -1,0 +1,52 @@
+#ifndef MEMORY_H
+#define MEMORY_H
+#include "FileHandling.h"
+#include "horario.h"
+#include <fstream>
+#include <iostream>
+#include <sstream>
+#include <vector>
+#include <cstdlib>
+
+using namespace std;
+
+
+Especialidade * findEsp ( string , vector<Especialidade *> & );
+int insMed( vector<Medico *> &, vector<Especialidade *> & );
+int insPac( vector<Utente *> & );
+int insCon ( vector<Medico *> &, vector<Utente *> & , vector<Consulta *> &);
+bool delCon( vector<Consulta *> & , Medico * & , Hora & , Data & );
+bool delCon( vector<Medico *> & , vector<Consulta *> & );
+bool altCon( vector<Consulta *> & , vector<Utente *> & , vector<Medico * > & );
+bool carregaEsp( string , vector<Especialidade *> & );
+bool carregaPac( string , vector<Utente *> & );
+bool carregaMed( string , vector<Medico *> & , vector<Especialidade *> & );
+bool carregaCon( string , vector<Medico *> & , vector<Utente *> & , vector<Consulta *> & );
+template <class Comparable> Comparable * find ( unsigned long , vector<Comparable *> & );
+bool delMed( unsigned long , vector<Medico *> & , vector<Consulta *> & );
+template <class Comparable> Comparable * find ( const Comparable & , vector<Comparable *> & );
+template <class Comparable> int findPos( unsigned long , vector<Comparable *> & );
+template <class Comparable> int findPos( const Comparable & , vector<Comparable *> & );
+template<class C> vector <C *> find_Id( vector<C *> & );
+template <class Comparable> void listar( const vector<Comparable *> & );
+int findPos ( Consulta * , vector<Consulta *> & );
+void listar ( const vector<Especialidade *> & );
+void listar ( const vector<Consulta *> & );
+vector<Consulta *>::iterator insConOrd ( Consulta * , vector<Consulta *> & );
+vector<Medico *>::iterator insMedOrd( Medico * , vector<Medico *> & );
+vector<Utente *>::iterator insPacOrd ( Utente * , vector<Utente *> & );
+vector<Medico *>  listEsp( Especialidade * , vector<Medico *> & );
+bool isNum( string );
+bool isDat( string );
+bool isHor( string );
+long getLong();
+bool horNCol ( vector<Consulta *> & , Hora & , const int & , const Hora & , const Hora & );
+Hora getHora();
+bool alt_Pac( vector<Utente *> & u );
+bool delPac( vector<Utente *> & u , vector<Consulta *> & );
+bool ver_Con( vector<Consulta *> & c , vector<Medico * > & v );
+bool pagarCon(vector<Consulta *> & c , vector<Medico * > & v );
+bool horario_med( vector<Medico *> & , vector<Consulta *> & );
+float precoMedio( vector<Medico *> & , vector<Consulta *> & c);
+float precoMedioP( vector<Utente *> & v , vector<Consulta *> & c);
+#endif
