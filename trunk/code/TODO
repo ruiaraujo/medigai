@@ -1,6 +1,0 @@
-List of known issues to be solved:
-
-1. doctors can't have a break time
-2. when deleting a doctor and changing the doctor in charge of the appointments, inconsisties may surge... (BUG)
-3. resolve all of the issues with the compiling...
-4. stoping using the system("clear")
