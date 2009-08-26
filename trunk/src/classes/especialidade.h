@@ -1,21 +1,19 @@
 #ifndef ESPE_H
 #define ESPE_H
-
-
 #include <iostream>
-
-using namespace std;
+#include <vector>
 
 class Especialidade {
-  string nome;
+  std::string nome;
   public:
   Especialidade();
-  Especialidade ( const string);
-  Especialidade ( const Especialidade &);
-  void setNom(string);
-  string getNom() const;
+  Especialidade ( const std::string & );
+  Especialidade ( const Especialidade & );
+  void setNom( std::string );
+  std::string getNom() const;
   bool operator==( const Especialidade & );
   bool operator!=( const Especialidade & );
+  Especialidade * find ( const std::vector<Especialidade *> & );
   Especialidade & operator= ( const Especialidade & );
 };
 

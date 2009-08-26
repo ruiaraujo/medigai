@@ -1,35 +1,41 @@
 #ifndef MEDICO_H
 #define MEDICO_H
 #include <iostream>
-#include "pessoa.h"
-#include "hora.h"
+#include "person.h"
+#include "hour.h"
 #include "especialidade.h"
 
-class Medico : public Pessoa {
+class Medico : public Person {
   Especialidade * espe;
   unsigned int duracao;
   unsigned int dur_max;
-  Hora inicio;
-  Hora fim;
+  Hour inicio;
+  Hour fim;
   public:
-    Medico (Pessoa &, Especialidade *, unsigned int);
-    Medico (Pessoa &, Especialidade *, Hora, Hora, unsigned int);
-    Medico (string, string, unsigned int, unsigned long);
+    Medico ( const Person &, Especialidade *, unsigned int);
+    Medico ( const Person &, Especialidade *, Hour, Hour, unsigned int);
+    Medico (std::string, std::string, unsigned int, unsigned long);
     Medico (const Medico &);
+    Medico() {};
     ~Medico() {}
     Especialidade * getEspe() const;
-    Hora getIni() const;
-    Hora getFim() const;
+    Hour getIni() const;
+    Hour getFim() const;
     unsigned int getDur()const;
     unsigned int getDurM()const;
     unsigned long getCed()const;
-    void setIni( const Hora &);
-    void setFim( const Hora &);
+    void setIni( const Hour &);
+    void setFim( const Hour &);
     void setEspe(Especialidade *);
     void setDurM(unsigned int);
     void setDur(unsigned int);
-    Medico & operator=(Medico &);
-    friend ostream & operator<<(ostream &, Medico &);
+    Medico * find ( unsigned long ,  const std::vector<Medico *> & );
+    Medico * find ( const std::vector<Medico *> & );
+    int findPos( unsigned long , const std::vector<Medico *> & );
+    int findPos( const std::vector<Medico *> & );
+    std::vector<Medico *>::iterator insOrd ( std::vector<Medico *> & );
+    Medico & operator=( const Medico & );
+    friend std::ostream & operator<<(std::ostream &, Medico &);
 };
 
 #endif
