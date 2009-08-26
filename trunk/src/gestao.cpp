@@ -1,23 +1,19 @@
 #include "classes/MemoryHandling.h"
-
+#include <cstdlib>
+#include <curses.h>
 
 using namespace std;
 
 //Variaveis globais
 string file_med = "medico.txt",file_pac="utentes.txt";
 string file_esp="especialidade.txt",file_con = "consultas.txt"; //nome dos ficheiros para leitura
-vector<Medico *> lista_med;
-vector<Utente *> lista_pac;
-vector<Especialidade *> lista_esp;
-vector<Consulta *> lista_con;
-bool alteracoes = 0;
+bool alteracoes = false;
 
 
 void menu_med();
 void menu_utente();
 void menu_consulta();
 void pauseM();
-void cleanBuf();
 
 //Texto dos Menus
 void Menu_med();
@@ -26,19 +22,12 @@ void Menu_utente();
 void main_menu();
 void logotipo();
 
+Clinic clinic( file_med , file_pac , file_esp , file_con);
 
 int main()
 {
   string lixo;
-  if ( !criaFile( file_med ) || !criaFile( file_pac) || !criaFile( file_esp) || !criaFile( file_con) )
-  {
-    cerr << "Erro: Verifique permissões no directório de execução."<<endl;
-    return -1;
-  }
-  carregaEsp( file_esp , lista_esp );
-  carregaMed( file_med , lista_med , lista_esp );
-  carregaPac ( file_pac , lista_pac );
-  carregaCon ( file_con , lista_med , lista_pac , lista_con );
+  clinic.load();
   main_menu();
   char opcao;
 	cin.clear();
@@ -63,29 +52,12 @@ int main()
 		              break;
 	      case '4': system( "clear" );
 	                cout << "A guardar tudo...\n";
-                  savPac ( file_pac , lista_pac );
-                  savMed ( file_med , lista_med );
-                  savEsp ( file_esp , lista_esp );
-                  savCon ( file_con , lista_con );
-                  carregaEsp( file_esp , lista_esp );
-                  carregaMed( file_med , lista_med , lista_esp );
-                  listar( lista_med );
-                  cout << endl;
-                  listar( lista_esp );
-                  carregaPac ( file_pac , lista_pac );
-                  cout << endl;
-                  listar( lista_pac );
-                  cout << endl;
-                  carregaCon ( file_con , lista_med , lista_pac , lista_con );
-                  listar( lista_con );
+                  clinic.save();
                   alteracoes = false;
-                  getline( cin , lixo );
-		              cout << "Enter para continuar...";
-		              cin.get();
+                  pauseM();
 		              main_menu();
 		              break;
         default:  cout << "\nOpção desconhecida.\n";
-                  cin.get();
                   pauseM();
                   cin.clear();
                   main_menu();
@@ -105,10 +77,7 @@ int main()
       if ( opcao == 'S' || opcao == 's' )
       {
         cout << "A guardar tudo...\n";
-        savPac ( file_pac , lista_pac );
-        savMed ( file_med , lista_med );
-        savEsp ( file_esp , lista_esp );
-        savCon ( file_con , lista_con );
+        clinic.save();
       }
       else
         cout << "Opção desconhecida. Insira outra (S/N)." << endl;
@@ -132,6 +101,20 @@ cout<<"*                                                                        
 cout<<"*                   Medical Management for Linux Lovers.                     *"<<endl;
 cout<<"*                                                                            *"<<endl;
 cout<<"******************************************************************************"<<endl;
+
+char logotipo[13][80]  ={"*******************************************************************************",
+                         "*                                                                             *",
+                         "*    ###      ###   ######  ######   ####  ########        #####        ####  *",
+                         "*    ## #    # ##   ##      #######   ##   ##             ##   ##        ##   *",
+                         "*    ##  #  #  ##   ##      ##    ##  ##   ##            ##     ##       ##   *",
+                         "*    ##   ##   ##   ####    ##    ##  ##   ##  ####     ###########      ##   *",
+                         "*    ##        ##   ##      ##    ##  ##   ##    ##    #############     ##   *",
+                         "*    ##        ##   ##      #######   ##   ##    ##   ##           ##    ##   *",
+                         "*   ####      ####  ######  ######   ####  ########  ####         ####  ####  *",
+                         "*                                                                             *",
+                         "*                    Medical Management for Linux Lovers.                     *",
+                         "*                                                                             *",
+                         "*******************************************************************************"};
 
 }
 
@@ -170,7 +153,7 @@ void menu_med()
                   cin.clear();
 		              system("clear");
 		              logotipo();
-		              if ( insMed( lista_med , lista_esp ) != -1) alteracoes = true;
+		              if ( clinic.insMed() != -1) alteracoes = true;
                   pauseM();
                   Menu_med();
                   break;
@@ -186,13 +169,13 @@ void menu_med()
                     cout << "Input inválido. Insira outro preço: ";
                     cin >> cedula;
                   }
-                  if ( delMed ( cedula , lista_med , lista_con ) ) alteracoes = true;
+                  if ( clinic.delMed ( cedula ) ) alteracoes = true;
                   cin.get();
                   pauseM();
                   Menu_med();
                   break;
         case '3': cout << endl << "Lista de Médicos:" << endl;
-                  listar ( lista_med );
+                  listar ( clinic.getListMed() );
                   cout << endl;
                   cin.get();
                   pauseM();
@@ -200,7 +183,7 @@ void menu_med()
                   break;
         case '4': cin.clear();
                   cin.get();
-                  ced =  find_Id(lista_med);
+                  ced =  find_Id(clinic.getListMed());
 	                if ( ced.empty() )
 	                  cout << "\nNão foi encontrada um médico com esse nome.\n";
 	                else
@@ -213,7 +196,7 @@ void menu_med()
 	                break;
 	      case '5': cin.clear();
 	                cin.get();
-	                precoMedio( lista_med , lista_con );
+	                clinic.precoMedio();
 	                pauseM();
 	                Menu_med();
 	                break;
@@ -252,38 +235,34 @@ void menu_consulta()
         	  case '1': system( "clear" );
         	            logotipo();
         	            cout << "Insira os Dados da Consulta.\n";
-                 		  if ( insCon( lista_med , lista_pac , lista_con ) != -1 ) alteracoes = true;
+                 		  if ( clinic.insCon() != -1 ) alteracoes = true;
                  		  Menu_consulta();
 				              cin.clear();
 				              break;
-        		case '2': if ( altCon(lista_con, lista_pac, lista_med)) alteracoes = true;
+        		case '2': if ( clinic.altCon() ) alteracoes = true;
         		          pauseM();
 		                  Menu_consulta();
-		                  cin.clear();
 		                  break;        
 		        case '3': cout << "Insira os dados da Consulta:" << endl;
-		                  if ( delCon( lista_med , lista_con ) ) alteracoes = true;
+		                  if ( clinic.delCon() ) alteracoes = true;
 		                  Menu_consulta();
 		                  cin.clear();
 		                  break;       
-	  	      case '4': horario_med( lista_med , lista_con );
+	  	      case '4': clinic.horario_med();
 	  	                pauseM();
 	    	              Menu_consulta();
 	    	           	  break;
 	    	    case '5': cout << "Lista de Consultas:" << endl;
-	      	            listar ( lista_con );
-	      	            cin.get();
+	      	            listar ( clinic.getListCon() );
 	      	            pauseM();
-      		            cin.clear();
       			          Menu_consulta();
                       break; 	
-			      case '6': ver_Con(lista_con, lista_med);
+			      case '6': clinic.verCon();
 			                pauseM();
-			                cin.clear();
 			                Menu_consulta();
 			                break;
 			      case '7': cin.clear();
-				              if ( pagarCon(lista_con,lista_med) ) alteracoes = true;
+				              if ( clinic.pagarCon() ) alteracoes = true;
 				              pauseM();
 	                    Menu_consulta();
 	                    break;
@@ -323,31 +302,30 @@ void menu_utente()
     switch(op)
       {
         case '1': cin.get();
-                  insPac(lista_pac);
+                  clinic.insPac();
                   Menu_utente();
              		  cin.clear();
              		  break;
         case '2': cin.clear();
                   cin.get();
-                  if ( delPac ( lista_pac , lista_con ) ) alteracoes = true;
-                  //cin.get();
+                  if ( clinic.delPac () ) alteracoes = true;
                   pauseM();
                   Menu_utente();
                   cin.clear();
                   break;
         case '3': cin.clear();
                   cin.get();
-                  listar(lista_pac);
+                  listar(clinic.getListPac());
                   pauseM();
                   Menu_utente();
                   cin.clear();
                   break;
-        case '4': alt_Pac(lista_pac);
+        case '4': clinic.altPac();
                   Menu_utente();
                   cin.clear();
                   break;
         case '5': cin.get();
-                  id = find_Id( lista_pac );
+                  id = find_Id( clinic.getListPac() );
                   if ( id.empty() ) 
                     cout << "\nNão foi encontrada um utente com esse nome.\n";
                   else
@@ -360,7 +338,7 @@ void menu_utente()
                   break;
 			  case '6': cin.clear();
 	                cin.get();
-	                precoMedioP( lista_pac , lista_con );
+	                clinic.precoMedioP();
 	                pauseM();
 	                Menu_utente();
 	                break;
@@ -377,50 +355,8 @@ void menu_utente()
 void pauseM()
 {
   cin.clear();
+  flushinp();
   cout << endl << "Enter para continuar: ";
   cin.get();
 }
 
-
-void cleanBuf()
-{
-  string lixo;
-  cout <<  "1" << endl;
-  char c = cin.peek();
-  cout << "2" << endl;
-  if ( c == '\n' )
-      cin.get();
-    else
-      if ( c != EOF )
-        getline( cin , lixo );
-  if (c != EOF)  
-   cout << "c= eof" << endl;
-   else
-    cout << "c= " << c << endl;
-        cout << "lizo= " << lixo << endl; 
-}
-
-template<class C> vector <C *> find_Id( vector<C *> & u)
-{
-  string nome;
-  vector<C *> lista;
-	cout<<"Introduza o nome da pessoa:";
-	getline( cin , nome );	
-	if ( cin.eof() )
-	{
-	  cin.clear();
-	  cout << endl << "Detectado fim de input!" << endl;
-	  return lista;
-	}
-	for ( int i = 0; i < (int) u.size(); i++ )
-	  if  ( u.at( i )->getNome().find( nome ) != string::npos )
-      lista.push_back( u.at( i ) );
-  return lista;
-}
-
-template <class Comparable>void listar( const vector<Comparable *> & v)
-{
-  for ( int i = 0; i< (int) v.size() ; i++ )
-   if ( v.at( i )->getSis() )
-    cout << *( v.at( i ) ) << endl;
-}

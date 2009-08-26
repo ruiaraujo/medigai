@@ -5,7 +5,7 @@ CXXFLAGS =  -c -Wall  -Wextra -Weffc++ -O3
 
 
 all:  mem.o gestao.o
-	$(CXX) hora.o data.o pessoa.o medico.o utente.o consulta.o convencao.o gestao.o file.o especialidade.o horario.o mem.o -o gestao
+	$(CXX) -lncurses hora.o data.o pessoa.o medico.o utente.o consulta.o convencao.o gestao.o file.o especialidade.o horario.o mem.o -o gestao
 
 gestaoteste:  mem.o gestaoteste.o
 	$(CXX) hora.o data.o pessoa.o medico.o utente.o consulta.o convencao.o gestaoteste.o file.o especialidade.o horario.o mem.o -o gestao
