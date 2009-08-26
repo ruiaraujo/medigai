@@ -1,95 +1,371 @@
 #include "FileHandling.h"
+#include <cstdlib>
+#include <vector>
+#include <sstream>
 
-bool savCon ( string f , const vector<Consulta *> & c)
+using std::string;
+using std::fstream;
+using std::endl;
+using std::cerr;
+using std::vector;
+using std::cout;
+using std::ios_base;
+using std::istringstream;
+using std::ofstream;
+using std::ifstream;
+
+FileHandling::FileHandling( std::string file_m , std::string file_p, std::string file_e, std::string file_c):
+                                file_med( file_m ) , file_pac( file_p ), 
+                                file_esp( file_e ) , file_con( file_c )
 {
-ofstream fout( f.c_str() );
-  if ( fout.fail() )
+  if ( existFile( file_m ) == 'n' )
   {
-    cerr << "Não conseguiu escrever no ficheiro " << f << "." << endl;
+    std::cerr << "Unable to write to file called " << file_m << ". Aborting..." << endl;
+    exit(1);
+  }
+  if ( existFile( file_p ) == 'n' )
+  {
+    std::cerr << "Unable to write to file called " << file_p << ". Aborting..." << endl;
+    exit(1);
+  }
+  if ( existFile( file_e ) == 'n' )
+  {
+    std::cerr << "Unable to write to file called " << file_e << ". Aborting..." << endl;
+    exit(1);
+  }
+  if ( existFile( file_c ) == 'n' )
+  {
+    std::cerr << "Unable to write to file called " << file_c << ". Aborting..." << endl;
+    exit(1);
+  }
+}
+
+
+bool FileHandling::loadEsp( std::vector<Especialidade *> & list_esp )
+{
+  ifstream fin( this->file_esp.c_str() );
+  if ( fin.fail() )
+  {
+    cerr << "Ficheiro não encontrado." << endl;
     return false;
   }
-  for (int i = 0 ; i< (int) c.size() ; i++ )
+  list_esp.clear();
+  string line;
+  while ( ! fin.eof() )
   {
-    fout << c.at( i )->getMed()->getCed() << "|" << c.at( i )->getUte()->getId() << "|";
-    fout << c.at( i )->getDat().getDia() << "/" << c.at( i )->getDat().getMes() << "/" << c.at( i )->getDat().getAno();
-    fout << "|" << c.at( i )->getHor().getHor() << ":" << c.at( i )->getHor().getMin();
-    fout << "|" << c.at( i )->getPre() << "|" << c.at( i )->getDur();
-    fout << "|" << c.at( i )->getEst() <<endl;
+    getline( fin, line );
+    if ( ! line.empty() )
+    {
+      Especialidade esp_tmp(line);
+      if ( esp_tmp.find ( list_esp ) == NULL )
+      {
+        Especialidade * a = new Especialidade( line );
+        list_esp.push_back( a );
+      }
+    }
   }
-  fout.flush();
+  fin.close();
   return true;
 }
 
-bool savPac ( string f , const vector<Utente *> & u )
+bool FileHandling::loadCon( std::vector<Consulta * > & list_con , std::vector<Utente *> & list_pac ,
+                                                   std::vector<Medico * > & list_med )
 {
-  ofstream fout( f.c_str() );
-  if ( fout.fail() )
+  unsigned long ced , id;
+  int dia, mes , ano, duracao , hora , min;
+  float preco;
+  char estado;
+  string tmp;
+  ifstream fin(  this->file_con.c_str() );
+  if ( fin.fail() )
   {
-    cerr << "Não conseguiu escrever no ficheiro " << f << "." << endl;
+    cerr << "Ficheiro não encontrado." << endl;
     return false;
   }
-  for (int i = 0 ; i< (int) u.size() ; i++ )
+  list_con.clear();
+  while ( !fin.eof() )
   {
-    fout << u.at( i )->getId() << "|" << u.at( i )->getNome() << "|";
-    fout << u.at( i )->getTel() << "|" << u.at( i )->getMor() << "|" << u.at( i )->getSeg().getSeg();
-    fout << "|" << u.at( i )->getSeg().getDes() << "|" << u.at( i )->getSeg().getApo()<< "|" << u.at( i )->getSis() << endl;
+    getline( fin , tmp , '|' );
+    if ( !tmp.empty() )
+    {
+      istringstream ss ( tmp );
+      ss >> ced;
+    }
+    getline( fin , tmp , '|' );
+    if ( !tmp.empty() )
+    {
+      istringstream ss ( tmp );
+      ss >> id;
+    }
+    getline( fin , tmp , '|' );
+    if ( !tmp.empty() )
+    {
+      char espaco;
+      istringstream ss ( tmp );
+      ss >> dia >> espaco >> mes >> espaco >> ano;
+    }
+    getline( fin , tmp , '|' );
+    if ( !tmp.empty() )
+    {
+      char espaco;
+      istringstream ss ( tmp );
+      ss >> hora >> espaco >> min;
+    }
+    getline( fin , tmp , '|' );
+    if ( !tmp.empty() )
+    {
+      istringstream ss ( tmp );
+      ss >> preco;
+    }
+    getline( fin , tmp , '|' );
+    if ( !tmp.empty() )
+    {
+      istringstream ss ( tmp );
+      ss >> duracao;
+    }
+    getline( fin , tmp );
+    if ( !tmp.empty() )
+    {
+      istringstream ss ( tmp );
+      ss >> estado;
+      Medico med_tmp;
+      Medico *ptr_m = med_tmp.find ( ced , list_med );
+      Utente pac_tmp;
+      Utente *ptr_u = pac_tmp.find ( id , list_pac );
+      if ( ptr_u != NULL && ptr_m != NULL )
+      {
+        Date d( dia , mes , ano );
+        Hour h( hora , min );
+        Consulta *ptr = new Consulta( ptr_m , ptr_u , d , h , preco );
+        ptr->setEst( estado );
+        ptr->setDur( duracao );
+        list_con.push_back(ptr);
+      }
+    }
   }
-  fout.flush();
+  fin.close();
   return true;
 }
 
-bool savEsp ( string f , const vector<Especialidade *> & e )
+bool FileHandling::loadMed ( std::vector<Medico * > & list_med , std::vector<Especialidade *> & list_esp )
 {
-  ofstream fout( f.c_str() );
-  if ( fout.fail() )
+  string nome, tel, espe, tmp;
+  int duracao, dur_max;
+  int hora_i,hora_f, min_i, min_f;
+  long ced;
+  char espaco;
+  ifstream fin( this->file_med.c_str() );
+  if ( fin.fail() )
   {
-    cerr << "Não conseguiu escrever no ficheiro " << f << "." << endl;
+    cerr << "Ficheiro não encontrado." << endl;
     return false;
   }
-  for (int i = 0 ; i< (int) e.size() ; i++ )
-    fout << e.at( i )->getNom() << endl;
-  fout.flush();
-  return true;  
-}
+  list_med.clear();
+    while ( !fin.eof() )
+    {
+      getline( fin , tmp , '|' );
+      if ( !tmp.empty() )
+      {
+        istringstream ss ( tmp );
+        ss >> ced;
+      }
+      getline( fin, nome, '|' );
+      getline( fin, tel, '|' );
+      getline( fin, espe, '|' );
+      Especialidade espe_tmp(espe);
+      Especialidade *esp = espe_tmp.find( list_esp );
+      if ( esp == NULL )
+      {
+        esp = new Especialidade( espe );
+        list_esp.push_back( esp );
+      } 
+      getline( fin, tmp , '|' );
+      if (!tmp.empty())
+      {
+        istringstream ss( tmp );
+        char espaco;
+        ss >> hora_i >> espaco >> min_i;
 
-bool savMed ( string f , const vector<Medico *> & u )
-{
-  ofstream fout( f.c_str() );
-  if ( fout.fail() )
-  {
-    cerr << "Não conseguiu escrever no ficheiro " << f << "." << endl;
-    return false;
-  }
-  for (int i = 0 ; i< (int) u.size() ; i++ )
-  {
-    fout << u.at( i )->getCed() << "|" << u.at( i )->getNome() << "|";
-    fout << u.at( i )->getTel() << "|" << u.at( i )->getEspe()->getNom() << "|"; 
-    fout << u.at( i )->getIni().getHor() << ":" << u.at( i )->getIni().getMin() << "|";
-    fout << u.at( i )->getFim().getHor() << ":" << u.at( i )->getFim().getMin() << "|";
-    fout << u.at( i )->getDur() << "|" << u.at( i )->getDurM() << "|" << u.at( i )->getSis() << endl;
-  }
-  fout.flush();
+      }
+      getline( fin , tmp , '|' );
+      if (!tmp.empty())
+      {
+        istringstream ss ( tmp );
+        ss >> hora_f >> espaco >> min_f;
+      }
+      getline( fin , tmp , '|' );
+      if (!tmp.empty())
+      {
+        istringstream ss(tmp);
+        ss >> duracao;
+      }
+      getline(fin, tmp );      
+      if (!tmp.empty())
+      {
+        istringstream ss ( tmp );
+        ss >> dur_max;
+        Medico *ptr;
+        ptr = new Medico ( nome , tel , duracao , ced );
+        Hour fim( hora_f , min_f );
+        Hour inicio( hora_i , min_i );
+        ptr->setDurM( dur_max );
+        ptr->setIni( inicio );
+        ptr->setFim( fim );
+        ptr->setEspe( esp );
+        ptr->insOrd( list_med );
+      }
+    }
+  fin.close();
   return true;
 }
 
-bool criaFile(string f)
+bool FileHandling::loadPac( std::vector<Utente *> & list_pac )
 {
-  ifstream fi(f.c_str());
+  string nome, tel, seg, mor, tmp;
+  int desconto;
+  long id, apolice, ultimo = 0;
+  bool sistema;
+  ifstream fin( this->file_pac.c_str() );
+  if ( fin.fail() )
+  {
+    cerr << "Ficheiro não encontrado." << endl;
+    return false;
+  }
+  list_pac.clear();
+  while ( !fin.eof() )
+  {
+    getline( fin , tmp , '|' ); 
+    if (!fin.eof())
+    {
+      if ( !tmp.empty() )
+      {
+        istringstream ss ( tmp );
+        ss >> id;
+        if ( id >= ultimo ) ultimo = id + 1;
+      }
+      getline( fin , nome , '|' );
+      getline( fin , tel , '|' );
+      getline( fin , mor , '|' );
+      getline( fin , seg , '|' );    
+      getline( fin , tmp , '|' );
+      if ( !tmp.empty() )
+      {
+        istringstream ss ( tmp );
+        ss >> desconto;
+      }
+      getline( fin , tmp , '|' );
+      if ( !tmp.empty() )
+      {
+        istringstream ss ( tmp );
+        ss >> apolice;
+      }
+      getline( fin , tmp );
+      if ( !tmp.empty() )
+      {
+        istringstream ss ( tmp );
+        ss >> sistema;
+        Utente *ptr = new Utente ( nome , tel , mor, seg, desconto, apolice, id);
+        ptr->setUN( ultimo );
+        ptr->setSis( sistema );
+        ptr->insOrd( list_pac );
+      }
+    }
+  }
+  fin.close();
+  return true;
+}
+void FileHandling::savCon ( const vector<Consulta *> & c)
+{
+   ofstream fout( this->file_con.c_str() );
+  if ( fout.fail() )
+  {
+    cerr << "Não conseguiu escrever no ficheiro " << this->file_con << "." << endl;
+  }
+  else
+  {
+    for (int i = 0 ; i< (int) c.size() ; i++ )
+    {
+      fout << c.at( i )->getMed()->getCed() << "|" << c.at( i )->getUte()->getId() << "|";
+      fout << c.at( i )->getDat().getDate() << "|" << c.at( i )->getHor().getHour();
+      fout << "|" << c.at( i )->getPre() << "|" << c.at( i )->getDur();
+      fout << "|" << c.at( i )->getEst() <<endl;
+    }
+    fout.close();
+  }
+}
+
+void FileHandling::savPac ( const vector<Utente *> & u )
+{
+  ofstream fout( this->file_pac.c_str() );
+  if ( fout.fail() )
+  {
+    cerr << "Não conseguiu escrever no ficheiro " << this->file_pac << "." << endl;
+  }
+  else
+  {
+    for (int i = 0 ; i< (int) u.size() ; i++ )
+    {
+      fout << u.at( i )->getId() << "|" << u.at( i )->getName() << "|";
+      fout << u.at( i )->getTel() << "|" << u.at( i )->getMor() << "|" << u.at( i )->getIns().getIns();
+      fout << "|" << u.at( i )->getIns().getDis() << "|" << u.at( i )->getIns().getNum()<< "|" << u.at( i )->getSis() << endl;
+    }
+    fout.flush();
+  }
+}
+
+void FileHandling::savEsp ( const vector<Especialidade *> & e )
+{
+  ofstream fout( this->file_esp.c_str() );
+  if ( fout.fail() )
+  {
+    cerr << "Não conseguiu escrever no ficheiro " << this->file_esp << "." << endl;
+  }
+  else
+  {
+    for (int i = 0 ; i< (int) e.size() ; i++ )
+      fout << e.at( i )->getNom() << endl;
+    fout.close();
+  }
+}
+void FileHandling::savMed ( const vector<Medico *> & u )
+{
+  ofstream fout( this->file_med.c_str() );
+  if ( fout.fail() )
+  {
+    cerr << "Não conseguiu escrever no ficheiro " << this->file_med << "." << endl;
+  }
+  else
+  {
+    for (int i = 0 ; i< (int) u.size() ; i++ )
+    {
+      fout << u.at( i )->getCed() << "|" << u.at( i )->getName() << "|";
+      fout << u.at( i )->getTel() << "|" << u.at( i )->getEspe()->getNom() << "|"; 
+      fout << u.at( i )->getIni().getHor() << ":" << u.at( i )->getIni().getMin() << "|";
+      fout << u.at( i )->getFim().getHor() << ":" << u.at( i )->getFim().getMin() << "|";
+      fout << u.at( i )->getDur() << "|" << u.at( i )->getDurM() << "|" << u.at( i )->getSis() << endl;
+    }
+    fout.close();
+  }
+}
+
+char FileHandling::existFile( string f )
+{
+  ifstream fi( f.c_str() );
   if ( fi.fail() )
   {
-    ofstream fo(f.c_str());
+    ofstream fo( f.c_str() );
     if ( fo.fail() )
     {
       fo.close();
-      return false;  
+      return 'n';  
     }
     fo.close();
-    return true;
+    return 'c';
   }
   else
   {
     fi.close();
-    return true;
+    return 'e';
   }
 }
 bool addMed(fstream &f,const Medico &m)
@@ -107,7 +383,7 @@ bool addMed(fstream &f,const Medico &m)
   }
   f.clear();
   f.seekp(0,ios_base::end);
-  f << m.getCed() << "|" << m.getNome() << "|" << m.getTel() << "|" <<m.getEspe()->getNom() << "|";
+  f << m.getCed() << "|" << m.getName() << "|" << m.getTel() << "|" <<m.getEspe()->getNom() << "|";
   f << m.getIni().getHor() << ":" << m.getIni().getMin() << "|" << m.getFim().getHor() << ":" << m.getFim().getMin() << "|" << m.getDur() << "|" << m.getSis() << endl;
   f.flush();
   return true;
@@ -167,7 +443,7 @@ bool addPac(fstream &f, const Utente &u)
   }
   f.clear();
   f.seekp(0,ios_base::end);
-  f <<u.getId()<<"|"<< u.getNome() << "|" << u.getTel() << "|" <<u.getMor() << "|" << u.getSeg().getSeg() << "|" << u.getSeg().getDes() << "|" << u.getSeg().getApo() << "|" << u.getSis() << endl;
+  f <<u.getId()<<"|"<< u.getName() << "|" << u.getTel() << "|" <<u.getMor() << "|" << u.getIns().getIns() << "|" << u.getIns().getDis() << "|" << u.getIns().getNum() << "|" << u.getSis() << endl;
   f.flush();
   return true;
 }
@@ -212,5 +488,3 @@ bool delPac(fstream &f, unsigned long id)
   }
   return false;
 }
-bool addCon(fstream &, const Consulta &){return false;}
-bool delCon(fstream &, const Consulta &){return false;}

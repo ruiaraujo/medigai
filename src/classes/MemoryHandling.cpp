@@ -1,10 +1,28 @@
 #include "MemoryHandling.h"
-/*
-TO DO:
-Polish everything
-*/
+#include <fstream>
+#include <iostream>
+#include <sstream>
+#include <cstdlib>
+#include <curses.h>
 
-float precoMedioP( vector<Utente *> & v , vector<Consulta *> & c)
+using std::vector;
+using std::cout;
+using std::cerr;
+using std::cin;
+using std::endl;
+using std::string;
+using std::istringstream;
+
+Clinic::Clinic( std::string file_m , std::string file_p, std::string file_e, std::string file_c ) :
+                                             list_med() , list_pac() , list_esp() , list_con() ,
+                                             files( file_m , file_p , file_e , file_c ) {}
+
+std::vector<Medico *> Clinic::getListMed() const { return this->list_med; }
+std::vector<Utente *> Clinic::getListPac() const { return this->list_pac; }
+std::vector<Especialidade *> Clinic::getListEsp() const { return this->list_esp; }
+std::vector<Consulta *> Clinic::getListCon() const { return this->list_con; }
+
+float Clinic::precoMedioP()
 {
   long ced;
   cout << "Insira o identificador do utente: ";
@@ -16,7 +34,8 @@ float precoMedioP( vector<Utente *> & v , vector<Consulta *> & c)
   {
     return false;
   }
-  Utente *ptr_u = find( ced , v );
+  Utente pac_tmp;
+  Utente *ptr_u = pac_tmp.find( ced , this->list_pac );
   while (ptr_u == NULL )
   {
     cout << "Utente Inesxistente. Insira o identificador do utente: ";
@@ -28,28 +47,33 @@ float precoMedioP( vector<Utente *> & v , vector<Consulta *> & c)
     {
       return false;
     }
-    ptr_u = find( ced , v );
+    ptr_u = pac_tmp.find( ced , this->list_pac );
   }
   float total = 0.0;
   int dur_total = 0;
-  for ( int i = 0 ; i < (int) c.size() ; i++ )
+  for ( int i = 0 ; i < (int) this->list_con.size() ; i++ )
   {
-    if ( c.at( i )->getUte()->getId() == ptr_u->getId() )
+    if ( this->list_con.at( i )->getUte()->getId() == ptr_u->getId() )
     {
-      total += c.at( i )->getPre();
-      dur_total += c.at( i )->getDur();
+      total += this->list_con.at( i )->getPre();
+      dur_total += this->list_con.at( i )->getDur();
     }  
   }
-  total /= (float)dur_total;
   if ( dur_total != 0 )
-    cout << "Preço médio que o Sr.(a) " << ptr_u->getNome() << " paga por minuto é " << total << "€." << endl;
+  {
+    total /= (float)dur_total;
+    cout << "Preço médio que o Sr.(a) " << ptr_u->getName() << " paga por minuto é " << total << "€." << endl;
+  }
   else 
+  {
     cout << "Este utente ainda não efectou consultas logo não sabemos quanto é a sua média." << endl;
+    return 0;
+  }
   return total;
 }
 
 
-float precoMedio( vector<Medico *> & v , vector<Consulta *> & c)
+float Clinic::precoMedio()
 {
   long ced;
   cout << "Insira a cédula do médico: ";
@@ -61,7 +85,8 @@ float precoMedio( vector<Medico *> & v , vector<Consulta *> & c)
   {
     return false;
   }
-  Medico *ptr_m = find( ced , v );
+  Medico med_tmp;
+  Medico *ptr_m = med_tmp.find( ced , this->list_med );
   while (ptr_m == NULL )
   {
     cout << "Médico Inesxistente. Insira a cédula do Médico: ";
@@ -73,102 +98,58 @@ float precoMedio( vector<Medico *> & v , vector<Consulta *> & c)
     {
       return false;
     }
-    ptr_m = find( ced , v );
+    ptr_m = med_tmp.find( ced , this->list_med );
   }
   float total = 0.0;
   int dur_total = 0;
-  for ( int i = 0 ; i < (int) c.size() ; i++ )
+  for ( int i = 0 ; i < (int) this->list_con.size() ; i++ )
   {
-    if ( c.at( i )->getMed()->getCed() == ptr_m->getCed() )
+    if ( this->list_con.at( i )->getMed()->getCed() == ptr_m->getCed() )
     {
-      total += c.at( i )->getPre();
-      dur_total += c.at( i )->getDur();
+      total += this->list_con.at( i )->getPre();
+      dur_total += this->list_con.at( i )->getDur();
     }  
   }
-  total /= (float)dur_total;
+
   if ( dur_total != 0 )
-    cout << "Preço médio por minuto que o Dr.(a) " << ptr_m->getNome() << " cobra é " << total << "€." << endl;
+  {
+    cout << "Preço médio por minuto que o Dr.(a) " << ptr_m->getName() << " cobra é " << total << "€." << endl;
+    total /= (float)dur_total;
+  }
   else 
+  {
     cout << "Este médico ainda não efectou consultas logo não sabemos quanto é a sua média." << endl;
+    return 0;
+  }
   return total;
 }
 
-int findPos ( Consulta * con, vector<Consulta *> & c )
-{
-  for ( int i = 0 ; i < (int) c.size() ; i++ )
-  {
-    if ( c.at( i )->getMed()->getId() == con->getMed()->getId() )
-    {
-        for ( ;  i < (int) c.size()  ; i++  )
-        {
-          if ( c.at( i )->getDat() == con->getDat() )
-          {
-            for ( ;  i < (int) c.size() ; i++)
-            {
-              if ( c.at( i )->getHor() == con->getHor() )
-              {
-                return i;
-              }
-            }
-          }
-        }
-    }
-  }
-  return -1;
-}
-
-vector<Medico *> listEsp( Especialidade * esp, vector<Medico *> & m )
+vector<Medico *> Clinic::listEsp( Especialidade * esp )
 {
   vector<Medico *> lista;
-  for (int i = 0 ; i < (int) m.size() ; i++)
-    if ( *esp == ( *m.at( i )->getEspe() ) )
-      lista.push_back( m.at( i ) );
+  for (int i = 0 ; i < (int) this->list_med.size() ; i++)
+    if ( *esp == ( *this->list_med.at( i )->getEspe() ) )
+      lista.push_back( this->list_med.at( i ) );
   return lista;
 }
 
-vector<Consulta *>::iterator find ( Consulta * con, vector<Consulta *> & c )
-{
-  vector<Consulta *>::iterator it = c.begin();
-  for ( int i = 0 ; i < (int) c.size() ; i++ ,it++)
-  {
-    if ( c.at( i )->getMed()->getId() == con->getMed()->getId() )
-    {
-        for ( ;  i < (int) c.size()  ; i++ , it++ )
-        {
-          if ( c.at( i )->getDat() == con->getDat() )
-          {
-            for ( ;  i < (int) c.size() ; i++, it++)
-            {
-              if ( c.at( i )->getHor() == con->getHor() )
-              {
-                return it;
-              }
-            }
-          }
-        }
-    }
-  }
-  it = c.end();
-  return it;
 
-}
-
-bool delCon( vector<Consulta *> & c , Medico * & med , Hora & h , Data & d )
+bool Clinic::delCon( vector<Consulta *> & c , Medico * & med , Hour & h , Date & d )
 {
   Consulta *ptr =  new Consulta (med , NULL , d , h , 0);
-  vector<Consulta *>::iterator it = find ( ptr, c );
+  vector<Consulta *>::iterator it = ptr->find ( c );
   if ( it == c.end() )
   {
     cout << "Não foi encontrada uma consulta com estas características. Logo não foi desmarcada nenhuma consulta.\n";
     return false;
   }
-  delete c.at( findPos( ptr , c ) );
+  delete c.at( ptr->findPos( c ) );
   delete ptr;
   c.erase ( it );
   return true;
 }
 
-bool delCon( vector<Medico *> & v , vector<Consulta *> & c)
+bool Clinic::delCon()
 {
   unsigned long ced;
   int dia, mes, ano , hora , min;
@@ -184,7 +165,8 @@ bool delCon( vector<Medico *> & v , vector<Consulta *> & c)
   {
     return false;
   }
-  Medico *ptr_med = find ( ced , v );
+  Medico med_tmp;
+  Medico *ptr_med = med_tmp.find ( ced , this->list_med );
   while ( ptr_med == NULL )
   {
     cout << "Médico Inexistente.\nInsira a cédula do Médico : ";
@@ -196,7 +178,7 @@ bool delCon( vector<Medico *> & v , vector<Consulta *> & c)
     {
       return false;
     }
-    ptr_med = find ( ced , v );
+    ptr_med = med_tmp.find ( ced , this->list_med );
   }
   cout << "Insira a data da consulta separadas por um caracter (no formato dd/mm/aaaa): ";
   getline( cin , tmp );
@@ -207,12 +189,12 @@ bool delCon( vector<Medico *> & v , vector<Consulta *> & c)
   }
   while (!isDat( tmp ) )
   {
-    cout << "Data inválida. Insira outra: " << endl;
+    cout << "Date inválida. Insira outra: " << endl;
     getline( cin , tmp );  
   }
   istringstream ss(tmp);
   ss >> dia >> espaco >> mes >> espaco >> ano;
-  Data d( dia , mes , ano );
+  Date d( dia , mes , ano );
   cout << "Insira a hora da consulta separadas por um caracter (no formato hh:mm ): ";
   getline( cin , tmp );
   if ( cin.eof() )
@@ -222,23 +204,22 @@ bool delCon( vector<Medico *> & v , vector<Consulta *> & c)
   }
   while (!isHor( tmp ) )
   {
-    cout << "Hora inválida. Insira outra: " << endl;
+    cout << "Hour inválida. Insira outra: " << endl;
     getline( cin , tmp );  
   }
   istringstream sss(tmp);
   sss >> hora >> espaco >> min;
-  Hora h( hora , min ); 
-  if ( delCon ( c , ptr_med , h , d ) )
+  Hour h( hora , min ); 
+  if ( this->delCon ( this->list_con , ptr_med , h , d ) )
     return true;
   else
     return false;
 }
-int insPac ( vector<Utente *> & u)
+int Clinic::insPac ()
 {
   string nome, tel, seg, mor , tmp;
   float des;
   long apo;
-  //getline( cin, nome ); //limpar o cin;
   cout << "Insira o nome do utente: ";
   getline( cin , nome );
   if ( cin.eof() )
@@ -380,57 +361,12 @@ int insPac ( vector<Utente *> & u)
   }
   Utente *ptr = new Utente ( nome , tel , mor , seg , des , apo );
   ptr->setSis( true );
-  insPacOrd( ptr , u );
-  return findPos ( *ptr , u );  
+  ptr->insOrd( this->list_pac );
+  return ptr->findPos ( this->list_pac );  
 }
 
-vector<Consulta *>::iterator insConOrd ( Consulta * con , vector<Consulta *> & c )
-{
-  vector<Consulta *>::iterator it = c.begin();
-  vector<Consulta *>::iterator it_f = c.end();
-  it_f--;
-  for (int i = c.size()-1 ; i >= 0 ; i--,it_f--)
-  {
-    if ( c.at( i )->getMed()->getId() == con->getMed()->getId() )
-    {
-      break;
-    }
-  it_f++;
-  }
-  for ( int i = 0 ; i < (int) c.size() ; i++ ,it++)
-  {
-    if ( c.at( i )->getMed()->getId() >= con->getMed()->getId() )
-    {
-        for ( ; it < it_f ; it++,it_f--)
-        {
-          if ( c.at( i )->getDat() >= con->getDat() )
-          {
-            for ( ; it < it_f; it++)
-            {
-              if ( c.at( i )->getHor() >= con->getHor() )
-              {
-                c.insert( it , con );
-                it++;
-                return it;
-              }
-            }
-            c.insert( it , con );
-            it++;
-            return it;
-          }
-        }
-        c.insert( it , con);
-        it++;
-        return it;
-    }
-  }
-  c.push_back(con);
-  it_f = c.end();
-  it_f--;
-  return it_f;
-}
 
-int insCon ( vector<Medico *> & v , vector<Utente *> & u , vector<Consulta *> &c )
+int Clinic::insCon ()
 {
   string tmp;
   int dia, mes , ano , duracao;
@@ -446,7 +382,8 @@ int insCon ( vector<Medico *> & v , vector<Utente *> & u , vector<Consulta *> &c
   {
     return -1;
   }
-  Medico *ptr_m = find( ced , v );
+  Medico med_tmp;
+  Medico *ptr_m = med_tmp.find( ced , this->list_med );
   while (ptr_m == NULL )
   {
     cout << "Médico Inesxistente. Insira a cédula do Médico: ";
@@ -458,7 +395,7 @@ int insCon ( vector<Medico *> & v , vector<Utente *> & u , vector<Consulta *> &c
     {
       return -1;
     }
-    ptr_m = find( ced , v );
+    ptr_m = med_tmp.find( ced , this->list_med );
   }
   cout << "Insira o identificador do utente: ";
   try
@@ -469,7 +406,8 @@ int insCon ( vector<Medico *> & v , vector<Utente *> & u , vector<Consulta *> &c
   {
     return -1;
   }
-  Utente *ptr_u = find( id , u );
+  Utente pac_tmp;
+  Utente *ptr_u = pac_tmp.find( id , this->list_pac );
   while ( ptr_u == NULL )
   {
     cout << "Utente Inesxistente. Insira a cédula do utente: ";
@@ -481,10 +419,10 @@ int insCon ( vector<Medico *> & v , vector<Utente *> & u , vector<Consulta *> &c
     {
       return -1;
     }
-    ptr_u = find( id , u );
+    ptr_u = pac_tmp.find( id , this->list_pac );
   }
   char espaco;
-  cout << "Insira a Data separadas por um caracter (no formato dd/mm/aaaa): ";
+  cout << "Insira a Date separadas por um caracter (no formato dd/mm/aaaa): ";
   getline( cin , tmp );
   if ( cin.eof() )
   {
@@ -493,7 +431,7 @@ int insCon ( vector<Medico *> & v , vector<Utente *> & u , vector<Consulta *> &c
   }
   while (!isDat( tmp ) )
   {
-    cout << "Data inválida. Insira outra: " << endl;
+    cout << "Date inválida. Insira outra: " << endl;
     getline( cin , tmp );
     if ( cin.eof() )
     {
@@ -503,42 +441,45 @@ int insCon ( vector<Medico *> & v , vector<Utente *> & u , vector<Consulta *> &c
   }
   istringstream s(tmp);
   s >> dia >> espaco >> mes >> espaco >> ano;
-  Data d( dia , mes , ano );
-  Horario< Medico , Data > timetable ( ptr_m , d , 0 );
-  vector<Consulta *> tt = timetable.get( c );
+  Date d( dia , mes , ano );
+  Horario< Medico , Date > timetable ( ptr_m , d , 0 );
+  vector<Consulta *> tt = timetable.get( this->list_con );
   cout << "Insira a hora: ";
-  Hora h;
+  Hour h;
   try
   {
-      h = getHora();
+      h = getHour();
   }
   catch (EOI &)
   {
     return -1;
   }
-  while ( !horNCol ( tt , h , ptr_m->getDur() , ptr_m->getIni() , ptr_m->getFim() ) )
+  while ( !this->horNCol ( tt , h , ptr_m->getDur() , ptr_m->getIni() , ptr_m->getFim() ) )
   {
-    Hora ini(ptr_m->getIni()), fim(ptr_m->getFim());
+    Hour ini(ptr_m->getIni()), fim(ptr_m->getFim());
     if ( h < ini || h > fim )
-      cout << "Hora fora do Horário de trabalho do médico. Deve ser entre as  "<< ini << " e as " << fim << endl;
+    {
+      cout << "Hour fora do Horário de trabalho do médico. Deve ser entre as  ";
+      cout << ini << " e as " << fim << endl;
+    }
     else
     {
       cout << "Consulta incompatível com o horário existente!" << endl;
-      timetable.print( cout , c);
+      timetable.print( cout , this->list_con );
     }
     cout  << "Insira outra: ";
     try
     {
-      h = getHora();
+      h = getHour();
     }
     catch (EOI &)
     {
       return -1;
     }
   }
-  if ( ptr_u->getSeg().getSeg() == "Caixa")
+  if ( ptr_u->getIns().getIns() == "Caixa")
   {
-    preco = ptr_u->getSeg().getDes();
+    preco = ptr_u->getIns().getDis();
   }
   else
   {
@@ -558,8 +499,8 @@ int insCon ( vector<Medico *> & v , vector<Utente *> & u , vector<Consulta *> &c
       cout << "Input inválido. Insira outro preço: ";
       cin >> preco;
     }
-    if ( ptr_u->getSeg().getDes() != 0 )
-      preco *= (float)(ptr_u->getSeg().getDes()/100.0);
+    if ( ptr_u->getIns().getDis() != 0 )
+      preco *= (float)(ptr_u->getIns().getDis()/100.0);
   }
   cout << "Preço a ser usado devido ao desconto do utente: " << preco << endl;
   getline ( cin , tmp);
@@ -576,7 +517,8 @@ int insCon ( vector<Medico *> & v , vector<Utente *> & u , vector<Consulta *> &c
   {
     if ( duracao > (int) ptr_m->getDurM() )
     {
-      cout << "Duração acima da duração máxima do médico. Insira outra duração entre" << ptr_m->getDur() << " e ";
+      cout << "Duração acima da duração máxima do médico. Insira outra duração entre";
+      cout << ptr_m->getDur() << " e ";
       cout << ptr_m->getDurM() << ": ";
       try
       {
@@ -603,7 +545,7 @@ int insCon ( vector<Medico *> & v , vector<Utente *> & u , vector<Consulta *> &c
     if ( !horNCol ( tt , h , duracao , ptr_m->getIni() , ptr_m->getFim() ) )
     {
       cout << "Duração incompatível com o horário existente." << endl << "Este é o horário existente:" << endl;
-      timetable.print( cout , c );
+      timetable.print( cout , this->list_con );
       cout << "Insira outra duração: ";
       try
       {
@@ -617,16 +559,15 @@ int insCon ( vector<Medico *> & v , vector<Utente *> & u , vector<Consulta *> &c
   }
   Consulta *con = new Consulta ( ptr_m , ptr_u  , d , h , preco );
   con->setDur( duracao );
-  insConOrd( con , c );
-  return findPos ( con , c );
+  con->insOrd( this->list_con );
+  return con->findPos ( this->list_con );
 }
 
-int insMed( vector<Medico *>  & v , vector<Especialidade *> & e )
+int Clinic::insMed()
 {
   string nome, tel, espe, tmp;
   int duracao, dur_max;
   int hora_i , hora_f , min_i , min_f;
-  getline( cin, nome ); //limpar o cin;
   cout << "Insira o nome do(a) médico(a): ";
   long cedula;
   getline( cin , nome );
@@ -659,12 +600,14 @@ int insMed( vector<Medico *>  & v , vector<Especialidade *> & e )
     cin.clear();
     return -1;
   }
-  Especialidade *esp = findEsp ( espe , e );
+  
+  Especialidade espe_tmp(espe);
+  Especialidade *esp = espe_tmp.find( this->list_esp );
   if ( esp == NULL )
   {
-    esp = new Especialidade;
-    esp->setNom( espe );  
-  } 
+    esp = new Especialidade( espe );
+  }
+  this->list_esp.push_back(esp);
   cout << "Insira a cédula do(a) médico(a): ";
   getline ( cin , tmp );
   if ( cin.eof() )
@@ -776,7 +719,7 @@ int insMed( vector<Medico *>  & v , vector<Especialidade *> & e )
   }
   while (!isHor( tmp ) )
   {
-    cout << "Hora inválida. Insira outra: " << endl;
+    cout << "Hour inválida. Insira outra: " << endl;
     getline( cin , tmp );
     if ( cin.eof() )
     {
@@ -795,7 +738,7 @@ int insMed( vector<Medico *>  & v , vector<Especialidade *> & e )
   }
   while (!isHor( tmp ))
   {
-    cout << "Hora inválida. Insira outra: " << endl;
+    cout << "Hour inválida. Insira outra: " << endl;
     getline( cin , tmp );  
     if ( cin.eof() )
     {
@@ -805,11 +748,11 @@ int insMed( vector<Medico *>  & v , vector<Especialidade *> & e )
   }
   istringstream ssss(tmp);
   ssss >> hora_f >> espaco >> min_f;
-  Hora inicio ( hora_i , min_i );
-  Hora fim ( hora_f , min_f );
-  Medico a ( nome , tel , duracao , cedula );
-  a.setEspe( esp );
-  Medico *ptr = find( a , v );
+  Hour inicio ( hora_i , min_i );
+  Hour fim ( hora_f , min_f );
+  Medico med ( nome , tel , duracao , cedula );
+  med.setEspe( esp );
+  Medico *ptr = med.find( this->list_med );
   if (ptr == NULL)
   {
     ptr = new Medico ( nome , tel , duracao , cedula );
@@ -820,14 +763,14 @@ int insMed( vector<Medico *>  & v , vector<Especialidade *> & e )
     }
     else
     {
-      cout << "Hora final anterior à inicial. A trocar automaticamente... Porque o sistema não está preparado para médicos que trabalhem à noite." << endl;
+      cout << "Hour final anterior à inicial. A trocar automaticamente... Porque o sistema não está preparado para médicos que trabalhem à noite." << endl;
       ptr->setIni( fim );
       ptr->setFim( inicio );    
     }
     ptr->setEspe( esp );
     ptr->setDurM( dur_max );
-    insMedOrd( ptr , v );
-    return findPos( cedula , v );
+    ptr->insOrd( this->list_med );
+    return ptr->findPos( this->list_med );
   }
   else
   {
@@ -845,53 +788,22 @@ int insMed( vector<Medico *>  & v , vector<Especialidade *> & e )
     }
     if ( resposta == 'S' || resposta == 's' )
     {
-      int pos = findPos( a , v );
-      v.at( pos )->setNome( nome );
-      v.at( pos )->setTel( tel );
-      v.at( pos )->setDur( duracao );
-      v.at( pos )->setIni( inicio );
-      v.at( pos )->setFim( fim );
-      v.at( pos )->setEspe( esp );
+      int pos = med.findPos( this->list_med );
+      this->list_med.at( pos )->setName( nome );
+      this->list_med.at( pos )->setTel( tel );
+      this->list_med.at( pos )->setDur( duracao );
+      this->list_med.at( pos )->setIni( inicio );
+      this->list_med.at( pos )->setFim( fim );
+      this->list_med.at( pos )->setEspe( esp );
       cout << "Dados actualizados\n\n";
     }
-    return findPos ( cedula , v );
+    return med.findPos ( this->list_med );
   }
 }
-vector<Medico *>::iterator insMedOrd ( Medico * m , vector<Medico *> & v )
-{
-  vector<Medico *>::iterator it = v.begin();
-  for ( int i = 0 ; i < (int) v.size() ; i++ )
-  {
-    if ( ( *v.at( i ) ).getId() >= ( *m ).getId() )
-    {
-      v.insert( it , m );
-      it++;
-      return it;
-    }
-    it++;
-  }
-  v.push_back( m );
-  return it;
-} 
 
-vector<Utente *>::iterator insPacOrd ( Utente * m , vector<Utente *> & v )
-{
-  vector<Utente *>::iterator it = v.begin();
-  for ( int i = 0 ; i < (int) v.size() ; i++ )
-  {
-    if ( ( *v.at( i ) ).getId() >= ( *m ).getId() )
-    {
-      v.insert( it , m );
-      it++;
-      return it;
-    }
-    it++;
-  }
-  v.push_back( m );
-  return it;
-} 
 
-bool horario_med( vector<Medico *> & v , vector<Consulta *> & c )
+
+bool Clinic::horario_med()
 {
   string tmp;
   int dia, mes , ano;
@@ -907,7 +819,8 @@ bool horario_med( vector<Medico *> & v , vector<Consulta *> & c )
   {
     return false;
   }
-  Medico *ptr_m = find( ced , v );
+  Medico med_tmp;
+  Medico *ptr_m = med_tmp.find( ced , this->list_med );
   while (ptr_m == NULL )
   {
     cout << "Médico Inesxistente. Insira a cédula do Médico: ";
@@ -919,9 +832,9 @@ bool horario_med( vector<Medico *> & v , vector<Consulta *> & c )
     {
       return false;
     }
-    ptr_m = find( ced , v );
+    ptr_m = med_tmp.find( ced , this->list_med );
   }
-  cout << "Insira a Data separadas por um caracter (no formato dd/mm/aaaa): ";
+  cout << "Insira a Date separadas por um caracter (no formato dd/mm/aaaa): ";
   getline( cin , tmp );
   if ( cin.eof() )
   {
@@ -930,7 +843,7 @@ bool horario_med( vector<Medico *> & v , vector<Consulta *> & c )
   }
   while (!isDat( tmp ) )
   {
-    cout << "Data inválida. Insira outra: ";
+    cout << "Date inválida. Insira outra: ";
     getline( cin , tmp );
     if ( cin.eof() )
     {
@@ -940,302 +853,17 @@ bool horario_med( vector<Medico *> & v , vector<Consulta *> & c )
   }
   istringstream s(tmp);
   s >> dia >> espaco >> mes >> espaco >> ano;
-  Data d( dia , mes , ano );
-  Horario <Medico , Data> horario (ptr_m , d , 0);
-  horario.print( cout , c );
+  Date d( dia , mes , ano );
+  Horario <Medico , Date> horario (ptr_m , d , 0);
+  horario.print( cout , this->list_con );
   return true;
 }
 
-template <class Comparable>int findPos ( unsigned long ced , vector<Comparable *> & v )
+bool Clinic::delMed( unsigned long  ced )
 {
-  int left = 0, right = v.size() - 1;
-  while (left <= right)
-  {
-    int middle = (left + right) / 2;
-    if ( ced == (*v.at(middle)).getId() ) return middle;
-    else if ( ced < (*v.at(middle)).getId() ) right = middle - 1;
-    else left = middle + 1;
-  }
-  return -1;
-}
-template <class Comparable> int findPos ( const Comparable & m , vector<Comparable *> & v )
-{
-  int left = 0, right = v.size() - 1;
-  while (left <= right)
-  {
-    int middle = (left + right) / 2;
-    if ( m.getId() == v.at(middle)->getId() ) return middle;
-    else if ( m.getId() < v.at(middle)->getId() ) right = middle - 1;
-    else left = middle + 1;
-  }
-  return -1;
-}
-template <class Comparable > Comparable * find ( const Comparable & m , vector<Comparable *> & v )
-{
-  if ( !v.empty() )
-  {
-    int left = 0 , right = v.size() - 1;
-    while ( left <= right )
-    {
-      int middle = ( left + right ) / 2;
-      if ( m.getId() == v.at( middle )->getId() ) return v.at( middle );
-      else if ( m.getId() < v.at( middle )->getId() ) right = middle - 1;
-      else left = middle + 1;
-    }
-  }
-  return NULL;
-}
-template <class Comparable> Comparable * find ( unsigned long ced, vector<Comparable *> & v )
-{
-  if ( !v.empty() )
-  {
-    int left = 0 , right = v.size() - 1;
-
-    while ( left <= right )
-    {
-      int middle = ( left + right )  / 2;
-      if ( ced == v.at( middle )->getId() ) return v.at( middle );
-      else if ( ced < v.at( middle )->getId() ) right = middle - 1;
-      else left = middle + 1;
-    }
-  }
-  return NULL;
-}
-Especialidade * findEsp ( string m , vector<Especialidade *> & v )
-{
-  for( int i = 0 ; i < (int) v.size() ; i++ )
-  {
-    if ( m == v.at( i )->getNom() )
-      return v.at( i );
-  }
-  return NULL;
-}
-
-bool carregaEsp( string m , vector<Especialidade *> & v )
-{
-  ifstream fin( m.c_str() );
-  if ( fin.fail() )
-  {
-    cerr << "Ficheiro não encontrado." << endl;
-    return false;
-  }
-  v.clear();
-  string line;
-  while ( ! fin.eof() )
-  {
-    getline( fin, line );
-    if ( ! line.empty() )
-      if ( findEsp ( line , v ) == NULL )
-      {
-        Especialidade * a = new Especialidade( line );
-        v.push_back( a );
-      }
-  }
-  return true;
-}
-
-bool carregaCon( string f , vector<Medico *> & v , vector<Utente *> & u , vector<Consulta *> & c )
-{
-  unsigned long ced , id;
-  int dia, mes , ano, duracao , hora , min;
-  float preco;
-  char estado;
-  string tmp;
-  ifstream fin( f.c_str() );
-  if ( fin.fail() )
-  {
-    cerr << "Ficheiro não encontrado." << endl;
-    return false;
-  }
-  c.clear();
-  while ( !fin.eof() )
-  {
-    getline( fin , tmp , '|' );
-    if ( !tmp.empty() )
-    {
-      istringstream ss ( tmp );
-      ss >> ced;
-    }
-    getline( fin , tmp , '|' );
-    if ( !tmp.empty() )
-    {
-      istringstream ss ( tmp );
-      ss >> id;
-    }
-    getline( fin , tmp , '|' );
-    if ( !tmp.empty() )
-    {
-      char espaco;
-      istringstream ss ( tmp );
-      ss >> dia >> espaco >> mes >> espaco >> ano;
-    }
-    getline( fin , tmp , '|' );
-    if ( !tmp.empty() )
-    {
-      char espaco;
-      istringstream ss ( tmp );
-      ss >> hora >> espaco >> min;
-    }
-    getline( fin , tmp , '|' );
-    if ( !tmp.empty() )
-    {
-      istringstream ss ( tmp );
-      ss >> preco;
-    }
-    getline( fin , tmp , '|' );
-    if ( !tmp.empty() )
-    {
-      istringstream ss ( tmp );
-      ss >> duracao;
-    }
-    getline( fin , tmp );
-    if ( !tmp.empty() )
-    {
-      istringstream ss ( tmp );
-      ss >> estado;
-      Medico *ptr_m = find ( ced , v );
-      Utente *ptr_u = find ( id , u );
-      Data d( dia , mes , ano );
-      Hora h( hora , min );
-      Consulta *ptr = new Consulta( ptr_m , ptr_u , d , h , preco );
-      ptr->setEst( estado );
-      ptr->setDur( duracao );
-      c.push_back(ptr);
-    }
-  }
-  return true;
-}
-
-bool carregaMed ( string m , vector<Medico *> & v , vector<Especialidade *> & e )
-{
-  string nome, tel, espe, tmp;
-  int duracao, dur_max;
-  int hora_i,hora_f, min_i, min_f;
-  long ced=-1;
-  char espaco;
-  ifstream fin( m.c_str() );
-  if ( fin.fail() )
-  {
-    cerr << "Ficheiro não encontrado." << endl;
-    return false;
-  }
-  v.clear();
-    while ( !fin.eof() )
-    {
-      getline( fin , tmp , '|' );
-      if ( !tmp.empty() )
-      {
-        istringstream ss ( tmp );
-        ss >> ced;
-      }
-      getline( fin, nome, '|' );
-      getline( fin, tel, '|' );
-      getline( fin, espe, '|' );
-      Especialidade *esp = findEsp( espe , e );
-      if ( esp == NULL )
-      {
-        esp = new Especialidade;
-        esp->setNom(espe);
-        e.push_back( esp );
-      } 
-      getline( fin, tmp , '|' );
-      if (!tmp.empty())
-      {
-        istringstream ss( tmp );
-        char espaco;
-        ss >> hora_i >> espaco >> min_i;
-
-      }
-      getline( fin , tmp , '|' );
-      if (!tmp.empty())
-      {
-        istringstream ss ( tmp );
-        ss >> hora_f >> espaco >> min_f;
-      }
-      getline(fin, tmp , '|' );
-      if (!tmp.empty())
-      {
-        istringstream ss(tmp);
-        ss >> duracao;
-      }
-      getline(fin, tmp );      
-      if (!tmp.empty())
-      {
-        istringstream ss ( tmp );
-        ss >> dur_max;
-        Medico *ptr;
-        ptr = new Medico ( nome , tel , duracao , ced );
-        Hora fim( hora_f , min_f );
-        Hora inicio( hora_i , min_i );
-        ptr->setDurM( dur_max );
-        ptr->setIni( inicio );
-        ptr->setFim( fim );
-        ptr->setEspe( esp );
-        insMedOrd( ptr, v );
-      }
-    }
-  return true;
-}
-
-bool carregaPac( string m , vector<Utente *> & u )
-{
-  string nome, tel, seg, mor, tmp;
-  int desconto;
-  long id, apolice, ultimo=0;
-  bool sistema;
-  ifstream fin( m.c_str() );
-  if ( fin.fail() )
-  {
-    cerr << "Ficheiro não encontrado." << endl;
-    return false;
-  }
-  u.clear();
-  while ( !fin.eof() )
-  {
-    getline( fin , tmp , '|' ); 
-    if (!fin.eof())
-    {
-      if ( !tmp.empty() )
-      {
-        istringstream ss ( tmp );
-        ss >> id;
-        if ( id >= ultimo ) ultimo = id+1;
-      }
-      getline( fin , nome , '|' );
-      getline( fin , tel , '|' );
-      getline( fin , mor , '|' );
-      getline( fin , seg , '|' );    
-      getline( fin , tmp , '|' );
-      if ( !tmp.empty() )
-      {
-        istringstream ss ( tmp );
-        ss >> desconto;
-      }
-      getline( fin , tmp , '|' );
-      if ( !tmp.empty() )
-      {
-        istringstream ss ( tmp );
-        ss >> apolice;
-      }
-      getline( fin , tmp );
-      if ( !tmp.empty() )
-      {
-        istringstream ss ( tmp );
-        ss >> sistema;
-        Utente *ptr = new Utente ( nome , tel , mor, seg, desconto, apolice, id);
-        ptr->setUN( ultimo );
-        ptr->setSis( sistema );
-        insPacOrd( ptr , u );
-      }
-    }
-  }
-  return true;
-}
-
-bool delMed( unsigned long  ced , vector<Medico *> & v , vector<Consulta *> & c)
-{
-  int pos = findPos( ced , v );
-  vector<Medico *> eq = listEsp ( v.at( pos )->getEspe() , v );
+  Medico med_tmp;
+  int pos = med_tmp.findPos( ced , this->list_med );
+  vector<Medico *> eq = listEsp ( this->list_med.at( pos )->getEspe() );
   vector<Medico *>::iterator it = eq.begin();
   for ( int i = 0  ; i < (int) eq.size(); i++ , it++)
     if ( ced == eq.at( i )->getCed() )
@@ -1243,15 +871,15 @@ bool delMed( unsigned long  ced , vector<Medico *> & v , vector<Consulta *> & c)
   
   if ( pos == -1) return false; 
   bool consulta = false;
-  for (int i = 0; i < (int) c.size() ; i++ )
+  for (int i = 0; i < (int) this->list_con.size() ; i++ )
   {
-    if ( c.at(i)->getMed()->getCed() == ced && c.at(i)->getEst() == 'm' )
+    if ( this->list_con.at(i)->getMed()->getCed() == ced && this->list_con.at(i)->getEst() == 'm' )
       consulta = true;
   }
   if (consulta)
   {
     cout << "Este médico que deseja eliminar tem consultas marcadas." << endl;
-    cout << "Deseja cancelá-las (S para confirmar, N para mudar o médico responsável, U para cancelar ):" << endl;
+    cout << "Diseja cancelá-las (S para confirmar, N para mudar o médico responsável, U para cancelar ):" << endl;
     bool wrong = true;
     while ( wrong )
     {
@@ -1266,15 +894,15 @@ bool delMed( unsigned long  ced , vector<Medico *> & v , vector<Consulta *> & c)
       switch ( opcao )
       {
         case 'S':
-        case 's': v.at( pos )->setSis( false );
-                  for (int i = 0; i < (int) c.size() ; i++ )
+        case 's': this->list_med.at( pos )->setSis( false );
+                  for (int i = 0; i < (int) this->list_con.size() ; i++ )
                   {
-                    if ( c.at(i)->getMed()->getCed() == ced && c.at(i)->getEst() == 'm' )
+                    if ( this->list_con.at(i)->getMed()->getCed() == ced && this->list_con.at(i)->getEst() == 'm' )
                     {
-                      Hora h( c.at( i )->getHor() );
-                      Data d( c.at( i )->getDat() );
-                      Medico * ptr = find ( ced , v );
-                      delCon( c , ptr , h , d );
+                      Hour h( this->list_con.at( i )->getHor() );
+                      Date d( this->list_con.at( i )->getDat() );
+                      Medico * ptr = med_tmp.find ( ced , this->list_med );
+                      delCon( this->list_con , ptr , h , d );
                       i--;
                     }
                   }
@@ -1296,20 +924,20 @@ bool delMed( unsigned long  ced , vector<Medico *> & v , vector<Consulta *> & c)
                     {                
                       try
                       {
-  id = getLong();
+                        id = getLong();
                       }
                       catch (EOI &)
                       {
-  return false;
+                        return false;
                       }
-                      if ( ( ptr_m = find( id , eq ) ) == NULL )
-  cout << "Médico inesxistente na lista de equivalência. Insira a cédula doutro médico: ";
+                      if ( ( ptr_m = med_tmp.find( id , eq ) ) == NULL )
+                        cout << "Médico inesxistente na lista de equivalência. Insira a cédula doutro médico: ";
                     }
-                      v.at( pos )->setSis( false );
-                    for (int i = 0; i < (int) c.size() ; i++ )
+                      this->list_med.at( pos )->setSis( false );
+                    for (int i = 0; i < (int) this->list_con.size() ; i++ )
                     {
-                      if ( c.at(i)->getMed()->getCed() == ced && c.at(i)->getEst() == 'm' )
- c.at( i )->setMed ( ptr_m );
+                      if ( this->list_con.at(i)->getMed()->getCed() == ced && this->list_con.at(i)->getEst() == 'm' )
+ this->list_con.at( i )->setMed ( ptr_m );
                     }
                   }
                   else
@@ -1323,7 +951,7 @@ bool delMed( unsigned long  ced , vector<Medico *> & v , vector<Consulta *> & c)
       }
     }            
   }
-  else v.at( pos )->setSis( false );
+  else this->list_med.at( pos )->setSis( false );
   return true;
 }
 
@@ -1353,7 +981,7 @@ bool isNum( string s )
 
 bool isDat ( string s )
 {
-  Data d;
+  Date d;
   int dia,mes,ano;
   char espaco;
   if ( ! s.empty()  && s.size() <= 10 && s.size() >= 8 ) 
@@ -1375,9 +1003,9 @@ bool isDat ( string s )
       ss >> dia >> espaco >> mes >> espaco >> ano;
       try
       {
-        d.setData( dia , mes , ano );
+        d.setDate( dia , mes , ano );
       }
-      catch(DataImpossivel & d)
+      catch(DateNonexistent & d)
       {
         return false;
       }
@@ -1402,9 +1030,9 @@ bool isDat ( string s )
         ss >> dia >> espaco >> mes >> espaco >> ano;
         try
         {
-          d.setData( dia , mes , ano );
+          d.setDate( dia , mes , ano );
         }
-        catch(DataImpossivel & d)
+        catch(DateNonexistent & d)
         {
           return false;
         }
@@ -1429,9 +1057,9 @@ bool isDat ( string s )
           ss >> dia >> espaco >> mes >> espaco >> ano;
           try
           {
-            d.setData( dia , mes , ano );
+            d.setDate( dia , mes , ano );
           }
-          catch(DataImpossivel & d)
+          catch(DateNonexistent & d)
           {
             return false;
           }
@@ -1454,9 +1082,9 @@ bool isDat ( string s )
           ss >> dia >> espaco >> mes >> espaco >> ano;
           try
           {
-            d.setData( dia , mes , ano );
+            d.setDate( dia , mes , ano );
           }
-          catch(DataImpossivel & d)
+          catch(DateNonexistent & d)
           {
             return false;
           }
@@ -1470,7 +1098,7 @@ bool isDat ( string s )
 
 bool isHor( string s)
 {
-  Hora h;
+  Hour h;
   int hora,min;
   char espaco;
   if ( ! s.empty()  && s.size() <= 5 && s.size() >= 3 ) 
@@ -1492,9 +1120,9 @@ bool isHor( string s)
       ss >> hora >> espaco >> min;
       try
       {
-        h.setHora( hora , min );
+        h.setHour( hora , min );
       }
-      catch(HoraImpossivel & d)
+      catch(HourNonexistent & d)
       {
         return false;
       }
@@ -1519,9 +1147,9 @@ bool isHor( string s)
         ss >> hora >> espaco >> min;
         try
         {
-          h.setHora( hora , min );
+          h.setHour( hora , min );
         }
-        catch(HoraImpossivel & d)
+        catch(HourNonexistent & d)
         {
           return false;
         }
@@ -1546,9 +1174,9 @@ bool isHor( string s)
           ss >> hora >> espaco >> min;
           try
           {
-            h.setHora( hora , min );
+            h.setHour( hora , min );
           }
-          catch(HoraImpossivel & d)
+          catch(HourNonexistent & d)
           {
             return false;
           }
@@ -1571,9 +1199,9 @@ bool isHor( string s)
           ss >> hora >> espaco >> min;
           try
           {
-            h.setHora( hora , min );
+            h.setHour( hora , min );
           }
-          catch(HoraImpossivel & d)
+          catch(HourNonexistent & d)
           {
             return false;
           }
@@ -1610,7 +1238,7 @@ long getLong()
   return id;
 }
 
-bool altCon( vector<Consulta *> & c ,vector<Utente * > & u , vector<Medico * > & v )
+bool Clinic::altCon()
 {
   unsigned long ced;
   int dia, mes, ano , hora , min;
@@ -1627,7 +1255,8 @@ bool altCon( vector<Consulta *> & c ,vector<Utente * > & u , vector<Medico * > &
   {
     return false;
   }
-  Medico *ptr_med = find ( ced , v );
+  Medico med_tmp;
+  Medico *ptr_med = med_tmp.find ( ced , this->list_med );
   while ( ptr_med == NULL )
   {
     cout << "Médico Inexistente.\nInsira a cédula do Médico : ";
@@ -1639,7 +1268,7 @@ bool altCon( vector<Consulta *> & c ,vector<Utente * > & u , vector<Medico * > &
     {
       return false;
     }
-    ptr_med = find ( ced , v );
+    ptr_med = med_tmp.find ( ced , this->list_med );
   }
   cout << "Insira a data da consulta separadas por um caracter (no formato dd/mm/aaaa): ";
   getline( cin , tmp );
@@ -1650,7 +1279,7 @@ bool altCon( vector<Consulta *> & c ,vector<Utente * > & u , vector<Medico * > &
   }
   while (!isDat( tmp ) )
   {
-    cout << "Data inválida. Insira outra: " << endl;
+    cout << "Date inválida. Insira outra: " << endl;
     getline( cin , tmp );
     if ( cin.eof() )
     {
@@ -1660,9 +1289,9 @@ bool altCon( vector<Consulta *> & c ,vector<Utente * > & u , vector<Medico * > &
   }
   istringstream ss(tmp);
   ss >> dia >> espaco >> mes >> espaco >> ano;
-  Data d( dia , mes , ano );
-  Horario <Medico , Data > horario ( ptr_med , d , 0 );
-  horario.print(cout , c );
+  Date d( dia , mes , ano );
+  Horario <Medico , Date > horario ( ptr_med , d , 0 );
+  horario.print(cout , this->list_con );
   cout << endl << "Insira a hora de início da consulta separadas por um caracter (no formato hh:mm ): ";
   getline( cin , tmp );
   if ( cin.eof() )
@@ -1672,7 +1301,7 @@ bool altCon( vector<Consulta *> & c ,vector<Utente * > & u , vector<Medico * > &
   }
   while (!isHor( tmp ) )
   {
-    cout << "Hora inválida. Insira outra: " << endl;
+    cout << "Hour inválida. Insira outra: " << endl;
     getline( cin , tmp );
     if ( cin.eof() )
     {
@@ -1682,9 +1311,9 @@ bool altCon( vector<Consulta *> & c ,vector<Utente * > & u , vector<Medico * > &
   }
   istringstream sss(tmp);
   sss >> hora >> espaco >> min;
-  Hora h( hora , min );
+  Hour h( hora , min );
   Consulta *ptr =  new Consulta ( ptr_med , NULL , d , h , 0);
-  int pos = findPos( ptr , c );
+  int pos = ptr->findPos( this->list_con );
   if ( pos == -1 )
   {
     cout << "Não foi encontrada uma consulta com estas características. A abortar..." << endl;
@@ -1692,19 +1321,18 @@ bool altCon( vector<Consulta *> & c ,vector<Utente * > & u , vector<Medico * > &
     return false;
   }
   cout << "Insira os novos dados: " << endl;
-  cin.putback('\n');
-  if ( insCon( v , u, c ) == -1 )
+  if ( this->insCon() == -1 )
   {
     cout << "Erro na actualização da consulta. A abortar..." << endl;
     delete ptr;
     return false;
   }
-  delCon( c , ptr_med , h , d );
+  delCon( this->list_con , ptr_med , h , d );
   delete ptr;
   return true;
 }
 
-bool ver_Con( vector<Consulta *> & c , vector<Medico * > & v )
+bool Clinic::verCon()
 {
   unsigned long ced;
   int dia, mes, ano;
@@ -1721,7 +1349,8 @@ bool ver_Con( vector<Consulta *> & c , vector<Medico * > & v )
   {
     return false;
   }
-  Medico *ptr_med = find ( ced , v );
+  Medico med_tmp;
+  Medico *ptr_med = med_tmp.find ( ced , this->list_med );
   while ( ptr_med == NULL )
   {
     cout << "Médico Inexistente.\nInsira a cédula do Médico : ";
@@ -1733,7 +1362,7 @@ bool ver_Con( vector<Consulta *> & c , vector<Medico * > & v )
     {
       return false;
     }
-    ptr_med = find ( ced , v );
+    ptr_med = med_tmp.find ( ced , this->list_med );
   }
   cout << "Insira a data da consulta separadas por um caracter (no formato dd/mm/aaaa): ";
   getline( cin , tmp );
@@ -1744,7 +1373,7 @@ bool ver_Con( vector<Consulta *> & c , vector<Medico * > & v )
   }
   while (!isDat( tmp ) )
   {
-    cout << "Data inválida. Insira outra: " << endl;
+    cout << "Date inválida. Insira outra: " << endl;
     getline( cin , tmp );  
     if ( cin.eof() )
     {
@@ -1754,33 +1383,33 @@ bool ver_Con( vector<Consulta *> & c , vector<Medico * > & v )
   }
   istringstream ss(tmp);
   ss >> dia >> espaco >> mes >> espaco >> ano;
-  Data d( dia , mes , ano );
+  Date d( dia , mes , ano );
   cout << "Insira a hora da consulta separadas por um caracter (no formato hh:mm ): ";
-  Hora h;
+  Hour h;
   try
   {
-    h = getHora();
+    h = getHour();
   }
   catch (EOI &)
   {
     return false;
   }
   Consulta *ptr =  new Consulta ( ptr_med , NULL , d , h , 0);
-  int pos = findPos( ptr , c );
+  int pos = ptr->findPos( this->list_con );
   if ( pos == -1 )
   {
     cout << "Não foi encontrada uma consulta com estas características. A abortar..." << endl;
     delete ptr;
     return false;
   }
-	Hora h1 = h + c.at( pos )->getDur();
-	cout << endl << "Dr.(ª) " << c.at( pos )->getMed()->getNome() << " no dia " <<  d << " às " << h << " até ";
-	cout << h1  << "com o Sr.(ª) " << c.at( pos )->getUte()->getNome() << endl;
+	Hour h1 = h + this->list_con.at( pos )->getDur();
+	cout << endl << "Dr.(ª) " << this->list_con.at( pos )->getMed()->getName() << " no dia " <<  d << " às " << h << " até ";
+	cout << h1  << "com o Sr.(ª) " << this->list_con.at( pos )->getUte()->getName() << endl;
 	delete ptr;
   return true;
 }
 
-bool delPac( vector<Utente *> & u , vector<Consulta *> & c)
+bool Clinic::delPac()
 {
 	unsigned long int id;
 	cin.clear();
@@ -1793,7 +1422,8 @@ bool delPac( vector<Utente *> & u , vector<Consulta *> & c)
   {
     return false;
   }
-  int pos = findPos( id , u );
+  Utente pac_tmp;
+  int pos = pac_tmp.findPos( id , this->list_pac );
   while ( pos == -1 )
   {
     cout << "Utente Inexistente.\nInsira o número identificativo do utente : ";
@@ -1805,31 +1435,31 @@ bool delPac( vector<Utente *> & u , vector<Consulta *> & c)
     {
       return false;
     }
-    pos = findPos ( id , u );
+    pos = pac_tmp.findPos ( id , this->list_pac );
   }
   bool consulta = false;
-  for (int i = 0; i < (int) c.size() ; i++ )
+  for (int i = 0; i < (int) this->list_con.size() ; i++ )
   {
-    if ( c.at(i)->getUte()->getId() == id && c.at(i)->getEst() == 'm' )
+    if ( this->list_con.at(i)->getUte()->getId() == id && this->list_con.at(i)->getEst() == 'm' )
       consulta = true;
   }
   if (consulta)
   {
     cout << "Este utente tem consultas marcadas. A desmarcar..."  << endl;
-    u.at( pos )->setSis( false );
-    for (int i = 0; i < (int) c.size() ; i++ )
+    this->list_pac.at( pos )->setSis( false );
+    for (int i = 0; i < (int) this->list_con.size() ; i++ )
     {
-      if ( c.at(i)->getUte()->getId() == id && c.at(i)->getEst() == 'm' )
+      if ( this->list_con.at(i)->getUte()->getId() == id && this->list_con.at(i)->getEst() == 'm' )
       {
-        Hora h( c.at( i )->getHor() );
-        Data d( c.at( i )->getDat() );
-        Medico * ptr = c.at(i)->getMed();
-        delCon( c , ptr , h , d );
+        Hour h( this->list_con.at( i )->getHor() );
+        Date d( this->list_con.at( i )->getDat() );
+        Medico * ptr = this->list_con.at(i)->getMed();
+        delCon( this->list_con , ptr , h , d );
         i--;
       }
     }
   }
-  else u.at( pos )->setSis( false );
+  else this->list_pac.at( pos )->setSis( false );
   
 /*  if ( pos > (int)( u.size() / 2 ) )
   {
@@ -1850,7 +1480,7 @@ bool delPac( vector<Utente *> & u , vector<Consulta *> & c)
   
   return true;
 }
-bool alt_Pac( vector<Utente *> & u )
+bool Clinic::altPac()
 {
   string nome, tel, seg, mor , tmp;
   float des;
@@ -1867,7 +1497,8 @@ bool alt_Pac( vector<Utente *> & u )
   {
     return false;
   }
-  int pos = findPos( id , u );
+  Utente pac_tmp;
+  int pos = pac_tmp.findPos( id , this->list_pac );
   while ( pos == -1 )
   {
     cout << "Utente Inexistente.\nInsira o número identificativo do utente : ";
@@ -1879,7 +1510,7 @@ bool alt_Pac( vector<Utente *> & u )
     {
       return false;
     }
-    pos = findPos ( id , u );
+    pos = pac_tmp.findPos ( id , this->list_pac );
   }
   
  /* vector<Utente *>::iterator it = u.begin();
@@ -2029,14 +1660,14 @@ bool alt_Pac( vector<Utente *> & u )
       s >> apo;
     }
   }
-  u.at( pos )->setNome( nome );
-  u.at( pos )->setMor( mor ) ;
-  u.at( pos )->setTel( tel );
-  u.at( pos )->setSeg( seg , des , apo );
+  this->list_pac.at( pos )->setName( nome );
+  this->list_pac.at( pos )->setMor( mor ) ;
+  this->list_pac.at( pos )->setTel( tel );
+  this->list_pac.at( pos )->setIns( seg , des , apo );
   return true;
 }
 
-Hora getHora()
+Hour getHour()
 {
   int hora, min;
   char espaco;
@@ -2049,21 +1680,21 @@ Hora getHora()
 	}
   while (!isHor( tmp ) )
   {
-    cout << "Hora inválida. Insira outra: " << endl;
+    cout << "Hour inválida. Insira outra: " << endl;
     getline( cin , tmp );  
   }
   istringstream s(tmp);
   s >> hora >> espaco >> min;
-  Hora h( hora , min ); 
+  Hour h( hora , min ); 
   return h;
 }
 
 
 
-bool horNCol ( vector<Consulta *> & c , Hora & h , const int & duracao , const Hora & ini ,const Hora & fim )
+bool Clinic::horNCol ( vector<Consulta *> & c , Hour & h , const int & duracao , const Hour & ini ,const Hour & fim )
 {
   vector<Consulta *>::iterator it = c.begin();
-  Hora h0 = h + duracao;
+  Hour h0 = h + duracao;
   if (h > fim || h < ini  || h0 > fim ) return false;
   for (int i = 0 ; i < (int) c.size() ; i++ , it++ )
   {
@@ -2074,7 +1705,7 @@ bool horNCol ( vector<Consulta *> & c , Hora & h , const int & duracao , const H
   }
   return true;
 }
-bool pagarCon(vector<Consulta *> & c , vector<Medico * > & v )
+bool Clinic::pagarCon()
 {
   unsigned long ced;
   int dia, mes, ano;
@@ -2091,7 +1722,8 @@ bool pagarCon(vector<Consulta *> & c , vector<Medico * > & v )
   {
     return false;
   }
-  Medico *ptr_med = find ( ced , v );
+  Medico med_tmp;
+  Medico *ptr_med = med_tmp.find ( ced , this->list_med );
   while ( ptr_med == NULL )
   {
     cout << "Médico Inexistente.\nInsira a cédula do Médico : ";
@@ -2103,7 +1735,7 @@ bool pagarCon(vector<Consulta *> & c , vector<Medico * > & v )
     {
       return false;
     } 	
-  	ptr_med = find ( ced , v );
+  	ptr_med = med_tmp.find ( ced , this->list_med );
   }
   cout << "Insira a data da consulta separadas por um caracter (no formato dd/mm/aaaa): ";
   getline( cin , tmp );
@@ -2115,7 +1747,7 @@ bool pagarCon(vector<Consulta *> & c , vector<Medico * > & v )
   }
 	while (!isDat( tmp ) )
   {
-    cout << "Data inválida. Insira outra: " << endl;
+    cout << "Date inválida. Insira outra: " << endl;
     getline( cin , tmp );  
     if ( cin.eof() )
     {
@@ -2126,38 +1758,38 @@ bool pagarCon(vector<Consulta *> & c , vector<Medico * > & v )
   }
   istringstream s(tmp);
   s >> dia >> espaco >> mes >> espaco >> ano;
-  Data d( dia , mes , ano );
+  Date d( dia , mes , ano );
 	cout << "Insira a hora da consulta separadas por um caracter (no formato hh:mm ): ";
-  Hora h;
+  Hour h;
   try
  	{
- 	  h = getHora();
+ 	  h = getHour();
   }
   catch (EOI &)
   {
     return false;
   }
 	Consulta *ptr =  new Consulta ( ptr_med , NULL , d , h , 0);
-  int pos = findPos( ptr , c );
+  int pos = ptr->findPos( this->list_con );
  	if ( pos == -1 )
   {
     cout << "Não foi encontrada uma consulta com estas características. A abortar..." << endl;
     delete ptr;
     return false;
   }
-  if (  c.at( pos )->getEst() != 'p' || c.at( pos )->getEst() != 'P' )
+  if (  this->list_con.at( pos )->getEst() != 'p' || this->list_con.at( pos )->getEst() != 'P' )
   {
-    c.at( pos )->setEst('p' );
+    this->list_con.at( pos )->setEst('p' );
     cout << "Consulta Efectuada e paga." << endl;
   }
   else cout << "Esta consulta já foi paga anteriormente." << endl;
   return true;
 }
 
-template<class C> vector <C *> find_Id( vector<C *> & u)
+template<class Comparable> std::vector <Comparable *> find_Id( const std::vector<Comparable *> & u )
 {
   string nome;
-  vector<C *> lista;
+  vector<Comparable *> lista;
 	cout<<"Introduza o nome do utente:";
 	getline( cin , nome );	
 	if ( cin.eof() )
@@ -2166,10 +1798,11 @@ template<class C> vector <C *> find_Id( vector<C *> & u)
 	  return lista;
 	}
 	for ( int i = 0; i < (int) u.size(); i++ )
-	  if  ( u.at( i )->getNome() == nome )
+	  if  ( u.at( i )->getName() == nome )
       lista.push_back( u.at( i ) );
   return lista;
 }
+
 
 template <class Comparable>void listar( const vector<Comparable *> & v)
 {
@@ -2179,3 +1812,24 @@ template <class Comparable>void listar( const vector<Comparable *> & v)
 }
 
 
+template std::vector<Utente *> find_Id<Utente>( const std::vector<Utente *> & );
+template std::vector<Medico *> find_Id<Medico>( const std::vector<Medico *> & );
+template void listar<Utente> ( const std::vector<Utente *> & );
+template void listar<Medico> ( const std::vector<Medico *> & );
+
+
+void Clinic::load()
+{
+  this->files.loadEsp( this->list_esp ); 
+  this->files.loadMed( this->list_med , this->list_esp ); 
+  this->files.loadPac( this->list_pac ); 
+  this->files.loadCon( this->list_con , this->list_pac , this->list_med ); 
+}
+
+void Clinic::save()
+{
+  this->files.savEsp( this->list_esp ); 
+  this->files.savMed( this->list_med ); 
+  this->files.savPac( this->list_pac ); 
+  this->files.savCon( this->list_con ); 
+}
