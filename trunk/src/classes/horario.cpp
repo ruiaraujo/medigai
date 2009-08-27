@@ -3,32 +3,47 @@
 
 
 using std::vector;
-using std::cout;
+using std::cerr;
 using std::endl;
 using std::ostream;
 
-template <class Person, class Time > Horario<Person, Time>::Horario ( Person * p , const Time & t , bool s) : person(p) , time(t) , type(s) {}
+template<> vector<Consulta *> Horario< Utente , Date >::get( const vector<Consulta *> & );
+template<> vector<Consulta *> Horario< Medico , Date >::get( const vector<Consulta *> & );
+template<> void Horario< Utente , Date >::print(ostream & , const vector<Consulta *> & );
+template<> void Horario< Medico , Date >::print(ostream & , const vector<Consulta *> & );
+template<> void Horario< Utente , Date >::printFrc(ostream & , const vector<Consulta *> & );
+template<> void Horario< Medico , Date>::printMrc(ostream & os, const vector<Consulta *> & );
+template<> void Horario< Utente , Date>::printMrc(ostream & os, const vector<Consulta *> & );
+
+template <class Person, class Time > Horario<Person, Time>::Horario ( Person * p , const Time & t ) : person(p) , time(t) {}
 
 template <class Person, class Time>
-void Horario< Person , Time >::print(ostream & os, const vector<Consulta *> & c )
+void Horario< Person , Time >::print(ostream & os, const vector<Consulta *> & c ){}
+template<>
+void Horario< Utente , Date >::print(ostream & os, const vector<Consulta *> & c )
 {
   if ( person != NULL )
   {
-    cout << endl << endl << "Lista de Consulta do ";
-    if (type)  cout << "Sr.(a)" << person->getName() << ":\n";
-    else  cout << "Dr.(a)" << person->getName() << " no dia " << time << endl;
-    if ( type )
-    {
-      for ( int i = 0 ; i < (int) c.size(); i++ )
-        if ( person->getId() == c.at( i )->getUte()->getId() && time == c.at( i )->getDat() )
-        {
-          Hour h( c.at( i )->getHor() );
-          os << h << " , com o Dr.(a) " << c.at(i)->getMed()->getName();
-          os << ", consulta de " << c.at(i)->getMed()->getEspe()->getNom()<< endl;
-        }
-    }
-    else
-    {
+    os << endl << endl << "Lista de Consulta do ";
+    os << "Sr.(a)" << person->getName() << ":\n";
+   
+
+    for ( int i = 0 ; i < (int) c.size(); i++ )
+      if ( person->getId() == c.at( i )->getUte()->getId() && time == c.at( i )->getDat() )
+      {
+        Hour h( c.at( i )->getHor() );
+        os << h << " , com o Dr.(a) " << c.at(i)->getMed()->getName();
+        os << ", consulta de " << c.at(i)->getMed()->getEspe()->getNom()<< endl;
+      }
+  }
+}
+template<>
+void Horario< Medico , Date >::print(ostream & os, const vector<Consulta *> & c )
+{
+  if ( person != NULL )
+  {
+      os << endl << endl << "Lista de Consulta do ";
+      os << "Dr.(a)" << person->getName() << " no dia " << time << endl;
       vector<Consulta *> horario = get( c );
       if ( !horario.empty() )
       {
@@ -94,111 +109,115 @@ void Horario< Person , Time >::print(ostream & os, const vector<Consulta *> & c 
         }
       }
       else os << "Não há consultas marcadas para o dia " << time << "." << endl;
-    }
+    
   } 
 }
 
 template <class Person, class Time>
-void Horario< Person , Time >::printMrc(ostream & os, const vector<Consulta *> & c)
+void Horario< Person , Time >::printMrc(ostream & os, const vector<Consulta *> & c){}
+
+template <>
+void Horario< Utente , Date>::printMrc(ostream & os, const vector<Consulta *> & c)
 {
   if ( person != NULL )
   {
-    cout << "Lista de Consulta do ";
-    if (type)  cout << "Sr.(a)" << person->getName() << ":\n";
-    else  cout << "Dr.(a)" << person->getName() << " no dia " << time << endl;
-    if ( type )
-    {
-      for ( int i = 0 ; i < (int) c.size(); i++ )
-        if ( person->getId() == c.at( i )->getUte()->getId() && time == c.at( i )->getDat() )
-        {
-          if ( c.at( i )->getEst() == 'm' )
-          {
-          Hour h( c.at( i )->getHor() );
-            os << h << " , com o Dr.(a) " << c.at(i)->getMed()->getName();
-            os << " de " << c.at(i)->getMed()->getEspe()->getNom()<< endl;
-          }
-        }
-    }
-    else
-    {
+    os << "Lista de Consultas Marcadas do ";
+    os << "Sr.(a)" << person->getName() << ":\n";
     for ( int i = 0 ; i < (int) c.size(); i++ )
-        if ( person->getId() == c.at( i )->getMed()->getId() && time == c.at( i )->getDat() )
+      if ( person->getId() == c.at( i )->getUte()->getId() && time == c.at( i )->getDat() )
+        if ( c.at( i )->getEst() == 'm' )
         {
-          if ( c.at( i )->getEst() == 'm' )
-          {
-            Hour h( c.at( i )->getHor() );
-            os << h << " , com o Sr.(a) " << c.at(i)->getUte()->getName() << endl;
-          }
+          Hour h( c.at( i )->getHor() );
+          os << h << " , com o Dr.(a) " << c.at(i)->getMed()->getName();
+          os << " de " << c.at(i)->getMed()->getEspe()->getNom()<< endl;
         }
-    }
+  }
+}
+
+template <>
+void Horario< Medico , Date>::printMrc(ostream & os, const vector<Consulta *> & c)
+{
+  if ( person != NULL )
+  {
+    os << "Lista de Consulta Marcadas do ";
+    os << "Dr.(a)" << person->getName() << " no dia " << time << endl;
+    for ( int i = 0 ; i < (int) c.size(); i++ )
+     if ( person->getId() == c.at( i )->getMed()->getId() && time == c.at( i )->getDat() )
+       if ( c.at( i )->getEst() == 'm' )
+       {
+         Hour h( c.at( i )->getHor() );
+         os << h << " , com o Sr.(a) " << c.at(i)->getUte()->getName() << endl;
+       }
   }
 } 
 
 template <class Person, class Time>
-void Horario< Person , Time >::printFrc(ostream & , const vector<Consulta *> & c)
+void Horario< Person , Time >::printFrc(ostream & os , const vector<Consulta *> & c){}
+
+template <>
+void Horario< Utente , Date >::printFrc(ostream & os , const vector<Consulta *> & c)
 {
   if ( person != NULL )
   {
-    cout << "Horário Actual do ";
-    if (type)  cout << "Sr.(a)" << person->getName() << ":\n";
-    else  cout << "Dr.(a) " << person->getName() << " no dia " << time << endl;
-    if ( type )
-    {
-      for ( int i = 0 ; i < (int) c.size(); i++ )
+    os << "Consultas efectuadas do ";
+    os << "Sr.(a)" << person->getName() << ":\n";
+    for ( int i = 0 ; i < (int) c.size(); i++ )
       if ( person->getId() == c.at( i )->getUte()->getId() && time == c.at( i )->getDat() )
+        if ( c.at( i )->getEst() == 'f'  || c.at( i )->getEst() == 'p')
         {
-          if ( c.at( i )->getEst() == 'f' )
-          {
-            Hour h( c.at( i )->getHor() );
-            cout << h << " , com o Dr.(a) " << c.at(i)->getMed()->getName();
-            cout << " de " << c.at(i)->getMed()->getEspe()->getNom()<< endl;
-          }
+          Hour h( c.at( i )->getHor() );
+          os << h << " , com o Dr.(a) " << c.at(i)->getMed()->getName();
+          os << " de " << c.at(i)->getMed()->getEspe()->getNom()<< endl;
         }
-    }
-    else
-    {
-      for ( int i = 0 ; i < (int) c.size(); i++ )
-        if ( person->getId() == c.at( i )->getMed()->getId() && time == c.at( i )->getDat() )
+    
+  }
+}
+
+template <>
+void Horario< Medico , Date >::printFrc(ostream & os , const vector<Consulta *> & c)
+{
+  if ( person != NULL )
+  {
+    os << "Consultas efectuadas do ";
+    os << "Dr.(a) " << this->person->getName() << " no dia " << this->time << endl;
+    for ( int i = 0 ; i < (int) c.size(); i++ )
+      if ( person->getId() == c.at( i )->getMed()->getId() && time == c.at( i )->getDat() )
+        if ( c.at( i )->getEst() == 'f' || c.at( i )->getEst() == 'p' )
         {
-          if ( c.at( i )->getEst() == 'f' )
-          {
-            Hour h( c.at( i )->getHor() );
-            cout << h << " , com o Sr.(a) " << c.at(i)->getUte()->getName() << endl;
-          }
+          Hour h( c.at( i )->getHor() );
+          os << h << " , com o Sr.(a) " << c.at(i)->getUte()->getName() << endl;
         }
-    }
   }
 }
  
 template <class Person, class Time>
-vector<Consulta *> Horario< Person , Time >::get( const vector<Consulta *> & c)
+vector<Consulta *> Horario< Person , Time >::get( const vector<Consulta *> & c){}
+
+template <>
+vector<Consulta *> Horario< Medico , Date >::get( const vector<Consulta *> & c)
 {
-
-
   vector<Consulta *> lista;
   if ( person != NULL )
-  {
-    if ( type )
-    {
-      for ( int i = 0 ; i < (int) c.size(); i++ )
-        if ( person->getId() == c.at( i )->getUte()->getId() && time == c.at( i )->getDat() )
-        {
-          lista.push_back( c.at( i ) );
-        }
-    }
-    else
-    {
-      for ( int i = 0 ; i < (int) c.size(); i++ )
-        if ( person->getId() == c.at( i )->getMed()->getId() && time == c.at( i )->getDat() )
-        {
-          lista.push_back( c.at( i ) );
-        }
-    }
-  }
+   for ( int i = 0 ; i < (int) c.size(); ++i )
+     if ( person->getId() == c.at( i )->getMed()->getId() && time == c.at( i )->getDat() )
+       lista.push_back( c.at( i ) );
   return lista;
 }
 
-template class Horario<Medico, Date>;
+template <>
+vector<Consulta *> Horario< Utente , Date >::get( const vector<Consulta *> & c)
+{
+  vector<Consulta *> lista;
+  if ( person != NULL )
+   for ( int i = 0 ; i < (int) c.size(); ++i )
+     if ( person->getId() == c.at( i )->getUte()->getId() && time == c.at( i )->getDat() )
+       lista.push_back( c.at( i ) );
+  return lista;
+}
 
+
+
+template class Horario<Medico, Date>;
+template class Horario<Utente, Date>;
 
 

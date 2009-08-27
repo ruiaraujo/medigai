@@ -442,7 +442,7 @@ int Clinic::insCon ()
   istringstream s(tmp);
   s >> dia >> espaco >> mes >> espaco >> ano;
   Date d( dia , mes , ano );
-  Horario< Medico , Date > timetable ( ptr_m , d , 0 );
+  Horario< Medico , Date > timetable ( ptr_m , d );
   vector<Consulta *> tt = timetable.get( this->list_con );
   cout << "Insira a hora: ";
   Hour h;
@@ -854,7 +854,7 @@ bool Clinic::horario_med()
   istringstream s(tmp);
   s >> dia >> espaco >> mes >> espaco >> ano;
   Date d( dia , mes , ano );
-  Horario <Medico , Date> horario (ptr_m , d , 0);
+  Horario <Medico , Date> horario (ptr_m , d );
   horario.print( cout , this->list_con );
   return true;
 }
@@ -1290,7 +1290,7 @@ bool Clinic::altCon()
   istringstream ss(tmp);
   ss >> dia >> espaco >> mes >> espaco >> ano;
   Date d( dia , mes , ano );
-  Horario <Medico , Date > horario ( ptr_med , d , 0 );
+  Horario <Medico , Date > horario ( ptr_med , d );
   horario.print(cout , this->list_con );
   cout << endl << "Insira a hora de início da consulta separadas por um caracter (no formato hh:mm ): ";
   getline( cin , tmp );

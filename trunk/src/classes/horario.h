@@ -10,9 +10,8 @@ class Horario{
   private:
   Person * person;
   Time time;
-  bool type; // 0 para médico, 1 para utente
   public:
-    Horario( Person * , const Time &	, bool );
+    Horario( Person * , const Time & );
     void print( std::ostream & , const std::vector<Consulta *> & );
     void printMrc( std::ostream & , const std::vector<Consulta *> & );
     void printFrc( std::ostream & , const std::vector<Consulta *> & );
