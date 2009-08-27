@@ -33,7 +33,7 @@ void Horario< Utente , Date >::print(ostream & os, const vector<Consulta *> & c 
       {
         Hour h( c.at( i )->getHor() );
         os << h << " , com o Dr.(a) " << c.at(i)->getMed()->getName();
-        os << ", consulta de " << c.at(i)->getMed()->getEspe()->getNom()<< endl;
+        os << ", consulta de " << c.at(i)->getMed()->getEspe()->getName()<< endl;
       }
   }
 }
@@ -129,7 +129,7 @@ void Horario< Utente , Date>::printMrc(ostream & os, const vector<Consulta *> & 
         {
           Hour h( c.at( i )->getHor() );
           os << h << " , com o Dr.(a) " << c.at(i)->getMed()->getName();
-          os << " de " << c.at(i)->getMed()->getEspe()->getNom()<< endl;
+          os << " de " << c.at(i)->getMed()->getEspe()->getName()<< endl;
         }
   }
 }
@@ -167,7 +167,7 @@ void Horario< Utente , Date >::printFrc(ostream & os , const vector<Consulta *> 
         {
           Hour h( c.at( i )->getHor() );
           os << h << " , com o Dr.(a) " << c.at(i)->getMed()->getName();
-          os << " de " << c.at(i)->getMed()->getEspe()->getNom()<< endl;
+          os << " de " << c.at(i)->getMed()->getEspe()->getName()<< endl;
         }
     
   }

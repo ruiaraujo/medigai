@@ -19,7 +19,7 @@ Clinic::Clinic( std::string file_m , std::string file_p, std::string file_e, std
 
 std::vector<Medico *> Clinic::getListMed() const { return this->list_med; }
 std::vector<Utente *> Clinic::getListPac() const { return this->list_pac; }
-std::vector<Especialidade *> Clinic::getListEsp() const { return this->list_esp; }
+std::vector<Specialty *> Clinic::getListEsp() const { return this->list_esp; }
 std::vector<Consulta *> Clinic::getListCon() const { return this->list_con; }
 
 float Clinic::precoMedioP()
@@ -124,7 +124,7 @@ float Clinic::precoMedio()
   return total;
 }
 
-vector<Medico *> Clinic::listEsp( Especialidade * esp )
+vector<Medico *> Clinic::listEsp( Specialty * esp )
 {
   vector<Medico *> lista;
   for (int i = 0 ; i < (int) this->list_med.size() ; i++)
@@ -601,11 +601,11 @@ int Clinic::insMed()
     return -1;
   }
   
-  Especialidade espe_tmp(espe);
-  Especialidade *esp = espe_tmp.find( this->list_esp );
+  Specialty espe_tmp(espe);
+  Specialty *esp = espe_tmp.find( this->list_esp );
   if ( esp == NULL )
   {
-    esp = new Especialidade( espe );
+    esp = new Specialty( espe );
   }
   this->list_esp.push_back(esp);
   cout << "Insira a cédula do(a) médico(a): ";
@@ -955,10 +955,10 @@ bool Clinic::delMed( unsigned long  ced )
   return true;
 }
 
-void listar ( const vector<Especialidade *> & v )
+void listar ( const vector<Specialty *> & v )
 {
   for ( int i = 0; i< (int) v.size() ; i++ )
-   cout << (* v.at( i ) ).getNom() << endl;
+   cout << v.at( i )->getName() << endl;
 }
 
 void listar ( const vector<Consulta *> & v )

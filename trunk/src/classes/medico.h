@@ -3,22 +3,22 @@
 #include <iostream>
 #include "person.h"
 #include "hour.h"
-#include "especialidade.h"
+#include "specialty.h"
 
 class Medico : public Person {
-  Especialidade * espe;
+  Specialty * specialty;
   unsigned int duracao;
   unsigned int dur_max;
   Hour inicio;
   Hour fim;
   public:
-    Medico ( const Person &, Especialidade *, unsigned int);
-    Medico ( const Person &, Especialidade *, Hour, Hour, unsigned int);
+    Medico ( const Person &, Specialty *, unsigned int);
+    Medico ( const Person &, Specialty *, Hour, Hour, unsigned int);
     Medico (std::string, std::string, unsigned int, unsigned long);
     Medico (const Medico &);
     Medico() {};
     ~Medico() {}
-    Especialidade * getEspe() const;
+    Specialty * getEspe() const;
     Hour getIni() const;
     Hour getFim() const;
     unsigned int getDur()const;
@@ -26,7 +26,7 @@ class Medico : public Person {
     unsigned long getCed()const;
     void setIni( const Hour &);
     void setFim( const Hour &);
-    void setEspe(Especialidade *);
+    void setEspe(Specialty *);
     void setDurM(unsigned int);
     void setDur(unsigned int);
     Medico * find ( unsigned long ,  const std::vector<Medico *> & );

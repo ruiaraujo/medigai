@@ -4,6 +4,10 @@ AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_INSTALL
 LT_INIT
+AC_CHECK_HEADER([curses.h],
+[AC_DEFINE([SVR4], [1], [System V Release 4])
+        LIBS="-lcurses $LIBS"])
+
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_HEADERS(config.h)
 AC_OUTPUT(Makefile src/Makefile src/classes/Makefile)

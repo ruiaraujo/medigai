@@ -41,7 +41,7 @@ FileHandling::FileHandling( std::string file_m , std::string file_p, std::string
 }
 
 
-bool FileHandling::loadEsp( std::vector<Especialidade *> & list_esp )
+bool FileHandling::loadEsp( std::vector<Specialty *> & list_esp )
 {
   ifstream fin( this->file_esp.c_str() );
   if ( fin.fail() )
@@ -56,10 +56,10 @@ bool FileHandling::loadEsp( std::vector<Especialidade *> & list_esp )
     getline( fin, line );
     if ( ! line.empty() )
     {
-      Especialidade esp_tmp(line);
+      Specialty esp_tmp(line);
       if ( esp_tmp.find ( list_esp ) == NULL )
       {
-        Especialidade * a = new Especialidade( line );
+        Specialty * a = new Specialty( line );
         list_esp.push_back( a );
       }
     }
@@ -147,7 +147,7 @@ bool FileHandling::loadCon( std::vector<Consulta * > & list_con , std::vector<Ut
   return true;
 }
 
-bool FileHandling::loadMed ( std::vector<Medico * > & list_med , std::vector<Especialidade *> & list_esp )
+bool FileHandling::loadMed ( std::vector<Medico * > & list_med , std::vector<Specialty *> & list_esp )
 {
   string nome, tel, espe, tmp;
   int duracao, dur_max;
@@ -172,11 +172,11 @@ bool FileHandling::loadMed ( std::vector<Medico * > & list_med , std::vector<Esp
       getline( fin, nome, '|' );
       getline( fin, tel, '|' );
       getline( fin, espe, '|' );
-      Especialidade espe_tmp(espe);
-      Especialidade *esp = espe_tmp.find( list_esp );
+      Specialty espe_tmp(espe);
+      Specialty *esp = espe_tmp.find( list_esp );
       if ( esp == NULL )
       {
-        esp = new Especialidade( espe );
+        esp = new Specialty( espe );
         list_esp.push_back( esp );
       } 
       getline( fin, tmp , '|' );
@@ -313,7 +313,7 @@ void FileHandling::savPac ( const vector<Utente *> & u )
   }
 }
 
-void FileHandling::savEsp ( const vector<Especialidade *> & e )
+void FileHandling::savEsp ( const vector<Specialty *> & e )
 {
   ofstream fout( this->file_esp.c_str() );
   if ( fout.fail() )
@@ -323,7 +323,7 @@ void FileHandling::savEsp ( const vector<Especialidade *> & e )
   else
   {
     for (int i = 0 ; i< (int) e.size() ; i++ )
-      fout << e.at( i )->getNom() << endl;
+      fout << e.at( i )->getName() << endl;
     fout.close();
   }
 }
@@ -339,7 +339,7 @@ void FileHandling::savMed ( const vector<Medico *> & u )
     for (int i = 0 ; i< (int) u.size() ; i++ )
     {
       fout << u.at( i )->getCed() << "|" << u.at( i )->getName() << "|";
-      fout << u.at( i )->getTel() << "|" << u.at( i )->getEspe()->getNom() << "|"; 
+      fout << u.at( i )->getTel() << "|" << u.at( i )->getEspe()->getName() << "|"; 
       fout << u.at( i )->getIni().getHor() << ":" << u.at( i )->getIni().getMin() << "|";
       fout << u.at( i )->getFim().getHor() << ":" << u.at( i )->getFim().getMin() << "|";
       fout << u.at( i )->getDur() << "|" << u.at( i )->getDurM() << "|" << u.at( i )->getSis() << endl;
@@ -383,7 +383,7 @@ bool addMed(fstream &f,const Medico &m)
   }
   f.clear();
   f.seekp(0,ios_base::end);
-  f << m.getCed() << "|" << m.getName() << "|" << m.getTel() << "|" <<m.getEspe()->getNom() << "|";
+  f << m.getCed() << "|" << m.getName() << "|" << m.getTel() << "|" <<m.getEspe()->getName() << "|";
   f << m.getIni().getHor() << ":" << m.getIni().getMin() << "|" << m.getFim().getHor() << ":" << m.getFim().getMin() << "|" << m.getDur() << "|" << m.getSis() << endl;
   f.flush();
   return true;

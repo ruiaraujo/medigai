@@ -21,12 +21,12 @@ class FileHandling{
   public:
     FileHandling( std::string = "" ,std::string = "" , std::string = "" , std::string = "" );
     char existFile( std::string );
-    bool loadEsp( std::vector<Especialidade *> & );
+    bool loadEsp( std::vector<Specialty *> & );
     bool loadPac( std::vector<Utente *> & );
-    bool loadMed( std::vector<Medico * > & , std::vector<Especialidade *> & );
+    bool loadMed( std::vector<Medico * > & , std::vector<Specialty *> & );
     bool loadCon( std::vector<Consulta * > & , std::vector<Utente *> & , std::vector<Medico * > & );
     void savPac ( const std::vector<Utente *> & );
-    void savEsp ( const std::vector<Especialidade *> & );
+    void savEsp ( const std::vector<Specialty *> & );
     void savMed ( const std::vector<Medico *> & );
     void savCon ( const std::vector<Consulta *> &);
 };

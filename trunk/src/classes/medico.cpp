@@ -4,19 +4,19 @@ using std::string;
 using std::vector;
 using std::ostream;
 
-Medico::Medico ( const Person &p, Especialidade *e, Hour i, Hour f, unsigned int d=0) : 
-                                                    Person(p), espe(e), duracao(d) , dur_max(0), inicio(i), fim (f) {}
-Medico::Medico ( const Person & p, Especialidade *e, unsigned int d=0): Person(p), espe(e), duracao(d) , 
+Medico::Medico ( const Person &p, Specialty *e, Hour i, Hour f, unsigned int d=0) : 
+                                                    Person(p), specialty(e), duracao(d) , dur_max(0), inicio(i), fim (f) {}
+Medico::Medico ( const Person & p, Specialty *e, unsigned int d=0): Person(p), specialty(e), duracao(d) , 
                                                                       dur_max(0) , inicio(0,0) , fim (0,0){}
-Medico::Medico (string n, string t="", unsigned int d=0, unsigned long c=0): Person(n,t,c), espe(NULL) ,  duracao(d) , dur_max(0), inicio(0,0) , fim (0,0){}
-Medico::Medico (const Medico &m): Person(m.name,m.tel, 0), espe(m.espe), duracao(m.duracao) , dur_max(m.dur_max) , inicio(m.inicio) , fim(m.fim){}
+Medico::Medico (string n, string t="", unsigned int d=0, unsigned long c=0): Person(n,t,c), specialty(NULL) ,  duracao(d) , dur_max(0), inicio(0,0) , fim (0,0){}
+Medico::Medico (const Medico &m): Person(m.name,m.tel, 0), specialty(m.specialty), duracao(m.duracao) , dur_max(m.dur_max) , inicio(m.inicio) , fim(m.fim){}
 Medico & Medico::operator=( const Medico & m)
 {
   if (this != &m)
   {
-    name = m.name;
-    tel= m.tel;
-    espe = m.espe;
+    this->name = m.name;
+    this->tel= m.tel;
+    this->specialty = m.specialty;
   }
   return *this;
 }
@@ -24,8 +24,8 @@ Hour Medico::getIni() const {return inicio;}
 Hour Medico::getFim() const {return fim;}
 void Medico::setDur(unsigned int d){duracao = d;}
 void Medico::setDurM(unsigned int d){dur_max = d;}
-void Medico::setEspe(Especialidade *e){espe = e;}
-Especialidade * Medico::getEspe() const{return espe;}
+void Medico::setEspe(Specialty * specialty ){this->specialty = specialty;}
+Specialty * Medico::getEspe() const{return specialty;}
 unsigned long Medico::getCed() const {return id;}
 unsigned int Medico::getDur() const {return duracao;}
 unsigned int Medico::getDurM() const {return dur_max;}
@@ -110,6 +110,6 @@ std::vector<Medico *>::iterator Medico::insOrd ( std::vector<Medico *> & list_me
 
 ostream & operator<<(ostream & os, Medico &m)
 {
-  os << m.id <<"|"<< m.name << "|" << m.tel << "|" << m.espe->getNom()<< "|"  << m.inicio << "|" << m.fim << "|" << m.duracao << "|" << m.dur_max << "|" << m.system; 
+  os << m.id <<"|"<< m.name << "|" << m.tel << "|" << m.specialty->getName()<< "|"  << m.inicio << "|" << m.fim << "|" << m.duracao << "|" << m.dur_max << "|" << m.system; 
  return os;
 }
