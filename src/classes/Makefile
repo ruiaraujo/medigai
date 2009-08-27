@@ -46,7 +46,7 @@ ARFLAGS = cru
 libconsulta_a_AR = $(AR) $(ARFLAGS)
 libconsulta_a_LIBADD =
 am_libconsulta_a_OBJECTS = consulta.$(OBJEXT) medico.$(OBJEXT) \
-	hour.$(OBJEXT) especialidade.$(OBJEXT) person.$(OBJEXT) \
+	hour.$(OBJEXT) specialty.$(OBJEXT) person.$(OBJEXT) \
 	convention.$(OBJEXT) date.$(OBJEXT)
 libconsulta_a_OBJECTS = $(am_libconsulta_a_OBJECTS)
 libconvention_a_AR = $(AR) $(ARFLAGS)
@@ -57,21 +57,17 @@ libdate_a_AR = $(AR) $(ARFLAGS)
 libdate_a_LIBADD =
 am_libdate_a_OBJECTS = date.$(OBJEXT)
 libdate_a_OBJECTS = $(am_libdate_a_OBJECTS)
-libespecialidade_a_AR = $(AR) $(ARFLAGS)
-libespecialidade_a_LIBADD =
-am_libespecialidade_a_OBJECTS = especialidade.$(OBJEXT) date.$(OBJEXT)
-libespecialidade_a_OBJECTS = $(am_libespecialidade_a_OBJECTS)
 libfile_a_AR = $(AR) $(ARFLAGS)
 libfile_a_LIBADD =
 am_libfile_a_OBJECTS = FileHandling.$(OBJEXT) consulta.$(OBJEXT) \
-	medico.$(OBJEXT) hour.$(OBJEXT) especialidade.$(OBJEXT) \
+	medico.$(OBJEXT) hour.$(OBJEXT) specialty.$(OBJEXT) \
 	person.$(OBJEXT) utente.$(OBJEXT) convention.$(OBJEXT) \
 	date.$(OBJEXT)
 libfile_a_OBJECTS = $(am_libfile_a_OBJECTS)
 libhorario_a_AR = $(AR) $(ARFLAGS)
 libhorario_a_LIBADD =
 am_libhorario_a_OBJECTS = horario.$(OBJEXT) consulta.$(OBJEXT) \
-	medico.$(OBJEXT) hour.$(OBJEXT) especialidade.$(OBJEXT) \
+	medico.$(OBJEXT) hour.$(OBJEXT) specialty.$(OBJEXT) \
 	person.$(OBJEXT) convention.$(OBJEXT) date.$(OBJEXT)
 libhorario_a_OBJECTS = $(am_libhorario_a_OBJECTS)
 libhour_a_AR = $(AR) $(ARFLAGS)
@@ -81,19 +77,23 @@ libhour_a_OBJECTS = $(am_libhour_a_OBJECTS)
 libmedico_a_AR = $(AR) $(ARFLAGS)
 libmedico_a_LIBADD =
 am_libmedico_a_OBJECTS = medico.$(OBJEXT) hour.$(OBJEXT) \
-	especialidade.$(OBJEXT) person.$(OBJEXT)
+	specialty.$(OBJEXT) person.$(OBJEXT)
 libmedico_a_OBJECTS = $(am_libmedico_a_OBJECTS)
 libmem_a_AR = $(AR) $(ARFLAGS)
 libmem_a_LIBADD =
 am_libmem_a_OBJECTS = MemoryHandling.$(OBJEXT) FileHandling.$(OBJEXT) \
 	consulta.$(OBJEXT) medico.$(OBJEXT) hour.$(OBJEXT) \
-	especialidade.$(OBJEXT) person.$(OBJEXT) utente.$(OBJEXT) \
+	specialty.$(OBJEXT) person.$(OBJEXT) utente.$(OBJEXT) \
 	convention.$(OBJEXT) date.$(OBJEXT) horario.$(OBJEXT)
 libmem_a_OBJECTS = $(am_libmem_a_OBJECTS)
 libperson_a_AR = $(AR) $(ARFLAGS)
 libperson_a_LIBADD =
 am_libperson_a_OBJECTS = person.$(OBJEXT)
 libperson_a_OBJECTS = $(am_libperson_a_OBJECTS)
+libspecialty_a_AR = $(AR) $(ARFLAGS)
+libspecialty_a_LIBADD =
+am_libspecialty_a_OBJECTS = specialty.$(OBJEXT)
+libspecialty_a_OBJECTS = $(am_libspecialty_a_OBJECTS)
 libutente_a_AR = $(AR) $(ARFLAGS)
 libutente_a_LIBADD =
 am_libutente_a_OBJECTS = utente.$(OBJEXT) person.$(OBJEXT) \
@@ -112,27 +112,27 @@ CXXLINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 SOURCES = $(libconsulta_a_SOURCES) $(libconvention_a_SOURCES) \
-	$(libdate_a_SOURCES) $(libespecialidade_a_SOURCES) \
-	$(libfile_a_SOURCES) $(libhorario_a_SOURCES) \
-	$(libhour_a_SOURCES) $(libmedico_a_SOURCES) \
-	$(libmem_a_SOURCES) $(libperson_a_SOURCES) \
+	$(libdate_a_SOURCES) $(libfile_a_SOURCES) \
+	$(libhorario_a_SOURCES) $(libhour_a_SOURCES) \
+	$(libmedico_a_SOURCES) $(libmem_a_SOURCES) \
+	$(libperson_a_SOURCES) $(libspecialty_a_SOURCES) \
 	$(libutente_a_SOURCES)
 DIST_SOURCES = $(libconsulta_a_SOURCES) $(libconvention_a_SOURCES) \
-	$(libdate_a_SOURCES) $(libespecialidade_a_SOURCES) \
-	$(libfile_a_SOURCES) $(libhorario_a_SOURCES) \
-	$(libhour_a_SOURCES) $(libmedico_a_SOURCES) \
-	$(libmem_a_SOURCES) $(libperson_a_SOURCES) \
+	$(libdate_a_SOURCES) $(libfile_a_SOURCES) \
+	$(libhorario_a_SOURCES) $(libhour_a_SOURCES) \
+	$(libmedico_a_SOURCES) $(libmem_a_SOURCES) \
+	$(libperson_a_SOURCES) $(libspecialty_a_SOURCES) \
 	$(libutente_a_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-ACLOCAL = ${SHELL} /home/nuieee/medigai/missing --run aclocal-1.10
-AMTAR = ${SHELL} /home/nuieee/medigai/missing --run tar
+ACLOCAL = ${SHELL} /home/ruka/Projectos/medigai/missing --run aclocal-1.10
+AMTAR = ${SHELL} /home/ruka/Projectos/medigai/missing --run tar
 AR = ar
-AUTOCONF = ${SHELL} /home/nuieee/medigai/missing --run autoconf
-AUTOHEADER = ${SHELL} /home/nuieee/medigai/missing --run autoheader
-AUTOMAKE = ${SHELL} /home/nuieee/medigai/missing --run automake-1.10
-AWK = mawk
+AUTOCONF = ${SHELL} /home/ruka/Projectos/medigai/missing --run autoconf
+AUTOHEADER = ${SHELL} /home/ruka/Projectos/medigai/missing --run autoheader
+AUTOMAKE = ${SHELL} /home/ruka/Projectos/medigai/missing --run automake-1.10
+AWK = gawk
 CC = gcc
 CCDEPMODE = depmode=gcc3
 CFLAGS = -g -O2
@@ -162,12 +162,12 @@ INSTALL_STRIP_PROGRAM = $(install_sh) -c -s
 LD = /usr/bin/ld
 LDFLAGS = 
 LIBOBJS = 
-LIBS = 
+LIBS = -lcurses 
 LIBTOOL = $(SHELL) $(top_builddir)/libtool
 LIPO = 
 LN_S = ln -s
 LTLIBOBJS = 
-MAKEINFO = ${SHELL} /home/nuieee/medigai/missing --run makeinfo
+MAKEINFO = ${SHELL} /home/ruka/Projectos/medigai/missing --run makeinfo
 MKDIR_P = /bin/mkdir -p
 NM = /usr/bin/nm -B
 NMEDIT = 
@@ -188,10 +188,10 @@ SET_MAKE =
 SHELL = /bin/bash
 STRIP = strip
 VERSION = 0.1
-abs_builddir = /home/nuieee/medigai/src/classes
-abs_srcdir = /home/nuieee/medigai/src/classes
-abs_top_builddir = /home/nuieee/medigai
-abs_top_srcdir = /home/nuieee/medigai
+abs_builddir = /home/ruka/Projectos/medigai/src/classes
+abs_srcdir = /home/ruka/Projectos/medigai/src/classes
+abs_top_builddir = /home/ruka/Projectos/medigai
+abs_top_srcdir = /home/ruka/Projectos/medigai
 ac_ct_CC = gcc
 ac_ct_CXX = g++
 ac_ct_DUMPBIN = 
@@ -220,7 +220,7 @@ host_vendor = pc
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = $(SHELL) /home/nuieee/medigai/install-sh
+install_sh = $(SHELL) /home/ruka/Projectos/medigai/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
@@ -241,18 +241,18 @@ target_alias =
 top_build_prefix = ../../
 top_builddir = ../..
 top_srcdir = ../..
-noinst_LIBRARIES = libdate.a libhour.a libconvention.a libespecialidade.a libperson.a libutente.a libmedico.a libconsulta.a  libfile.a libhorario.a libmem.a
+noinst_LIBRARIES = libdate.a libhour.a libconvention.a libspecialty.a libperson.a libutente.a libmedico.a libconsulta.a  libfile.a libhorario.a libmem.a
 libperson_a_SOURCES = person.cpp
 libutente_a_SOURCES = utente.cpp person.cpp convention.cpp
-libmedico_a_SOURCES = medico.cpp hour.cpp especialidade.cpp person.cpp 
+libmedico_a_SOURCES = medico.cpp hour.cpp specialty.cpp person.cpp 
 libdate_a_SOURCES = date.cpp
 libhour_a_SOURCES = hour.cpp
-libhorario_a_SOURCES = horario.cpp consulta.cpp medico.cpp hour.cpp especialidade.cpp person.cpp utente.cp convention.cpp date.cpp
-libmem_a_SOURCES = MemoryHandling.cpp FileHandling.cpp consulta.cpp medico.cpp hour.cpp especialidade.cpp  person.cpp utente.cpp  convention.cpp date.cpp horario.cpp 
-libfile_a_SOURCES = FileHandling.cpp consulta.cpp medico.cpp hour.cpp especialidade.cpp person.cpp utente.cpp convention.cpp date.cpp
+libhorario_a_SOURCES = horario.cpp consulta.cpp medico.cpp hour.cpp specialty.cpp person.cpp utente.cp convention.cpp date.cpp
+libmem_a_SOURCES = MemoryHandling.cpp FileHandling.cpp consulta.cpp medico.cpp hour.cpp specialty.cpp  person.cpp utente.cpp  convention.cpp date.cpp horario.cpp 
+libfile_a_SOURCES = FileHandling.cpp consulta.cpp medico.cpp hour.cpp specialty.cpp person.cpp utente.cpp convention.cpp date.cpp
 libconvention_a_SOURCES = convention.cpp
-libespecialidade_a_SOURCES = especialidade.cpp date.cpp
-libconsulta_a_SOURCES = consulta.cpp medico.cpp hour.cpp especialidade.cpp person.cpp utente.cp convention.cpp date.cpp
+libspecialty_a_SOURCES = specialty.cpp
+libconsulta_a_SOURCES = consulta.cpp medico.cpp hour.cpp specialty.cpp person.cpp utente.cp convention.cpp date.cpp
 INCLUDE = -I../../
 all: all-am
 
@@ -302,10 +302,6 @@ libdate.a: $(libdate_a_OBJECTS) $(libdate_a_DEPENDENCIES)
 	-rm -f libdate.a
 	$(libdate_a_AR) libdate.a $(libdate_a_OBJECTS) $(libdate_a_LIBADD)
 	$(RANLIB) libdate.a
-libespecialidade.a: $(libespecialidade_a_OBJECTS) $(libespecialidade_a_DEPENDENCIES) 
-	-rm -f libespecialidade.a
-	$(libespecialidade_a_AR) libespecialidade.a $(libespecialidade_a_OBJECTS) $(libespecialidade_a_LIBADD)
-	$(RANLIB) libespecialidade.a
 libfile.a: $(libfile_a_OBJECTS) $(libfile_a_DEPENDENCIES) 
 	-rm -f libfile.a
 	$(libfile_a_AR) libfile.a $(libfile_a_OBJECTS) $(libfile_a_LIBADD)
@@ -330,6 +326,10 @@ libperson.a: $(libperson_a_OBJECTS) $(libperson_a_DEPENDENCIES)
 	-rm -f libperson.a
 	$(libperson_a_AR) libperson.a $(libperson_a_OBJECTS) $(libperson_a_LIBADD)
 	$(RANLIB) libperson.a
+libspecialty.a: $(libspecialty_a_OBJECTS) $(libspecialty_a_DEPENDENCIES) 
+	-rm -f libspecialty.a
+	$(libspecialty_a_AR) libspecialty.a $(libspecialty_a_OBJECTS) $(libspecialty_a_LIBADD)
+	$(RANLIB) libspecialty.a
 libutente.a: $(libutente_a_OBJECTS) $(libutente_a_DEPENDENCIES) 
 	-rm -f libutente.a
 	$(libutente_a_AR) libutente.a $(libutente_a_OBJECTS) $(libutente_a_LIBADD)
@@ -346,11 +346,11 @@ include ./$(DEPDIR)/MemoryHandling.Po
 include ./$(DEPDIR)/consulta.Po
 include ./$(DEPDIR)/convention.Po
 include ./$(DEPDIR)/date.Po
-include ./$(DEPDIR)/especialidade.Po
 include ./$(DEPDIR)/horario.Po
 include ./$(DEPDIR)/hour.Po
 include ./$(DEPDIR)/medico.Po
 include ./$(DEPDIR)/person.Po
+include ./$(DEPDIR)/specialty.Po
 include ./$(DEPDIR)/utente.Po
 
 .cpp.o:

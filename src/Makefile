@@ -50,7 +50,7 @@ gestao_OBJECTS = $(am_gestao_OBJECTS)
 gestao_LDADD = $(LDADD)
 gestao_DEPENDENCIES = classes/libutente.a classes/libmedico.a \
 	classes/libdate.a classes/libhour.a classes/libconvention.a \
-	classes/libespecialidade.a classes/libconsulta.a \
+	classes/libspecialty.a classes/libconsulta.a \
 	classes/libhorario.a classes/libmem.a classes/libfile.a
 DEFAULT_INCLUDES = -I. -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -79,13 +79,13 @@ ETAGS = etags
 CTAGS = ctags
 DIST_SUBDIRS = $(SUBDIRS)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
-ACLOCAL = ${SHELL} /home/nuieee/medigai/missing --run aclocal-1.10
-AMTAR = ${SHELL} /home/nuieee/medigai/missing --run tar
+ACLOCAL = ${SHELL} /home/ruka/Projectos/medigai/missing --run aclocal-1.10
+AMTAR = ${SHELL} /home/ruka/Projectos/medigai/missing --run tar
 AR = ar
-AUTOCONF = ${SHELL} /home/nuieee/medigai/missing --run autoconf
-AUTOHEADER = ${SHELL} /home/nuieee/medigai/missing --run autoheader
-AUTOMAKE = ${SHELL} /home/nuieee/medigai/missing --run automake-1.10
-AWK = mawk
+AUTOCONF = ${SHELL} /home/ruka/Projectos/medigai/missing --run autoconf
+AUTOHEADER = ${SHELL} /home/ruka/Projectos/medigai/missing --run autoheader
+AUTOMAKE = ${SHELL} /home/ruka/Projectos/medigai/missing --run automake-1.10
+AWK = gawk
 CC = gcc
 CCDEPMODE = depmode=gcc3
 CFLAGS = -g -O2
@@ -115,12 +115,12 @@ INSTALL_STRIP_PROGRAM = $(install_sh) -c -s
 LD = /usr/bin/ld
 LDFLAGS = 
 LIBOBJS = 
-LIBS = 
+LIBS = -lcurses 
 LIBTOOL = $(SHELL) $(top_builddir)/libtool
 LIPO = 
 LN_S = ln -s
 LTLIBOBJS = 
-MAKEINFO = ${SHELL} /home/nuieee/medigai/missing --run makeinfo
+MAKEINFO = ${SHELL} /home/ruka/Projectos/medigai/missing --run makeinfo
 MKDIR_P = /bin/mkdir -p
 NM = /usr/bin/nm -B
 NMEDIT = 
@@ -141,10 +141,10 @@ SET_MAKE =
 SHELL = /bin/bash
 STRIP = strip
 VERSION = 0.1
-abs_builddir = /home/nuieee/medigai/src
-abs_srcdir = /home/nuieee/medigai/src
-abs_top_builddir = /home/nuieee/medigai
-abs_top_srcdir = /home/nuieee/medigai
+abs_builddir = /home/ruka/Projectos/medigai/src
+abs_srcdir = /home/ruka/Projectos/medigai/src
+abs_top_builddir = /home/ruka/Projectos/medigai
+abs_top_srcdir = /home/ruka/Projectos/medigai
 ac_ct_CC = gcc
 ac_ct_CXX = g++
 ac_ct_DUMPBIN = 
@@ -173,7 +173,7 @@ host_vendor = pc
 htmldir = ${docdir}
 includedir = ${prefix}/include
 infodir = ${datarootdir}/info
-install_sh = $(SHELL) /home/nuieee/medigai/install-sh
+install_sh = $(SHELL) /home/ruka/Projectos/medigai/install-sh
 libdir = ${exec_prefix}/lib
 libexecdir = ${exec_prefix}/libexec
 localedir = ${datarootdir}/locale
@@ -196,7 +196,7 @@ top_builddir = ..
 top_srcdir = ..
 gestao_SOURCES = gestao.cpp
 SUBDIRS = classes
-LDADD = -lcurses classes/libutente.a classes/libmedico.a classes/libdate.a classes/libhour.a classes/libconvention.a classes/libespecialidade.a classes/libconsulta.a classes/libhorario.a classes/libmem.a classes/libfile.a
+LDADD = classes/libutente.a classes/libmedico.a classes/libdate.a classes/libhour.a classes/libconvention.a classes/libspecialty.a classes/libconsulta.a classes/libhorario.a classes/libmem.a classes/libfile.a
 all: all-recursive
 
 .SUFFIXES:

@@ -16,14 +16,14 @@ long getLong();
 class Clinic{
   std::vector<Medico *> list_med;
   std::vector<Utente *> list_pac;
-  std::vector<Especialidade *> list_esp;
+  std::vector<Specialty *> list_esp;
   std::vector<Consulta *> list_con;
   FileHandling files;
   public:
     Clinic( std::string = "" ,std::string = "" , std::string = "" , std::string = "" );
     std::vector<Medico *> getListMed() const;
     std::vector<Utente *> getListPac() const;
-    std::vector<Especialidade *> getListEsp() const;
+    std::vector<Specialty *> getListEsp() const;
     std::vector<Consulta *> getListCon() const;
     int insMed();
     int insPac();
@@ -42,7 +42,7 @@ class Clinic{
     float precoMedio();
     bool horario_med();
     bool horNCol ( std::vector<Consulta *> & , Hour & , const int & , const Hour & , const Hour & );
-    std::vector<Medico *>  listEsp( Especialidade * );
+    std::vector<Medico *>  listEsp( Specialty * );
 };
 
 

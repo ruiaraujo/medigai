@@ -50,7 +50,7 @@ gestao_OBJECTS = $(am_gestao_OBJECTS)
 gestao_LDADD = $(LDADD)
 gestao_DEPENDENCIES = classes/libutente.a classes/libmedico.a \
 	classes/libdate.a classes/libhour.a classes/libconvention.a \
-	classes/libespecialidade.a classes/libconsulta.a \
+	classes/libspecialty.a classes/libconsulta.a \
 	classes/libhorario.a classes/libmem.a classes/libfile.a
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -196,7 +196,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 gestao_SOURCES = gestao.cpp
 SUBDIRS = classes
-LDADD = -lcurses classes/libutente.a classes/libmedico.a classes/libdate.a classes/libhour.a classes/libconvention.a classes/libespecialidade.a classes/libconsulta.a classes/libhorario.a classes/libmem.a classes/libfile.a
+LDADD = classes/libutente.a classes/libmedico.a classes/libdate.a classes/libhour.a classes/libconvention.a classes/libspecialty.a classes/libconsulta.a classes/libhorario.a classes/libmem.a classes/libfile.a
 all: all-recursive
 
 .SUFFIXES:
