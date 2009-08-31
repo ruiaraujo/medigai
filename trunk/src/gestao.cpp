@@ -141,7 +141,7 @@ void menu_med()
 {
   Menu_med();
   char op;
-  vector <Medico *> ced;
+  vector <Doctor *> ced;
   while ( !cin.eof() )
   {
     cin>>op;
@@ -292,7 +292,7 @@ void menu_utente()
 {
   Menu_utente();
   char op;
-  vector<Utente *> id;
+  vector<Patient *> id;
   cin.clear();
 	while ( !cin.eof() )
 	{

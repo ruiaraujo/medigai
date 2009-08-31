@@ -17,8 +17,8 @@ Clinic::Clinic( std::string file_m , std::string file_p, std::string file_e, std
                                              list_med() , list_pac() , list_esp() , list_con() ,
                                              files( file_m , file_p , file_e , file_c ) {}
 
-std::vector<Medico *> Clinic::getListMed() const { return this->list_med; }
-std::vector<Utente *> Clinic::getListPac() const { return this->list_pac; }
+std::vector<Doctor *> Clinic::getListMed() const { return this->list_med; }
+std::vector<Patient *> Clinic::getListPac() const { return this->list_pac; }
 std::vector<Specialty *> Clinic::getListEsp() const { return this->list_esp; }
 std::vector<Consulta *> Clinic::getListCon() const { return this->list_con; }
 
@@ -34,11 +34,11 @@ float Clinic::precoMedioP()
   {
     return false;
   }
-  Utente pac_tmp;
-  Utente *ptr_u = pac_tmp.find( ced , this->list_pac );
+  Patient pac_tmp;
+  Patient *ptr_u = pac_tmp.find( ced , this->list_pac );
   while (ptr_u == NULL )
   {
-    cout << "Utente Inesxistente. Insira o identificador do utente: ";
+    cout << "Patient Inesxistente. Insira o identificador do utente: ";
     try
     {
       ced = getLong();
@@ -85,8 +85,8 @@ float Clinic::precoMedio()
   {
     return false;
   }
-  Medico med_tmp;
-  Medico *ptr_m = med_tmp.find( ced , this->list_med );
+  Doctor med_tmp;
+  Doctor *ptr_m = med_tmp.find( ced , this->list_med );
   while (ptr_m == NULL )
   {
     cout << "Médico Inesxistente. Insira a cédula do Médico: ";
@@ -104,7 +104,7 @@ float Clinic::precoMedio()
   int dur_total = 0;
   for ( int i = 0 ; i < (int) this->list_con.size() ; i++ )
   {
-    if ( this->list_con.at( i )->getMed()->getCed() == ptr_m->getCed() )
+    if ( this->list_con.at( i )->getMed()->getId() == ptr_m->getId() )
     {
       total += this->list_con.at( i )->getPre();
       dur_total += this->list_con.at( i )->getDur();
@@ -124,9 +124,9 @@ float Clinic::precoMedio()
   return total;
 }
 
-vector<Medico *> Clinic::listEsp( Specialty * esp )
+vector<Doctor *> Clinic::listEsp( Specialty * esp )
 {
-  vector<Medico *> lista;
+  vector<Doctor *> lista;
   for (int i = 0 ; i < (int) this->list_med.size() ; i++)
     if ( *esp == ( *this->list_med.at( i )->getEspe() ) )
       lista.push_back( this->list_med.at( i ) );
@@ -134,7 +134,7 @@ vector<Medico *> Clinic::listEsp( Specialty * esp )
 }
 
 
-bool Clinic::delCon( vector<Consulta *> & c , Medico * & med , Hour & h , Date & d )
+bool Clinic::delCon( vector<Consulta *> & c , Doctor * & med , Hour & h , Date & d )
 {
   Consulta *ptr =  new Consulta (med , NULL , d , h , 0);
   vector<Consulta *>::iterator it = ptr->find ( c );
@@ -165,8 +165,8 @@ bool Clinic::delCon()
   {
     return false;
   }
-  Medico med_tmp;
-  Medico *ptr_med = med_tmp.find ( ced , this->list_med );
+  Doctor med_tmp;
+  Doctor *ptr_med = med_tmp.find ( ced , this->list_med );
   while ( ptr_med == NULL )
   {
     cout << "Médico Inexistente.\nInsira a cédula do Médico : ";
@@ -359,7 +359,7 @@ int Clinic::insPac ()
       s >> apo;
     }
   }
-  Utente *ptr = new Utente ( nome , tel , mor , seg , des , apo );
+  Patient *ptr = new Patient ( nome , tel , mor , seg , des , apo );
   ptr->setSis( true );
   ptr->insOrd( this->list_pac );
   return ptr->findPos ( this->list_pac );  
@@ -382,8 +382,8 @@ int Clinic::insCon ()
   {
     return -1;
   }
-  Medico med_tmp;
-  Medico *ptr_m = med_tmp.find( ced , this->list_med );
+  Doctor med_tmp;
+  Doctor *ptr_m = med_tmp.find( ced , this->list_med );
   while (ptr_m == NULL )
   {
     cout << "Médico Inesxistente. Insira a cédula do Médico: ";
@@ -406,11 +406,11 @@ int Clinic::insCon ()
   {
     return -1;
   }
-  Utente pac_tmp;
-  Utente *ptr_u = pac_tmp.find( id , this->list_pac );
+  Patient pac_tmp;
+  Patient *ptr_u = pac_tmp.find( id , this->list_pac );
   while ( ptr_u == NULL )
   {
-    cout << "Utente Inesxistente. Insira a cédula do utente: ";
+    cout << "Patient Inesxistente. Insira a cédula do utente: ";
     try
     {
       id = getLong();
@@ -442,7 +442,7 @@ int Clinic::insCon ()
   istringstream s(tmp);
   s >> dia >> espaco >> mes >> espaco >> ano;
   Date d( dia , mes , ano );
-  Horario< Medico , Date > timetable ( ptr_m , d );
+  Horario< Doctor , Date > timetable ( ptr_m , d );
   vector<Consulta *> tt = timetable.get( this->list_con );
   cout << "Insira a hora: ";
   Hour h;
@@ -750,12 +750,12 @@ int Clinic::insMed()
   ssss >> hora_f >> espaco >> min_f;
   Hour inicio ( hora_i , min_i );
   Hour fim ( hora_f , min_f );
-  Medico med ( nome , tel , duracao , cedula );
+  Doctor med ( nome , tel , duracao , cedula );
   med.setEspe( esp );
-  Medico *ptr = med.find( this->list_med );
+  Doctor *ptr = med.find( this->list_med );
   if (ptr == NULL)
   {
-    ptr = new Medico ( nome , tel , duracao , cedula );
+    ptr = new Doctor ( nome , tel , duracao , cedula );
     if ( inicio <= fim )
     {
       ptr->setIni( inicio );
@@ -819,8 +819,8 @@ bool Clinic::horario_med()
   {
     return false;
   }
-  Medico med_tmp;
-  Medico *ptr_m = med_tmp.find( ced , this->list_med );
+  Doctor med_tmp;
+  Doctor *ptr_m = med_tmp.find( ced , this->list_med );
   while (ptr_m == NULL )
   {
     cout << "Médico Inesxistente. Insira a cédula do Médico: ";
@@ -854,26 +854,26 @@ bool Clinic::horario_med()
   istringstream s(tmp);
   s >> dia >> espaco >> mes >> espaco >> ano;
   Date d( dia , mes , ano );
-  Horario <Medico , Date> horario (ptr_m , d );
+  Horario <Doctor , Date> horario (ptr_m , d );
   horario.print( cout , this->list_con );
   return true;
 }
 
 bool Clinic::delMed( unsigned long  ced )
 {
-  Medico med_tmp;
+  Doctor med_tmp;
   int pos = med_tmp.findPos( ced , this->list_med );
-  vector<Medico *> eq = listEsp ( this->list_med.at( pos )->getEspe() );
-  vector<Medico *>::iterator it = eq.begin();
+  vector<Doctor *> eq = listEsp ( this->list_med.at( pos )->getEspe() );
+  vector<Doctor *>::iterator it = eq.begin();
   for ( int i = 0  ; i < (int) eq.size(); i++ , it++)
-    if ( ced == eq.at( i )->getCed() )
+    if ( ced == eq.at( i )->getId() )
      eq.erase ( it );
   
   if ( pos == -1) return false; 
   bool consulta = false;
   for (int i = 0; i < (int) this->list_con.size() ; i++ )
   {
-    if ( this->list_con.at(i)->getMed()->getCed() == ced && this->list_con.at(i)->getEst() == 'm' )
+    if ( this->list_con.at(i)->getMed()->getId() == ced && this->list_con.at(i)->getEst() == 'm' )
       consulta = true;
   }
   if (consulta)
@@ -897,11 +897,11 @@ bool Clinic::delMed( unsigned long  ced )
         case 's': this->list_med.at( pos )->setSis( false );
                   for (int i = 0; i < (int) this->list_con.size() ; i++ )
                   {
-                    if ( this->list_con.at(i)->getMed()->getCed() == ced && this->list_con.at(i)->getEst() == 'm' )
+                    if ( this->list_con.at(i)->getMed()->getId() == ced && this->list_con.at(i)->getEst() == 'm' )
                     {
                       Hour h( this->list_con.at( i )->getHor() );
                       Date d( this->list_con.at( i )->getDat() );
-                      Medico * ptr = med_tmp.find ( ced , this->list_med );
+                      Doctor * ptr = med_tmp.find ( ced , this->list_med );
                       delCon( this->list_con , ptr , h , d );
                       i--;
                     }
@@ -918,7 +918,7 @@ bool Clinic::delMed( unsigned long  ced )
                     cout << "Escolha um:"<< endl;
                     listar ( eq );
                     unsigned long id;
-                    Medico * ptr_m;
+                    Doctor * ptr_m;
                     ptr_m = NULL;
                     while (ptr_m == NULL )
                     {                
@@ -936,7 +936,7 @@ bool Clinic::delMed( unsigned long  ced )
                       this->list_med.at( pos )->setSis( false );
                     for (int i = 0; i < (int) this->list_con.size() ; i++ )
                     {
-                      if ( this->list_con.at(i)->getMed()->getCed() == ced && this->list_con.at(i)->getEst() == 'm' )
+                      if ( this->list_con.at(i)->getMed()->getId() == ced && this->list_con.at(i)->getEst() == 'm' )
  this->list_con.at( i )->setMed ( ptr_m );
                     }
                   }
@@ -1255,8 +1255,8 @@ bool Clinic::altCon()
   {
     return false;
   }
-  Medico med_tmp;
-  Medico *ptr_med = med_tmp.find ( ced , this->list_med );
+  Doctor med_tmp;
+  Doctor *ptr_med = med_tmp.find ( ced , this->list_med );
   while ( ptr_med == NULL )
   {
     cout << "Médico Inexistente.\nInsira a cédula do Médico : ";
@@ -1290,7 +1290,7 @@ bool Clinic::altCon()
   istringstream ss(tmp);
   ss >> dia >> espaco >> mes >> espaco >> ano;
   Date d( dia , mes , ano );
-  Horario <Medico , Date > horario ( ptr_med , d );
+  Horario <Doctor , Date > horario ( ptr_med , d );
   horario.print(cout , this->list_con );
   cout << endl << "Insira a hora de início da consulta separadas por um caracter (no formato hh:mm ): ";
   getline( cin , tmp );
@@ -1349,8 +1349,8 @@ bool Clinic::verCon()
   {
     return false;
   }
-  Medico med_tmp;
-  Medico *ptr_med = med_tmp.find ( ced , this->list_med );
+  Doctor med_tmp;
+  Doctor *ptr_med = med_tmp.find ( ced , this->list_med );
   while ( ptr_med == NULL )
   {
     cout << "Médico Inexistente.\nInsira a cédula do Médico : ";
@@ -1422,11 +1422,11 @@ bool Clinic::delPac()
   {
     return false;
   }
-  Utente pac_tmp;
+  Patient pac_tmp;
   int pos = pac_tmp.findPos( id , this->list_pac );
   while ( pos == -1 )
   {
-    cout << "Utente Inexistente.\nInsira o número identificativo do utente : ";
+    cout << "Patient Inexistente.\nInsira o número identificativo do utente : ";
     try
     {
       id = getLong();
@@ -1453,7 +1453,7 @@ bool Clinic::delPac()
       {
         Hour h( this->list_con.at( i )->getHor() );
         Date d( this->list_con.at( i )->getDat() );
-        Medico * ptr = this->list_con.at(i)->getMed();
+        Doctor * ptr = this->list_con.at(i)->getMed();
         delCon( this->list_con , ptr , h , d );
         i--;
       }
@@ -1463,7 +1463,7 @@ bool Clinic::delPac()
   
 /*  if ( pos > (int)( u.size() / 2 ) )
   {
-    vector<Utente *>::iterator it = u.end();
+    vector<Patient *>::iterator it = u.end();
     it--;
     for ( int i = u.size()-1 ; i > pos ; i-- )
       it--;
@@ -1471,7 +1471,7 @@ bool Clinic::delPac()
   }
   else
   {
-    vector<Utente *>::iterator it = u.begin();
+    vector<Patient *>::iterator it = u.begin();
     for ( int i = 0 ; i < pos ; i++ )
       it++;
     u.erase(it);
@@ -1497,11 +1497,11 @@ bool Clinic::altPac()
   {
     return false;
   }
-  Utente pac_tmp;
+  Patient pac_tmp;
   int pos = pac_tmp.findPos( id , this->list_pac );
   while ( pos == -1 )
   {
-    cout << "Utente Inexistente.\nInsira o número identificativo do utente : ";
+    cout << "Patient Inexistente.\nInsira o número identificativo do utente : ";
     try
     {
       id = getLong();
@@ -1513,7 +1513,7 @@ bool Clinic::altPac()
     pos = pac_tmp.findPos ( id , this->list_pac );
   }
   
- /* vector<Utente *>::iterator it = u.begin();
+ /* vector<Patient *>::iterator it = u.begin();
   for ( int i = 0 ; i < pos ; i++ , it++ ) ;
   int n =  insPac( u );
 	if ( n != -1 )
@@ -1661,7 +1661,7 @@ bool Clinic::altPac()
     }
   }
   this->list_pac.at( pos )->setName( nome );
-  this->list_pac.at( pos )->setMor( mor ) ;
+  this->list_pac.at( pos )->setAdd( mor ) ;
   this->list_pac.at( pos )->setTel( tel );
   this->list_pac.at( pos )->setIns( seg , des , apo );
   return true;
@@ -1722,8 +1722,8 @@ bool Clinic::pagarCon()
   {
     return false;
   }
-  Medico med_tmp;
-  Medico *ptr_med = med_tmp.find ( ced , this->list_med );
+  Doctor med_tmp;
+  Doctor *ptr_med = med_tmp.find ( ced , this->list_med );
   while ( ptr_med == NULL )
   {
     cout << "Médico Inexistente.\nInsira a cédula do Médico : ";
@@ -1812,10 +1812,10 @@ template <class Comparable>void listar( const vector<Comparable *> & v)
 }
 
 
-template std::vector<Utente *> find_Id<Utente>( const std::vector<Utente *> & );
-template std::vector<Medico *> find_Id<Medico>( const std::vector<Medico *> & );
-template void listar<Utente> ( const std::vector<Utente *> & );
-template void listar<Medico> ( const std::vector<Medico *> & );
+template std::vector<Patient *> find_Id<Patient>( const std::vector<Patient *> & );
+template std::vector<Doctor *> find_Id<Doctor>( const std::vector<Doctor *> & );
+template void listar<Patient> ( const std::vector<Patient *> & );
+template void listar<Doctor> ( const std::vector<Doctor *> & );
 
 
 void Clinic::load()

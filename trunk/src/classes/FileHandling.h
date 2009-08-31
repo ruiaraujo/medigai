@@ -6,11 +6,11 @@
 #include <sstream>
 #include <vector>
 
-bool addMed( std::fstream & ,const Medico & );
-bool delMed( std::fstream & , const Medico & );
+bool addMed( std::fstream & ,const Doctor & );
+bool delMed( std::fstream & , const Doctor & );
 bool delMed( std::fstream & , unsigned long );
-bool addPac( std::fstream & , const Utente & );
-bool delPac( std::fstream & , const Utente & );
+bool addPac( std::fstream & , const Patient & );
+bool delPac( std::fstream & , const Patient & );
 bool delPac( std::fstream & , unsigned long );
 
 class FileHandling{
@@ -22,12 +22,12 @@ class FileHandling{
     FileHandling( std::string = "" ,std::string = "" , std::string = "" , std::string = "" );
     char existFile( std::string );
     bool loadEsp( std::vector<Specialty *> & );
-    bool loadPac( std::vector<Utente *> & );
-    bool loadMed( std::vector<Medico * > & , std::vector<Specialty *> & );
-    bool loadCon( std::vector<Consulta * > & , std::vector<Utente *> & , std::vector<Medico * > & );
-    void savPac ( const std::vector<Utente *> & );
+    bool loadPac( std::vector<Patient *> & );
+    bool loadMed( std::vector<Doctor * > & , std::vector<Specialty *> & );
+    bool loadCon( std::vector<Consulta * > & , std::vector<Patient *> & , std::vector<Doctor * > & );
+    void savPac ( const std::vector<Patient *> & );
     void savEsp ( const std::vector<Specialty *> & );
-    void savMed ( const std::vector<Medico *> & );
+    void savMed ( const std::vector<Doctor *> & );
     void savCon ( const std::vector<Consulta *> &);
 };
 

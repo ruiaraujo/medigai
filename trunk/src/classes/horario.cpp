@@ -7,20 +7,20 @@ using std::cerr;
 using std::endl;
 using std::ostream;
 
-template<> vector<Consulta *> Horario< Utente , Date >::get( const vector<Consulta *> & );
-template<> vector<Consulta *> Horario< Medico , Date >::get( const vector<Consulta *> & );
-template<> void Horario< Utente , Date >::print(ostream & , const vector<Consulta *> & );
-template<> void Horario< Medico , Date >::print(ostream & , const vector<Consulta *> & );
-template<> void Horario< Utente , Date >::printFrc(ostream & , const vector<Consulta *> & );
-template<> void Horario< Medico , Date>::printMrc(ostream & os, const vector<Consulta *> & );
-template<> void Horario< Utente , Date>::printMrc(ostream & os, const vector<Consulta *> & );
+template<> vector<Consulta *> Horario< Patient , Date >::get( const vector<Consulta *> & );
+template<> vector<Consulta *> Horario< Doctor , Date >::get( const vector<Consulta *> & );
+template<> void Horario< Patient , Date >::print(ostream & , const vector<Consulta *> & );
+template<> void Horario< Doctor , Date >::print(ostream & , const vector<Consulta *> & );
+template<> void Horario< Patient , Date >::printFrc(ostream & , const vector<Consulta *> & );
+template<> void Horario< Doctor , Date>::printMrc(ostream & os, const vector<Consulta *> & );
+template<> void Horario< Patient , Date>::printMrc(ostream & os, const vector<Consulta *> & );
 
 template <class Person, class Time > Horario<Person, Time>::Horario ( Person * p , const Time & t ) : person(p) , time(t) {}
 
 template <class Person, class Time>
 void Horario< Person , Time >::print(ostream & os, const vector<Consulta *> & c ){}
 template<>
-void Horario< Utente , Date >::print(ostream & os, const vector<Consulta *> & c )
+void Horario< Patient , Date >::print(ostream & os, const vector<Consulta *> & c )
 {
   if ( person != NULL )
   {
@@ -38,7 +38,7 @@ void Horario< Utente , Date >::print(ostream & os, const vector<Consulta *> & c 
   }
 }
 template<>
-void Horario< Medico , Date >::print(ostream & os, const vector<Consulta *> & c )
+void Horario< Doctor , Date >::print(ostream & os, const vector<Consulta *> & c )
 {
   if ( person != NULL )
   {
@@ -117,7 +117,7 @@ template <class Person, class Time>
 void Horario< Person , Time >::printMrc(ostream & os, const vector<Consulta *> & c){}
 
 template <>
-void Horario< Utente , Date>::printMrc(ostream & os, const vector<Consulta *> & c)
+void Horario< Patient , Date>::printMrc(ostream & os, const vector<Consulta *> & c)
 {
   if ( person != NULL )
   {
@@ -135,7 +135,7 @@ void Horario< Utente , Date>::printMrc(ostream & os, const vector<Consulta *> & 
 }
 
 template <>
-void Horario< Medico , Date>::printMrc(ostream & os, const vector<Consulta *> & c)
+void Horario< Doctor , Date>::printMrc(ostream & os, const vector<Consulta *> & c)
 {
   if ( person != NULL )
   {
@@ -155,7 +155,7 @@ template <class Person, class Time>
 void Horario< Person , Time >::printFrc(ostream & os , const vector<Consulta *> & c){}
 
 template <>
-void Horario< Utente , Date >::printFrc(ostream & os , const vector<Consulta *> & c)
+void Horario< Patient , Date >::printFrc(ostream & os , const vector<Consulta *> & c)
 {
   if ( person != NULL )
   {
@@ -174,7 +174,7 @@ void Horario< Utente , Date >::printFrc(ostream & os , const vector<Consulta *> 
 }
 
 template <>
-void Horario< Medico , Date >::printFrc(ostream & os , const vector<Consulta *> & c)
+void Horario< Doctor , Date >::printFrc(ostream & os , const vector<Consulta *> & c)
 {
   if ( person != NULL )
   {
@@ -194,7 +194,7 @@ template <class Person, class Time>
 vector<Consulta *> Horario< Person , Time >::get( const vector<Consulta *> & c){}
 
 template <>
-vector<Consulta *> Horario< Medico , Date >::get( const vector<Consulta *> & c)
+vector<Consulta *> Horario< Doctor , Date >::get( const vector<Consulta *> & c)
 {
   vector<Consulta *> lista;
   if ( person != NULL )
@@ -205,7 +205,7 @@ vector<Consulta *> Horario< Medico , Date >::get( const vector<Consulta *> & c)
 }
 
 template <>
-vector<Consulta *> Horario< Utente , Date >::get( const vector<Consulta *> & c)
+vector<Consulta *> Horario< Patient , Date >::get( const vector<Consulta *> & c)
 {
   vector<Consulta *> lista;
   if ( person != NULL )
@@ -217,7 +217,7 @@ vector<Consulta *> Horario< Utente , Date >::get( const vector<Consulta *> & c)
 
 
 
-template class Horario<Medico, Date>;
-template class Horario<Utente, Date>;
+template class Horario<Doctor, Date>;
+template class Horario<Patient, Date>;
 
 
