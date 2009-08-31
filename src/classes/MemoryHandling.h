@@ -14,15 +14,15 @@ Hour getHour();
 long getLong();
 
 class Clinic{
-  std::vector<Medico *> list_med;
-  std::vector<Utente *> list_pac;
+  std::vector<Doctor *> list_med;
+  std::vector<Patient *> list_pac;
   std::vector<Specialty *> list_esp;
   std::vector<Consulta *> list_con;
   FileHandling files;
   public:
     Clinic( std::string = "" ,std::string = "" , std::string = "" , std::string = "" );
-    std::vector<Medico *> getListMed() const;
-    std::vector<Utente *> getListPac() const;
+    std::vector<Doctor *> getListMed() const;
+    std::vector<Patient *> getListPac() const;
     std::vector<Specialty *> getListEsp() const;
     std::vector<Consulta *> getListCon() const;
     int insMed();
@@ -31,7 +31,7 @@ class Clinic{
     void load();
     void save();
     bool verCon();
-    bool delCon( std::vector<Consulta *> & , Medico * & , Hour & , Date & );
+    bool delCon( std::vector<Consulta *> & , Doctor * & , Hour & , Date & );
     bool delCon();
     bool altCon();
     bool altPac();
@@ -42,7 +42,7 @@ class Clinic{
     float precoMedio();
     bool horario_med();
     bool horNCol ( std::vector<Consulta *> & , Hour & , const int & , const Hour & , const Hour & );
-    std::vector<Medico *>  listEsp( Specialty * );
+    std::vector<Doctor *>  listEsp( Specialty * );
 };
 
 

@@ -1,14 +1,14 @@
 #ifndef CONSULTA_H
 #define CONSULTA_H
 #include "medico.h"
-#include "utente.h"
+#include "patient.h"
 #include "date.h"
 #include "hour.h"
 #include <iostream>
 
 class Consulta {
-  Medico * med;
-  Utente * pac;
+  Doctor * med;
+  Patient * pac;
   Date data;
   Hour hora;
   unsigned int duracao;
@@ -16,9 +16,9 @@ class Consulta {
   char estado;
   public:
     Consulta( const Consulta & );
-    Consulta( Medico * , Utente * , const Date  & , const Hour & , float );
-    Medico * getMed() const;
-    Utente * getUte() const;
+    Consulta( Doctor * , Patient * , const Date  & , const Hour & , float );
+    Doctor * getMed() const;
+    Patient * getUte() const;
     Date getDat() const;
     Hour getHor() const;
     unsigned int getDur() const;
@@ -30,8 +30,8 @@ class Consulta {
     void setHor( const Hour & );
     void setDat( unsigned int , unsigned int , unsigned int );
     void setDat( const Date &);
-    void setMed( Medico * );
-    void setUte( Utente * ); 
+    void setMed( Doctor * );
+    void setUte( Patient * ); 
     void setPre( float );
     std::vector<Consulta *>::iterator insOrd ( std::vector<Consulta *> & );
     std::vector<Consulta *>::iterator find ( std::vector<Consulta *> & );

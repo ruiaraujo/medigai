@@ -61,7 +61,7 @@ libfile_a_AR = $(AR) $(ARFLAGS)
 libfile_a_LIBADD =
 am_libfile_a_OBJECTS = FileHandling.$(OBJEXT) consulta.$(OBJEXT) \
 	medico.$(OBJEXT) hour.$(OBJEXT) specialty.$(OBJEXT) \
-	person.$(OBJEXT) utente.$(OBJEXT) convention.$(OBJEXT) \
+	person.$(OBJEXT) patient.$(OBJEXT) convention.$(OBJEXT) \
 	date.$(OBJEXT)
 libfile_a_OBJECTS = $(am_libfile_a_OBJECTS)
 libhorario_a_AR = $(AR) $(ARFLAGS)
@@ -83,9 +83,14 @@ libmem_a_AR = $(AR) $(ARFLAGS)
 libmem_a_LIBADD =
 am_libmem_a_OBJECTS = MemoryHandling.$(OBJEXT) FileHandling.$(OBJEXT) \
 	consulta.$(OBJEXT) medico.$(OBJEXT) hour.$(OBJEXT) \
-	specialty.$(OBJEXT) person.$(OBJEXT) utente.$(OBJEXT) \
+	specialty.$(OBJEXT) person.$(OBJEXT) patient.$(OBJEXT) \
 	convention.$(OBJEXT) date.$(OBJEXT) horario.$(OBJEXT)
 libmem_a_OBJECTS = $(am_libmem_a_OBJECTS)
+libpatient_a_AR = $(AR) $(ARFLAGS)
+libpatient_a_LIBADD =
+am_libpatient_a_OBJECTS = patient.$(OBJEXT) person.$(OBJEXT) \
+	convention.$(OBJEXT)
+libpatient_a_OBJECTS = $(am_libpatient_a_OBJECTS)
 libperson_a_AR = $(AR) $(ARFLAGS)
 libperson_a_LIBADD =
 am_libperson_a_OBJECTS = person.$(OBJEXT)
@@ -94,11 +99,6 @@ libspecialty_a_AR = $(AR) $(ARFLAGS)
 libspecialty_a_LIBADD =
 am_libspecialty_a_OBJECTS = specialty.$(OBJEXT)
 libspecialty_a_OBJECTS = $(am_libspecialty_a_OBJECTS)
-libutente_a_AR = $(AR) $(ARFLAGS)
-libutente_a_LIBADD =
-am_libutente_a_OBJECTS = utente.$(OBJEXT) person.$(OBJEXT) \
-	convention.$(OBJEXT)
-libutente_a_OBJECTS = $(am_libutente_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -115,14 +115,14 @@ SOURCES = $(libconsulta_a_SOURCES) $(libconvention_a_SOURCES) \
 	$(libdate_a_SOURCES) $(libfile_a_SOURCES) \
 	$(libhorario_a_SOURCES) $(libhour_a_SOURCES) \
 	$(libmedico_a_SOURCES) $(libmem_a_SOURCES) \
-	$(libperson_a_SOURCES) $(libspecialty_a_SOURCES) \
-	$(libutente_a_SOURCES)
+	$(libpatient_a_SOURCES) $(libperson_a_SOURCES) \
+	$(libspecialty_a_SOURCES)
 DIST_SOURCES = $(libconsulta_a_SOURCES) $(libconvention_a_SOURCES) \
 	$(libdate_a_SOURCES) $(libfile_a_SOURCES) \
 	$(libhorario_a_SOURCES) $(libhour_a_SOURCES) \
 	$(libmedico_a_SOURCES) $(libmem_a_SOURCES) \
-	$(libperson_a_SOURCES) $(libspecialty_a_SOURCES) \
-	$(libutente_a_SOURCES)
+	$(libpatient_a_SOURCES) $(libperson_a_SOURCES) \
+	$(libspecialty_a_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -241,18 +241,18 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-noinst_LIBRARIES = libdate.a libhour.a libconvention.a libspecialty.a libperson.a libutente.a libmedico.a libconsulta.a  libfile.a libhorario.a libmem.a
+noinst_LIBRARIES = libdate.a libhour.a libconvention.a libspecialty.a libperson.a libpatient.a libmedico.a libconsulta.a  libfile.a libhorario.a libmem.a
 libperson_a_SOURCES = person.cpp
-libutente_a_SOURCES = utente.cpp person.cpp convention.cpp
+libpatient_a_SOURCES = patient.cpp person.cpp convention.cpp
 libmedico_a_SOURCES = medico.cpp hour.cpp specialty.cpp person.cpp 
 libdate_a_SOURCES = date.cpp
 libhour_a_SOURCES = hour.cpp
-libhorario_a_SOURCES = horario.cpp consulta.cpp medico.cpp hour.cpp specialty.cpp person.cpp utente.cp convention.cpp date.cpp
-libmem_a_SOURCES = MemoryHandling.cpp FileHandling.cpp consulta.cpp medico.cpp hour.cpp specialty.cpp  person.cpp utente.cpp  convention.cpp date.cpp horario.cpp 
-libfile_a_SOURCES = FileHandling.cpp consulta.cpp medico.cpp hour.cpp specialty.cpp person.cpp utente.cpp convention.cpp date.cpp
+libhorario_a_SOURCES = horario.cpp consulta.cpp medico.cpp hour.cpp specialty.cpp person.cpp patient.cp convention.cpp date.cpp
+libmem_a_SOURCES = MemoryHandling.cpp FileHandling.cpp consulta.cpp medico.cpp hour.cpp specialty.cpp  person.cpp patient.cpp  convention.cpp date.cpp horario.cpp 
+libfile_a_SOURCES = FileHandling.cpp consulta.cpp medico.cpp hour.cpp specialty.cpp person.cpp patient.cpp convention.cpp date.cpp
 libconvention_a_SOURCES = convention.cpp
 libspecialty_a_SOURCES = specialty.cpp
-libconsulta_a_SOURCES = consulta.cpp medico.cpp hour.cpp specialty.cpp person.cpp utente.cp convention.cpp date.cpp
+libconsulta_a_SOURCES = consulta.cpp medico.cpp hour.cpp specialty.cpp person.cpp patient.cp convention.cpp date.cpp
 INCLUDE = -I@top_srcdir@/
 all: all-am
 
@@ -322,6 +322,10 @@ libmem.a: $(libmem_a_OBJECTS) $(libmem_a_DEPENDENCIES)
 	-rm -f libmem.a
 	$(libmem_a_AR) libmem.a $(libmem_a_OBJECTS) $(libmem_a_LIBADD)
 	$(RANLIB) libmem.a
+libpatient.a: $(libpatient_a_OBJECTS) $(libpatient_a_DEPENDENCIES) 
+	-rm -f libpatient.a
+	$(libpatient_a_AR) libpatient.a $(libpatient_a_OBJECTS) $(libpatient_a_LIBADD)
+	$(RANLIB) libpatient.a
 libperson.a: $(libperson_a_OBJECTS) $(libperson_a_DEPENDENCIES) 
 	-rm -f libperson.a
 	$(libperson_a_AR) libperson.a $(libperson_a_OBJECTS) $(libperson_a_LIBADD)
@@ -330,10 +334,6 @@ libspecialty.a: $(libspecialty_a_OBJECTS) $(libspecialty_a_DEPENDENCIES)
 	-rm -f libspecialty.a
 	$(libspecialty_a_AR) libspecialty.a $(libspecialty_a_OBJECTS) $(libspecialty_a_LIBADD)
 	$(RANLIB) libspecialty.a
-libutente.a: $(libutente_a_OBJECTS) $(libutente_a_DEPENDENCIES) 
-	-rm -f libutente.a
-	$(libutente_a_AR) libutente.a $(libutente_a_OBJECTS) $(libutente_a_LIBADD)
-	$(RANLIB) libutente.a
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -349,9 +349,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/horario.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hour.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/medico.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/patient.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/person.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/specialty.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/utente.Po@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
