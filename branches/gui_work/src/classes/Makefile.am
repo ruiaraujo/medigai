@@ -1,0 +1,13 @@
+noinst_LIBRARIES = libdate.a libhour.a libconvention.a libspecialty.a libperson.a libpatient.a libmedico.a libconsulta.a  libfile.a libhorario.a libmem.a
+libperson_a_SOURCES = person.cpp
+libpatient_a_SOURCES = patient.cpp person.cpp convention.cpp
+libmedico_a_SOURCES = medico.cpp hour.cpp specialty.cpp person.cpp 
+libdate_a_SOURCES = date.cpp
+libhour_a_SOURCES = hour.cpp
+libhorario_a_SOURCES = horario.cpp consulta.cpp medico.cpp hour.cpp specialty.cpp person.cpp patient.cp convention.cpp date.cpp
+libmem_a_SOURCES = MemoryHandling.cpp FileHandling.cpp consulta.cpp medico.cpp hour.cpp specialty.cpp  person.cpp patient.cpp  convention.cpp date.cpp horario.cpp 
+libfile_a_SOURCES = FileHandling.cpp consulta.cpp medico.cpp hour.cpp specialty.cpp person.cpp patient.cpp convention.cpp date.cpp
+libconvention_a_SOURCES = convention.cpp
+libspecialty_a_SOURCES = specialty.cpp
+libconsulta_a_SOURCES = consulta.cpp medico.cpp hour.cpp specialty.cpp person.cpp patient.cp convention.cpp date.cpp
+INCLUDE = -I@top_srcdir@/

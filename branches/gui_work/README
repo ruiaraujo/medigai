@@ -1,0 +1,3 @@
+Run autogen.sh, then run make.
+
+If all goes well the binary file will be in the src/ directory.
